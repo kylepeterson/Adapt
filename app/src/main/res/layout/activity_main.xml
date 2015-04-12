@@ -11,14 +11,16 @@
             android:layout_weight="1"
             android:text="Browse"
             android:background="#527E7A"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:id="@+id/browse"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Create"
             android:background="#545351"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:id="@+id/create"/>
 
     </LinearLayout>
 </LinearLayout>

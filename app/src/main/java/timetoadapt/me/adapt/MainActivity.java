@@ -1,15 +1,18 @@
 package timetoadapt.me.adapt;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +21,22 @@ public class MainActivity extends ActionBarActivity {
 
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
-
         Parse.initialize(this, "clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d", "hb1CHroSizquv9pEjtB8Hkke1IswmgQ6T1nHKX5w");
-
         ParseObject testObject = new ParseObject("TestObject");
         testObject.put("foo", "bar");
         testObject.saveInBackground();
+
+        // Set up click handlers on navigation buttons
+        Button browseButton = (Button) findViewById(R.id.browse);
+        browseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to the list activity
+                Intent browseIntent = new Intent(MainActivity.this, ListActivity.class);
+                // Add any extras here for data that needs to be passed to the ListActivity
+                startActivity(browseIntent);
+            }
+        });
     }
 
 
