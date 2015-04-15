@@ -22,9 +22,10 @@ public class MainActivity extends Activity {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d", "hb1CHroSizquv9pEjtB8Hkke1IswmgQ6T1nHKX5w");
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+
+        ParseObject analObject = new ParseObject("Analytics");
+        analObject.put("action", "app_open");
+        analObject.saveInBackground();
 
         // Set up click handlers on navigation buttons
         Button browseButton = (Button) findViewById(R.id.browse);
