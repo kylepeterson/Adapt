@@ -13,16 +13,35 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ListActivity"
+            android:label="@string/title_activity_list" >
+        </activity>
+
+        <activity
+            android:name=".UserCreationActivity"
+            android:label="@string/create_user_title" >
+        </activity>
+        <activity
+            android:name=".SignInActivity"
+            android:label="@string/sign_in_title" >
+        </activity>
+        <activity
+            android:name=".SignUpActivity"
+            android:label="@string/sign_up_title" >
+        </activity>
+
+        <activity
+            android:name=".DispatchActivity"
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ListActivity"
-            android:label="@string/title_activity_list" >
-        </activity>
+
     </application>
 
 </manifest>
