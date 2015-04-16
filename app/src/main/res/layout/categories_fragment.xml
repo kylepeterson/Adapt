@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="timetoadapt.me.adapt.ListActivity"
+    android:id="@+id/list"
+    android:orientation="vertical"
+    android:weightSum="4.5">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textAlignment="center"
+        android:text="Sleep"
+        style="?android:attr/borderlessButtonStyle"
+        android:clickable="true"
+        android:id="@+id/cat1"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textAlignment="center"
+        android:text="Focus"
+        style="?android:attr/borderlessButtonStyle"
+        android:id="@+id/cat2"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textAlignment="center"
+        android:text="Nutrition"
+        style="?android:attr/borderlessButtonStyle"
+        android:id="@+id/cat3"/>
+</LinearLayout>
+
