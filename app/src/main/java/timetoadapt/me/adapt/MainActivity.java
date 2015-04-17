@@ -42,6 +42,16 @@ public class MainActivity extends Activity {
                 startActivity(browseIntent);
             }
         });
+
+        Button createButton = (Button) findViewById(R.id.create);
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to the create screen activity
+                Intent createIntent = new Intent(MainActivity.this, CreateActivity.class);
+                startActivity(createIntent);
+            }
+        });
     }
 
     @Override

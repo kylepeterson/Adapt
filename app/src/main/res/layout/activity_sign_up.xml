@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/username"
         android:maxLines="1"
+        android:singleLine="true"
         android:layout_marginTop="60dp"
         android:id="@+id/username_edit_text"
         android:layout_gravity="center_horizontal" />

@@ -21,9 +21,15 @@
         </activity>
 
         <activity
+            android:name=".CreateActivity"
+            android:label="@string/title_activity_create" >
+        </activity>
+
+        <activity
             android:name=".UserCreationActivity"
             android:label="@string/create_user_title" >
         </activity>
+
         <activity
             android:name=".SignInActivity"
             android:label="@string/sign_in_title" >
