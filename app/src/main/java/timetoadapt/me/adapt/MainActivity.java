@@ -14,11 +14,15 @@ import com.parse.ParseUser;
 
 
 public class MainActivity extends Activity {
+    protected AdaptApp app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        app = (AdaptApp) getApplication();
+        AdaptApp instance = app.getInstance();
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "app_open");
