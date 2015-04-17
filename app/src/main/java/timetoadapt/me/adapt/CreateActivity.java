@@ -25,7 +25,8 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
 
     private EditText tryThis;
     private EditText toAccomplish;
-    private String selectedCategory;
+    private Spinner categorySelector;
+    private int selectedCategory;
     private EditText description;
 
     @Override
@@ -45,11 +46,11 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
         toAccomplish = (EditText) findViewById(R.id.to_accomplish_text);
         description = (EditText) findViewById(R.id.description_text);
 
-        selectedCategory = null;
+        categorySelector = (Spinner) findViewById(R.id.categories_spinner);
 
-        Spinner categorySpinner = (Spinner) findViewById(R.id.categories_spinner);
-        populateCategorySpinner(categorySpinner);
-        categorySpinner.setOnItemSelectedListener(this);
+        categorySelector.setOnItemSelectedListener(this);
+        populateCategorySpinner(categorySelector);
+        selectedCategory = 0;
 
         Button nextButton = (Button) findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +61,10 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        selectedCategory = parent.getItemAtPosition(pos).toString();
+        if (pos == 0) {
+            Toast.makeText(CreateActivity.this, "You must select an hypothesis category", Toast.LENGTH_LONG).show();
+        }
+        selectedCategory = pos;
     }
 
     @Override
@@ -70,6 +74,7 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
 
     private void populateCategorySpinner(Spinner categorySpinner) {
         List<String> categoryTitles = new ArrayList<String>();
+        categoryTitles.add("Select Category");
         for (ParseObject categoryObject : hypothesisRepo.categoryList) {
             categoryTitles.add(categoryObject.getString("categoryName"));
         }
@@ -78,6 +83,7 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
                 android.R.layout.simple_spinner_item, categoryTitles);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(dataAdapter);
+        categorySpinner.setSelection(0); // prompt is shown by default
     }
 
     private void startHypothesisCreation() {
@@ -97,6 +103,13 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
             }
             validationError = true;
             validationErrorMessage.append(getString(R.string.create_error_accomplish_empty));
+        }
+        if (selectedCategory == 0) {
+            if (validationError) {
+                validationErrorMessage.append(" and ");
+            }
+            validationError = true;
+            validationErrorMessage.append(getString(R.string.create_error_category_empty));
         }
         if (descriptionText.isEmpty()) {
             if (validationError) {
@@ -119,7 +132,7 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
         Bundle hypothesisInfo = new Bundle();
         hypothesisInfo.putString("try", tryText);
         hypothesisInfo.putString("accomplish", accomplishText);
-        hypothesisInfo.putString("category", selectedCategory);
+        hypothesisInfo.putString("category", categorySelector.getItemAtPosition(selectedCategory).toString());
         hypothesisInfo.putString("description", descriptionText);
         questionIntent.putExtras(hypothesisInfo);
 
