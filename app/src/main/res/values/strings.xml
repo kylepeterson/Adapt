@@ -14,12 +14,16 @@
     <string name="username_explanation">Your username will be visible to others when you comment or create an hypothesis</string>
     <string name="username">username</string>
     <string name="password">password</string>
+    <string name="email">email</string>
     <string name="password_confirm">confirm password</string>
+    <string name="forgot_password">I forgot my password</string>
 
     <string name="error_intro">"Please "</string>
     <string name="error_blank_username">enter a username</string>
+    <string name="error_bad_username">enter a username that does not contain "@"</string>
     <string name="error_blank_password">enter a password</string>
     <string name="error_mismatched_passwords">enter the same password twice</string>
+    <string name="error_email">enter a valid email address</string>
     <string name="error_join">", and "</string>
     <string name="error_end">.</string>
     <string name="progress_login">Logging you in&#8230;</string>

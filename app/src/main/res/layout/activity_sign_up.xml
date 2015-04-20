@@ -55,6 +55,16 @@
         android:id="@+id/password_confirmation_edit_text"
         android:layout_gravity="center_horizontal" />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:hint="@string/email"
+        android:layout_marginTop="30dp"
+        android:id="@+id/email_edit_text"
+        android:layout_gravity="center_horizontal" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

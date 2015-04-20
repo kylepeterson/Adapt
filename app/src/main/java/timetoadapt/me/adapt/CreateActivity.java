@@ -47,10 +47,8 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
         description = (EditText) findViewById(R.id.description_text);
 
         categorySelector = (Spinner) findViewById(R.id.categories_spinner);
-
-        categorySelector.setOnItemSelectedListener(this);
         populateCategorySpinner(categorySelector);
-        selectedCategory = 0;
+        categorySelector.setOnItemSelectedListener(this);
 
         Button nextButton = (Button) findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -61,9 +59,6 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        if (pos == 0) {
-            Toast.makeText(CreateActivity.this, "You must select an hypothesis category", Toast.LENGTH_LONG).show();
-        }
         selectedCategory = pos;
     }
 

@@ -42,4 +42,15 @@
         android:layout_marginTop="20dp"
         android:id="@+id/sign_in_button"
         android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_password"
+        android:textSize="20dp"
+        android:maxLines="1"
+        android:textColor="@color/accent_material_light"
+        android:layout_marginTop="80dp"
+        android:id="@+id/password_reset"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
