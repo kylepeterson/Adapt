@@ -1,6 +1,7 @@
 package timetoadapt.me.adapt;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.parse.FindCallback;
@@ -17,6 +18,7 @@ import java.util.List;
 public class AdaptApp extends Application {
     private static AdaptApp instance;
     public HypothesisRepo hypothesisRepo;
+    private static Context context;
 
     @Override
     public void onCreate() {
@@ -26,6 +28,7 @@ public class AdaptApp extends Application {
         Parse.initialize(this, "clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d", "hb1CHroSizquv9pEjtB8Hkke1IswmgQ6T1nHKX5w");
         HypothesisRepo repo = createHypothesisRepo();
         initInstance(repo);
+        context = getApplicationContext();
     }
 
     public void initInstance(HypothesisRepo repo) {
@@ -68,5 +71,9 @@ public class AdaptApp extends Application {
             }
         });
         return repo;
+    }
+
+    public static Context getAppContext(){
+        return context;
     }
 }

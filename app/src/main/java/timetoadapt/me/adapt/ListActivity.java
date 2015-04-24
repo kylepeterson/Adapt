@@ -12,20 +12,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.List;
 
 
 public class ListActivity extends Activity {
     protected static HypothesisRepo hypothesisRepo;
+    private static AdaptApp app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        AdaptApp app = (AdaptApp) getApplication();
+        app = (AdaptApp) getApplication();
         AdaptApp instance = app.getInstance();
         hypothesisRepo = instance.hypothesisRepo;
 
@@ -64,7 +68,7 @@ public class ListActivity extends Activity {
 
     // Fragment representing the overview of the categories of hypotheses
     // For now this is just sleep, focus and nutrition
-    public static class CategoriesFragment extends Fragment {
+    public  class CategoriesFragment extends Fragment {
 
         public CategoriesFragment() {
 
@@ -111,7 +115,7 @@ public class ListActivity extends Activity {
 
     // Fragment for the list of Hypothesis reached when a category is clicked
     // or a hypothesis is searched for
-    public static class HypothesisListFragment extends Fragment {
+    public  class HypothesisListFragment extends Fragment {
 
         public HypothesisListFragment() {
 
@@ -119,14 +123,57 @@ public class ListActivity extends Activity {
 
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
+            final View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
             Bundle arguments = getArguments();
             String category = arguments.getString("category");
             // put code here to query parse for all hypothesis mapping to the category
             ListView list = (ListView) rootView.findViewById(R.id.hypList);
             // put code here to append rows to the list view for each hypothesis
             // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
+            // Set appropriate category
+            if(category.equals("Sleep")) {
+                Log.d("list", "sleep category chosen : " + R.string.sleep_object_id);
+                query.whereEqualTo("categoryName", "Sleep");
+            } else if(category.equals("Focus")) {
+                Log.d("list", "focus category chosen : " + R.string.focus_object_id);
+                query.whereEqualTo("categoryName", "Focus");
+            } else if(category.equals("Nutrition")) {
+                Log.d("list", "nutrition category chosen: " + R.string.nutrition_object_id);
+                query.whereEqualTo("categoryName", "Nutrition");
+            } else {
+                Log.d("list", "no specific category chosen, all hypothesis queried");
+            }
+            query.orderByDescending("usersJoined");
+            // execute query sorted by userJoined for now
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if(e == null) {
+                        // populate list with returned hypotheses
+                        populateHypothesesList(parseObjects, rootView);
+                        Log.i("application", "Hypotheses retrieved " + parseObjects);
+                    } else {
+                        Log.d("parseError", "error retrieving hypotheses " + e.getMessage());
+                        Log.i("application", "error retrieving hypotheses " + e.getMessage());
+                    }
+                }
+            });
             return rootView;
+        }
+
+        // Given a list of parseObjects containing hypotheses populate the list fragment
+        public void populateHypothesesList(List<ParseObject> parseObjects, View rootView) {
+            // Convert list of parseobjects to array of hypothesisListItems
+            HypothesisListItem[] listData = new HypothesisListItem[parseObjects.size()];
+            for(int i = 0; i < parseObjects.size(); i++) {
+                listData[i] = new HypothesisListItem(parseObjects.get(i));
+            }
+            // Get Adapter
+            HypothesisAdapter adapter = new HypothesisAdapter(ListActivity.this , R.layout.hypothesis_row, listData);
+            ListView listView = (ListView)rootView.findViewById(R.id.hypList);
+            // set adapter to the list view
+            listView.setAdapter(adapter);
         }
     }
 

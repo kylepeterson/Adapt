@@ -45,4 +45,9 @@
     <string name="create_error_category_empty">select a category</string>
     <string name="create_error_description_empty">enter an hypothesis description</string>
 
+    <!-- Strings for parse queries -->
+    <string name="sleep_object_id">H5IoNhCT46</string>
+    <string name="focus_object_id">2M5E91TvVs</string>
+    <string name="nutrition_object_id">ub8DflPZKo</string>
+
 </resources>
