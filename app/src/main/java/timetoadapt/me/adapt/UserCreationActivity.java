@@ -16,7 +16,7 @@ public class UserCreationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_creation);
+        setContentView(R.layout.user_creation_fragment);
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_creation_screen");

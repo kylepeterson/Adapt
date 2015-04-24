@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="timetoadapt.me.adapt.MainActivity"
     android:layout_height="match_parent">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Adapt!"
+        android:text="@string/create_user_welcome"
         android:textSize="40dp"
         android:textColor="@color/accent_material_light"
         android:layout_marginTop="20dp"
         android:id="@+id/textView"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hypothesis_subscription_explanation"
+        android:textSize="30dp"
+        android:textColor="@color/accent_material_light"
+        android:layout_marginTop="20dp"
+        android:id="@+id/explanationText"
         android:layout_gravity="center_horizontal" />
 
     <Button

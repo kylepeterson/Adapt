@@ -1,13 +1,15 @@
 package timetoadapt.me.adapt;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -28,9 +30,6 @@ public class MainActivity extends Activity {
         analObject.put("action", "app_open");
         analObject.saveInBackground();
 
-        TextView welcomeText = (TextView) findViewById(R.id.welcome_text_view);
-        welcomeText.setText("Welcome " + ParseUser.getCurrentUser().getUsername() + "!");
-
         // Set up click handlers on navigation buttons
         Button browseButton = (Button) findViewById(R.id.browse);
         browseButton.setOnClickListener(new View.OnClickListener() {
@@ -48,10 +47,20 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // Navigate to the create screen activity
-                Intent createIntent = new Intent(MainActivity.this, CreateActivity.class);
+                Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
                 startActivity(createIntent);
             }
         });
+
+        // choose which fragment to inflate
+        if (ParseUser.getCurrentUser() == null) { // user not signed in
+            // user creation fragment
+            UserCreationFragment topic = new UserCreationFragment();
+            topic.setArguments(getIntent().getExtras());
+            getFragmentManager().beginTransaction().replace(R.id.subscriptions_container, topic).commit();
+        } else { // user totally signed in
+            // current subscriptions fragment
+        }
     }
 
     @Override
@@ -77,5 +86,36 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static class UserCreationFragment extends Fragment {
+
+        public UserCreationFragment() {
+
+        }
+
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                                 Bundle savedInstanceState) {
+            // Set layout to category fragment
+            View rootView = inflater.inflate(R.layout.user_creation_fragment, container, false);
+            // Grab category buttons from layout
+            final Button signinButton = (Button) rootView.findViewById(R.id.signin_button);
+            signinButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getActivity(), SignInActivity.class));
+                }
+            });
+
+            final Button signupButton = (Button) rootView.findViewById(R.id.signup_button);
+            signupButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getActivity(), SignUpActivity.class));
+                }
+            });
+
+            return rootView;
+        }
     }
 }

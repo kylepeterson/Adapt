@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by ravnon on 4/16/15.
  */
-public class CreateActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class CreateHypothesisActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
     protected static HypothesisRepo hypothesisRepo;
 
@@ -118,7 +118,7 @@ public class CreateActivity extends Activity implements AdapterView.OnItemSelect
 
         // If there is a validation error, display the error
         if (validationError) {
-            Toast.makeText(CreateActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG)
+            Toast.makeText(CreateHypothesisActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG)
                     .show();
             return;
         }

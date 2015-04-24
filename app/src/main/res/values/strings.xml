@@ -9,6 +9,8 @@
     <string name="title_activity_question_creation">Add Questions</string>
     <string name="create_user_title">Create User</string>
 
+    <string name="create_user_welcome">Welcome to Adapt!</string>
+    <string name="hypothesis_subscription_explanation">This is where your subscribed hypotheses will show up. Create a user to subscribe.</string>
     <string name="sign_in_title">Sign In</string>
     <string name="sign_up_title">Sign Up</string>
     <string name="username_explanation">Your username will be visible to others when you comment or create an hypothesis</string>
