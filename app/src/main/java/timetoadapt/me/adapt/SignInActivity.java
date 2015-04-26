@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
@@ -44,13 +43,6 @@ public class SignInActivity extends Activity {
             }
         });
 
-        TextView passwordReset = (TextView) findViewById(R.id.password_reset);
-        passwordReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     private void login() {

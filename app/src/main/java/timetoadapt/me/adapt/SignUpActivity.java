@@ -22,7 +22,6 @@ public class SignUpActivity extends Activity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private EditText passwordConfirmationEditText;
-    private EditText emailEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,6 @@ public class SignUpActivity extends Activity {
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
         passwordConfirmationEditText = (EditText) findViewById(R.id.password_confirmation_edit_text);
 
-        emailEditText = (EditText) findViewById(R.id.email_edit_text);
 
         // Set up the submit button click handler
         Button mActionButton = (Button) findViewById(R.id.sign_up_button);
@@ -53,7 +51,6 @@ public class SignUpActivity extends Activity {
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String passwordAgain = passwordConfirmationEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
 
         // Validate the sign up data
         boolean validationError = false;
@@ -79,13 +76,6 @@ public class SignUpActivity extends Activity {
             validationError = true;
             validationErrorMessage.append(getString(R.string.error_mismatched_passwords));
         }
-        if (email.isEmpty() || !email.matches(".*@.*\\..*")) {
-            if (validationError) {
-                validationErrorMessage.append(getString(R.string.error_join));
-            }
-            validationError = true;
-            validationErrorMessage.append(getString(R.string.error_email));
-        }
         validationErrorMessage.append(getString(R.string.error_end));
 
         // If there is a validation error, display the error
@@ -104,7 +94,6 @@ public class SignUpActivity extends Activity {
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
-        user.setEmail(email);
 
         // Call the Parse signup method
         user.signUpInBackground(new SignUpCallback() {

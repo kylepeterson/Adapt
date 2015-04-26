@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".CreateHypothesisActivity" >
+
+    <ScrollView
+        android:id="@+id/signup_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -50,19 +58,9 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:hint="@string/password"
+        android:hint="@string/password_confirm"
         android:layout_marginTop="15dp"
         android:id="@+id/password_confirmation_edit_text"
-        android:layout_gravity="center_horizontal" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:hint="@string/email"
-        android:layout_marginTop="30dp"
-        android:id="@+id/email_edit_text"
         android:layout_gravity="center_horizontal" />
 
     <Button
@@ -74,3 +72,5 @@
         android:id="@+id/sign_up_button"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
+    </ScrollView>
+    </merge>

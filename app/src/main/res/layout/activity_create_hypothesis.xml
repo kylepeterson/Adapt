@@ -1,63 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".CreateHypothesisActivity" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_try_this"
-        android:id="@+id/textView3" />
-
-    <EditText
+    <ScrollView
+        android:id="@+id/signup_form"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/create_try_hint"
-        android:id="@+id/try_this_text" />
+        android:layout_height="match_parent" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_to_accomplish"
-        android:id="@+id/textView4" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/create_accomplish_hint"
-        android:id="@+id/to_accomplish_text" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_try_this"
+            android:id="@+id/textView3" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_category"
-        android:id="@+id/textView5" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/create_try_hint"
+            android:id="@+id/try_this_text" />
 
-    <Spinner
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_to_accomplish"
+            android:id="@+id/textView4" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/create_accomplish_hint"
+            android:id="@+id/to_accomplish_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_category"
+            android:id="@+id/textView5" />
+
+        <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/categories_spinner"
         android:layout_gravity="right" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_description"
-        android:id="@+id/textView6" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_description"
+            android:id="@+id/textView6" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/create_description_hint"
-        android:inputType="textMultiLine"
-        android:lines="6"
-        android:gravity="top|left"
-        android:id="@+id/description_text" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/create_description_hint"
+            android:inputType="textMultiLine"
+            android:lines="6"
+            android:gravity="top|left"
+            android:id="@+id/description_text" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_next"
-        android:id="@+id/next_button"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_next"
+            android:id="@+id/next_button"
+            android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+    </ScrollView>
+</merge>

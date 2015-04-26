@@ -70,8 +70,10 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
     private void populateCategorySpinner(Spinner categorySpinner) {
         List<String> categoryTitles = new ArrayList<String>();
         categoryTitles.add("Select Category");
-        for (ParseObject categoryObject : hypothesisRepo.categoryList) {
-            categoryTitles.add(categoryObject.getString("categoryName"));
+        if (hypothesisRepo.categoryList != null) {
+            for (ParseObject categoryObject : hypothesisRepo.categoryList) {
+                categoryTitles.add(categoryObject.getString("categoryName"));
+            }
         }
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,

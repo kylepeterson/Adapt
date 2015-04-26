@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupWindow;
 
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -17,6 +18,7 @@ import com.parse.ParseUser;
 
 public class MainActivity extends Activity {
     protected AdaptApp app;
+    private ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class MainActivity extends Activity {
         analObject.put("action", "app_open");
         analObject.saveInBackground();
 
+        currentUser = ParseUser.getCurrentUser();
+
         // Set up click handlers on navigation buttons
         Button browseButton = (Button) findViewById(R.id.browse);
         browseButton.setOnClickListener(new View.OnClickListener() {
@@ -42,13 +46,35 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button createButton = (Button) findViewById(R.id.create);
+        final Button createButton = (Button) findViewById(R.id.create);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Navigate to the create screen activity
-                Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
-                startActivity(createIntent);
+                if (currentUser != null) { // user is signed in, can create hypothesis
+                    Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
+                    startActivity(createIntent);
+                } else { // not signed in
+                    LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+
+                    View popupView = layoutInflater.inflate(R.layout.user_required_popup, null);
+
+                    final PopupWindow popup = new PopupWindow(popupView, 400, 400);
+
+                    Button dismissButton = (Button) popupView.findViewById(R.id.popup_button);
+                    dismissButton.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            popup.dismiss();
+                        }
+                    });
+
+                    popup.showAsDropDown(createButton, 0, 0);
+
+
+
+                }
             }
         });
 
@@ -82,7 +108,7 @@ public class MainActivity extends Activity {
                 return true;
             case R.id.action_log_out:
                 ParseUser.logOut();
-                startActivity(new Intent(MainActivity.this, UserCreationActivity.class));
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
