@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.parse.ParseObject;
 
@@ -37,5 +38,8 @@ public class UserCreationActivity extends Activity {
                 startActivity(new Intent(UserCreationActivity.this, SignUpActivity.class));
             }
         });
+
+        ((TextView) findViewById(R.id.user_creation_title)).setText(R.string.create_user_welcome);
+        ((TextView) findViewById(R.id.user_creation_explanation_text)).setText(R.string.hypothesis_subscription_explanation);
     }
 }

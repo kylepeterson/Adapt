@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -59,14 +60,23 @@ public class MainActivity extends Activity {
 
                     View popupView = layoutInflater.inflate(R.layout.user_required_popup, null);
 
-                    final PopupWindow popup = new PopupWindow(popupView, 400, 400);
+                    final PopupWindow popup = new PopupWindow(popupView, 400, 600);
 
-                    Button dismissButton = (Button) popupView.findViewById(R.id.popup_button);
+                    TextView dismissButton = (TextView) popupView.findViewById(R.id.dismiss_button);
                     dismissButton.setOnClickListener(new View.OnClickListener() {
 
                         @Override
                         public void onClick(View v) {
                             popup.dismiss();
+                        }
+                    });
+
+                    Button registerButton = (Button) popupView.findViewById(R.id.register_button);
+                    registerButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent createIntent = new Intent(MainActivity.this, UserCreationActivity.class);
+                            startActivity(createIntent);
                         }
                     });
 
@@ -124,6 +134,7 @@ public class MainActivity extends Activity {
                                  Bundle savedInstanceState) {
             // Set layout to category fragment
             View rootView = inflater.inflate(R.layout.user_creation_fragment, container, false);
+
             // Grab category buttons from layout
             final Button signinButton = (Button) rootView.findViewById(R.id.signin_button);
             signinButton.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +151,9 @@ public class MainActivity extends Activity {
                     startActivity(new Intent(getActivity(), SignUpActivity.class));
                 }
             });
+
+            ((TextView) rootView.findViewById(R.id.user_creation_title)).setText(R.string.create_user_welcome);
+            ((TextView) rootView.findViewById(R.id.user_creation_explanation_text)).setText(R.string.hypothesis_subscription_explanation);
 
             return rootView;
         }

@@ -8,21 +8,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_user_welcome"
         android:textSize="40dp"
         android:textColor="@color/accent_material_light"
         android:layout_marginTop="20dp"
-        android:id="@+id/textView"
+        android:id="@+id/user_creation_title"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hypothesis_subscription_explanation"
         android:textSize="30dp"
         android:textColor="@color/accent_material_light"
         android:layout_marginTop="20dp"
-        android:id="@+id/explanationText"
+        android:id="@+id/user_creation_explanation_text"
         android:layout_gravity="center_horizontal" />
 
     <Button

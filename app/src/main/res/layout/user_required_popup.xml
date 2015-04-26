@@ -13,7 +13,15 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="OK"
-        android:id="@+id/popup_button"/>
+        android:text="Let's do it!"
+        android:id="@+id/register_button"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Not now maybe later"
+        android:id="@+id/dismiss_button"
+        android:background="@color/material_blue_grey_800"/>
 
 </LinearLayout>
