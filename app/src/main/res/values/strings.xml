@@ -32,7 +32,9 @@
     <string name="error_end">.</string>
     <string name="progress_login">Logging you in&#8230;</string>
     <string name="progress_signup">Signing you up&#8230;</string>
-    <string name="error_user_required">You need to be registered to create an hypothesis. Would you like to sign up now?</string>
+    <string name="user_required_dialog_message">You need to be registered to create an hypothesis. Would you like to sign up now?</string>
+    <string name="user_required_dialog_positive">Take me there!</string>
+    <string name="user_required_dialog_negative">Not right now</string>
 
     <!--Strings for the hypothesis creation screens-->
     <string name="create_try_this">Try this:</string>
@@ -41,12 +43,15 @@
     <string name="create_accomplish_hint">e.g. Increase sleep quality</string>
     <string name="create_category">Category:</string>
     <string name="create_description">Description:</string>
-    <string name="create_description_hint">e.g. Open your motherfucking window</string>
+    <string name="create_description_hint">e.g. Studies have shown that opening your window at night while you sleep increase sleep quality and duration by helping your room get to the optimal sleeping temperature which is lower than the comfortable temperature during the day.</string>
     <string name="create_next">Next</string>
     <string name="create_error_try_empty">enter a "Try this" suggestion</string>
     <string name="create_error_accomplish_empty">enter a "To accomplish" suggestion</string>
     <string name="create_error_category_empty">select a category</string>
     <string name="create_error_description_empty">enter an hypothesis description</string>
+    <string name="add_question_description">Add questions to ask subscribers to your hypothesis every time that they enter data</string>
+    <string name="add_question_button">Add a question</string>
+    <string name="create_hypothesis_complete">Done</string>
 
     <!-- Strings for parse queries -->
     <string name="sleep_object_id">H5IoNhCT46</string>

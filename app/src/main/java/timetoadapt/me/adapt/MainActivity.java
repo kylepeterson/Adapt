@@ -1,7 +1,9 @@
 package timetoadapt.me.adapt;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -59,40 +59,28 @@ public class MainActivity extends Activity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to the create screen activity
-                if (currentUser != null) { // user is signed in, can create hypothesis
-                    Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
-                    startActivity(createIntent);
-                } else { // not signed in
-                    LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            // Navigate to the create screen activity
+            if (currentUser != null) { // user is signed in, can create hypothesis
+                Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
+                startActivity(createIntent);
+            } else { // not signed in
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage(R.string.user_required_dialog_message);
 
-                    View popupView = layoutInflater.inflate(R.layout.user_required_popup, null);
+                builder.setPositiveButton(R.string.user_required_dialog_positive, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivity(new Intent(MainActivity.this, UserCreationActivity.class));
+                    }
+                });
 
-                    final PopupWindow popup = new PopupWindow(popupView, 400, 600);
+                builder.setNegativeButton(R.string.user_required_dialog_negative, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-                    TextView dismissButton = (TextView) popupView.findViewById(R.id.dismiss_button);
-                    dismissButton.setOnClickListener(new View.OnClickListener() {
+                    }
+                });
 
-                        @Override
-                        public void onClick(View v) {
-                            popup.dismiss();
-                        }
-                    });
-
-                    Button registerButton = (Button) popupView.findViewById(R.id.register_button);
-                    registerButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent createIntent = new Intent(MainActivity.this, UserCreationActivity.class);
-                            startActivity(createIntent);
-                        }
-                    });
-
-                    popup.showAsDropDown(createButton, 0, 0);
-
-
-
-                }
+                builder.create().show();
+            }
             }
         });
 
