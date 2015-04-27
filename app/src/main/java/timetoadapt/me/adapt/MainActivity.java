@@ -215,7 +215,7 @@ public class MainActivity extends Activity {
                 return rootView;
             } else {
                 TextView tv = new TextView(getActivity());
-                tv.setText("Your subscribed hypothesis will show up here. Hit Browse to find hypotheses that work for you!");
+                tv.setText("Welcome " + currentUser.getUsername() + "!\nYour subscribed hypothesis will show up here. Hit Browse to find hypotheses that work for you!");
                 tv.setTextColor(Color.parseColor("#1DAD74"));
                 tv.setTop(20);
                 tv.setTextSize(25);
