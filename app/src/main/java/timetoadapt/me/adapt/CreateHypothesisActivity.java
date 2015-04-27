@@ -2,6 +2,9 @@ package timetoadapt.me.adapt;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +18,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +53,7 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         AdaptApp instance = app.getInstance();
         hypothesisRepo = instance.hypothesisRepo;
 
-        hypothesisQuestions = new HashMap<String, List<String>>();
+        hypothesisQuestions = new HashMap<>();
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "create_hypothesis");
@@ -62,9 +67,8 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         populateCategorySpinner(categorySelector);
         categorySelector.setOnItemSelectedListener(this);
 
+        // inflate question add fragment
         questionsFragment = new QuestionsFragment();
-        //questions.setArguments(getIntent().getExtras());
-        // Inflate categories overview fragment
         getFragmentManager().beginTransaction().replace(R.id.questions_container, questionsFragment).commit();
 
         Button nextButton = (Button) findViewById(R.id.next_button);
@@ -104,7 +108,6 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         String tryText = tryThis.getText().toString().trim();
         String accomplishText = toAccomplish.getText().toString().trim();
         String descriptionText = description.getText().toString().trim();
-        String selectedCategoryText = categorySelector.getItemAtPosition(selectedCategory).toString().trim();
 
         boolean validationError = false;
         StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
@@ -138,7 +141,7 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
                 validationErrorMessage.append(" and ");
             }
             validationError = true;
-            validationErrorMessage.append("you must include at least one question");
+            validationErrorMessage.append("include at least one question");
         }
 
         validationErrorMessage.append(getString(R.string.error_end));
@@ -150,14 +153,16 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
             return;
         }
 
+        final ProgressDialog dialog = new ProgressDialog(CreateHypothesisActivity.this);
+        dialog.setMessage("Creating Hypothesis...");
+        dialog.show();
+
         ParseObject hypothesis = new ParseObject("Hypothesis");
 
         hypothesis.put("ifDescription", tryText);
         hypothesis.put("thenDescription", accomplishText);
         hypothesis.put("description", descriptionText);
-        hypothesis.put("categoryName", selectedCategoryText);
-
-        hypothesis.saveInBackground();
+        hypothesis.put("parentCategory", hypothesisRepo.categoryList.get(selectedCategory - 1)); // 0 category is not a real one (part of spinner)
 
         for (String questionText : hypothesisQuestions.keySet()) {
             List<String> options = hypothesisQuestions.get(questionText);
@@ -172,18 +177,32 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
 
             question.saveInBackground();
         }
+
+        hypothesis.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                dialog.dismiss();
+                if (e == null) {
+                    Intent intent = new Intent(CreateHypothesisActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(CreateHypothesisActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
     public void onAddQuestion(String text, List<String> options) {
-        hypothesisQuestions.put(text, options);
-
-        questionsFragment.addQuestionToDisplay(text);
+        hypothesisQuestions.put(text, options); // add to list of questions
+        questionsFragment.addQuestionToDisplay(text); // display on screen
     }
 
     public static class QuestionsFragment extends Fragment {
 
         LinearLayout questionList;
+        Button addButton;
 
         public QuestionsFragment() {
 
@@ -198,13 +217,12 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
 
             questionList = (LinearLayout) rootView.findViewById(R.id.question_list);
 
-            Button addButton = (Button) rootView.findViewById(R.id.add_question_button);
+            addButton = (Button) rootView.findViewById(R.id.add_question_button);
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    addButton.setVisibility(View.GONE);
                     AddQuestionFragment addQuestion = new AddQuestionFragment();
-                    //questions.setArguments(getIntent().getExtras());
-                    // Inflate categories overview fragment
                     getFragmentManager().beginTransaction().replace(R.id.question_container, addQuestion).commit();
 
                 }
@@ -213,12 +231,14 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
             return rootView;
         }
 
+        // adds the given text to be displayed as a question the user added
         public void addQuestionToDisplay(String text) {
             TextView tv = new TextView(getActivity());
-
             tv.setText(text);
-
+            tv.setTextSize(25);
+            tv.setTextColor(Color.parseColor("#ff0000"));
             questionList.addView(tv);
+            addButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -254,7 +274,7 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
 
             questionText = (EditText) rootView.findViewById(R.id.question_text);
 
-            optionsList = new ArrayList<EditText>();
+            optionsList = new ArrayList<>();
             optionsList.add((EditText) rootView.findViewById(R.id.option1));
             optionsList.add((EditText) rootView.findViewById(R.id.option2));
 
@@ -268,15 +288,15 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
                 public void onClick(View v) {
                     EditText temp = new EditText(getActivity());
                     temp.setHint("option " + optionCounter);
-                    optionCounter++;
-                    //temp.setLayoutParams(new AbsoluteLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT));
                     optionsList.add(temp);
 
                     questionList.addView(temp);
+
+                    optionCounter++;
                 }
             });
 
-            ((Button) rootView.findViewById(R.id.complete_question_button)).setOnClickListener(new View.OnClickListener() {
+            (rootView.findViewById(R.id.complete_question_button)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     addQuestion();
@@ -289,7 +309,7 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         public void addQuestion() {
             String text = questionText.getText().toString().trim();
 
-            List<String> options = new ArrayList<String>();
+            List<String> options = new ArrayList<>();
             for (EditText et : optionsList) {
                 options.add(et.getText().toString().trim());
             }
@@ -298,7 +318,6 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
 
             getActivity().getFragmentManager().beginTransaction().remove(this).commit();
         }
-
     }
 }
 
