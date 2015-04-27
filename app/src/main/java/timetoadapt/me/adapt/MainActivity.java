@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -27,7 +29,7 @@ import java.util.List;
 
 public class MainActivity extends Activity {
     protected AdaptApp app;
-    private ParseUser currentUser;
+    private static ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class MainActivity extends Activity {
 
                 builder.setNegativeButton(R.string.user_required_dialog_negative, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        // negative click does nothing, just dismisses dialog
                     }
                 });
 
@@ -158,7 +160,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public  class HypothesisListFragment extends Fragment {
+    public static class HypothesisListFragment extends Fragment {
 
         public HypothesisListFragment() {
 
@@ -166,47 +168,59 @@ public class MainActivity extends Activity {
 
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
-            ListView list = (ListView) rootView.findViewById(R.id.hypList);
-            // put code here to append rows to the list view for each hypothesis
-            // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+            // find all the hypotheses the user subscribed to.
             List<String> joinedIds = currentUser.getList("joined");
-            String userName = currentUser.getUsername();
-            String email = currentUser.getEmail();
-            Log.d("joined", "user: " + userName + ", email: " + email + " ... joined hypotheses: " + joinedIds);
 
-            final List<ParseObject> hypothesesParseObjects = new ArrayList<ParseObject>();
-            List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
-            for (String id : joinedIds) {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
-                query.whereMatches("objectId", id);
-                queries.add(query);
-            }
-            // Get all hypotheses the user is signed up for
-            ParseQuery<ParseObject> mainQuery = ParseQuery.or(queries);
+            // if the user has some subscriptions, display them. Otherwise, prompt user to subscribe
+            if (joinedIds != null) {
+                final View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
+                ListView list = (ListView) rootView.findViewById(R.id.hypList);
+                // put code here to append rows to the list view for each hypothesis
+                // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+                String userName = currentUser.getUsername();
+                String email = currentUser.getEmail();
+                Log.d("joined", "user: " + userName + ", email: " + email + " ... joined hypotheses: " + joinedIds);
 
-            mainQuery.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> parseObjects, ParseException e) {
-                    if (e == null) {
-                        HypothesisListItem[] listData = new HypothesisListItem[parseObjects.size()];
-                        for (int i = 0; i < parseObjects.size(); i++) {
-                            // add returned hypotheses to the array of list items
-                            listData[i] = new HypothesisListItem(parseObjects.get(i));
-                        }
-                        // Adapter to create listView rows
-                        HypothesisAdapter adapter = new HypothesisAdapter(MainActivity.this, R.layout.hypothesis_row, listData);
-                        ListView listView = (ListView) rootView.findViewById(R.id.hypList);
-                        // set adapter to the list view
-                        listView.setAdapter(adapter);
-                        Log.i("userHypotheses", "user hypotheses retrieved" + parseObjects);
-                    } else {
-                        Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
-                        Log.i("application", "error retrieving hypothesis " + e.getMessage());
-                    }
+                final List<ParseObject> hypothesesParseObjects = new ArrayList<ParseObject>();
+                List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+                for (String id : joinedIds) {
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
+                    query.whereMatches("objectId", id);
+                    queries.add(query);
                 }
-            });
-            return rootView;
+                // Get all hypotheses the user is signed up for
+                ParseQuery<ParseObject> mainQuery = ParseQuery.or(queries);
+
+                mainQuery.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
+                        if (e == null) {
+                            HypothesisListItem[] listData = new HypothesisListItem[parseObjects.size()];
+                            for (int i = 0; i < parseObjects.size(); i++) {
+                                // add returned hypotheses to the array of list items
+                                listData[i] = new HypothesisListItem(parseObjects.get(i));
+                            }
+                            // Adapter to create listView rows
+                            HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
+                            ListView listView = (ListView) rootView.findViewById(R.id.hypList);
+                            // set adapter to the list view
+                            listView.setAdapter(adapter);
+                            Log.i("userHypotheses", "user hypotheses retrieved" + parseObjects);
+                        } else {
+                            Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
+                            Log.i("application", "error retrieving hypothesis " + e.getMessage());
+                        }
+                    }
+                });
+                return rootView;
+            } else {
+                TextView tv = new TextView(getActivity());
+                tv.setText("Your subscribed hypothesis will show up here. Hit Browse to find hypotheses that work for you!");
+                tv.setTextColor(Color.parseColor("#1DAD74"));
+                tv.setTop(20);
+                tv.setTextSize(25);
+                return tv;
+            }
         }
     }
 }
