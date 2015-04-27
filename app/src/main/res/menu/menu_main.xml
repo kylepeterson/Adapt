@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_search"
         android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-        adapt:showAsAction="always"
+        adapt:showAsAction="ifRoom"
         android:title="Search"
         android:orderInCategory="1"/>
 
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" adapt:showAsAction="never" />
+        android:orderInCategory="100" adapt:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_log_out" android:title="@string/action_log_out"
         android:orderInCategory="100" adapt:showAsAction="never" />
