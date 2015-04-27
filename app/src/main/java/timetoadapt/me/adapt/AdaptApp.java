@@ -25,7 +25,7 @@ public class AdaptApp extends Application {
         super.onCreate();
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d", "hb1CHroSizquv9pEjtB8Hkke1IswmgQ6T1nHKX5w");
+        Parse.initialize(this, getResources().getString(R.string.parse_application_id), getResources().getString(R.string.parse_client_key));
         HypothesisRepo repo = createHypothesisRepo();
         initInstance(repo);
         context = getApplicationContext();
