@@ -4,17 +4,25 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
@@ -96,6 +104,9 @@ public class MainActivity extends Activity {
             getFragmentManager().beginTransaction().replace(R.id.subscriptions_container, topic).commit();
         } else { // user totally signed in
             // current subscriptions fragment
+            HypothesisListFragment list = new HypothesisListFragment();
+            list.setArguments(getIntent().getExtras());
+            getFragmentManager().beginTransaction().replace(R.id.subscriptions_container, list).commit();
         }
     }
 
@@ -155,6 +166,58 @@ public class MainActivity extends Activity {
             ((TextView) rootView.findViewById(R.id.user_creation_title)).setText(R.string.create_user_welcome);
             ((TextView) rootView.findViewById(R.id.user_creation_explanation_text)).setText(R.string.hypothesis_subscription_explanation);
 
+            return rootView;
+        }
+    }
+
+    public  class HypothesisListFragment extends Fragment {
+
+        public HypothesisListFragment() {
+
+        }
+
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                                 Bundle savedInstanceState) {
+            final View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
+            ListView list = (ListView) rootView.findViewById(R.id.hypList);
+            // put code here to append rows to the list view for each hypothesis
+            // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+            List<String> joinedIds = currentUser.getList("joined");
+            String userName = currentUser.getUsername();
+            String email = currentUser.getEmail();
+            Log.d("joined", "user: " + userName + ", email: " + email + " ... joined hypotheses: " + joinedIds);
+
+            final List<ParseObject> hypothesesParseObjects = new ArrayList<ParseObject>();
+            List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+            for (String id : joinedIds) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
+                query.whereMatches("objectId", id);
+                queries.add(query);
+            }
+            // Get all hypotheses the user is signed up for
+            ParseQuery<ParseObject> mainQuery = ParseQuery.or(queries);
+
+            mainQuery.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        HypothesisListItem[] listData = new HypothesisListItem[parseObjects.size()];
+                        for (int i = 0; i < parseObjects.size(); i++) {
+                            // add returned hypotheses to the array of list items
+                            listData[i] = new HypothesisListItem(parseObjects.get(i));
+                        }
+                        // Adapter to create listView rows
+                        HypothesisAdapter adapter = new HypothesisAdapter(MainActivity.this, R.layout.hypothesis_row, listData);
+                        ListView listView = (ListView) rootView.findViewById(R.id.hypList);
+                        // set adapter to the list view
+                        listView.setAdapter(adapter);
+                        Log.i("userHypotheses", "user hypotheses retrieved" + parseObjects);
+                    } else {
+                        Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
+                        Log.i("application", "error retrieving hypothesis " + e.getMessage());
+                    }
+                }
+            });
             return rootView;
         }
     }

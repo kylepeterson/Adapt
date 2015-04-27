@@ -134,19 +134,26 @@ public class ListActivity extends Activity {
             // Set appropriate category
             if(category.equals("Sleep")) {
                 Log.d("list", "sleep category chosen : " + R.string.sleep_object_id);
-                query.whereEqualTo("categoryName", "Sleep");
+                //query.whereEqualTo("categoryName", "Sleep");
+                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.sleep_object_id));
+                query.whereEqualTo("parentCategory", obj);
+
             } else if(category.equals("Focus")) {
                 Log.d("list", "focus category chosen : " + R.string.focus_object_id);
-                query.whereEqualTo("categoryName", "Focus");
+                //query.whereEqualTo("categoryName", "Focus");
+                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.focus_object_id ));
+                query.whereEqualTo("parentCategory", obj);
             } else if(category.equals("Nutrition")) {
                 Log.d("list", "nutrition category chosen: " + R.string.nutrition_object_id);
-                query.whereEqualTo("categoryName", "Nutrition");
+                //query.whereEqualTo("categoryName", "Nutrition");
+                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.nutrition_object_id));
+                query.whereEqualTo("parentCategory", obj);
             } else {
                 Log.d("list", "no specific category chosen, all hypothesis queried");
             }
             query.orderByDescending("usersJoined");
             // execute query sorted by userJoined for now
-            query.findInBackground(new FindCallback<ParseObject>() {
+            query.findInBackground( new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     if(e == null) {
