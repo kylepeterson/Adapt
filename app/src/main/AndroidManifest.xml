@@ -47,13 +47,6 @@
             android:label="@string/sign_up_title">
         </activity>
 
-        <activity
-            android:name=".DispatchActivity"
-            android:noHistory="true"
-            >
-
-        </activity>
-
     </application>
 
 </manifest>

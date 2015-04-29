@@ -40,8 +40,10 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
     private int selectedCategory;
     private EditText description;
 
+    // fragment that allows user to add self report questions for hypothesis
     private QuestionsFragment questionsFragment;
 
+    // stores user entered questions and the possible answers for each
     private Map<String, List<String>> hypothesisQuestions;
 
     @Override
@@ -79,6 +81,7 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         });
     }
 
+    // stores the selected hypothesis from the spinner in a field
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         selectedCategory = pos;
     }
@@ -88,9 +91,11 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         // TODO Auto-generated method stub
     }
 
+    // adds the possible hypothesis categories to the spinner from the hypothesisrepo
     private void populateCategorySpinner(Spinner categorySpinner) {
+        // create list of all categories
         List<String> categoryTitles = new ArrayList<String>();
-        categoryTitles.add("Select Category");
+        categoryTitles.add("Select Category"); // hint to user
         if (hypothesisRepo.categoryList != null) {
             for (ParseObject categoryObject : hypothesisRepo.categoryList) {
                 categoryTitles.add(categoryObject.getString("categoryName"));
@@ -104,6 +109,8 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         categorySpinner.setSelection(0); // prompt is shown by default
     }
 
+    // get user information from all fields and attempts to create a full hypothesis
+    // alerts the user if something is missing/wrong from one of the fields
     private void startHypothesisCreation() {
         String tryText = tryThis.getText().toString().trim();
         String accomplishText = toAccomplish.getText().toString().trim();
@@ -162,8 +169,10 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         hypothesis.put("ifDescription", tryText);
         hypothesis.put("thenDescription", accomplishText);
         hypothesis.put("description", descriptionText);
-        hypothesis.put("parentCategory", hypothesisRepo.categoryList.get(selectedCategory - 1)); // 0 category is not a real one (part of spinner)
+        // 0 category is not a real one (part of spinner)
+        hypothesis.put("parentCategory", hypothesisRepo.categoryList.get(selectedCategory - 1));
 
+        // submit each user entered question to database
         for (String questionText : hypothesisQuestions.keySet()) {
             List<String> options = hypothesisQuestions.get(questionText);
 
@@ -178,35 +187,39 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
             question.saveInBackground();
         }
 
+        // save the actual hypothesis.
+        // we do this last in order to let the spinner dialog spin until the last thing is complete
         hypothesis.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                dialog.dismiss();
-                if (e == null) {
-                    Intent intent = new Intent(CreateHypothesisActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(CreateHypothesisActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
+            dialog.dismiss();
+            if (e == null) {
+                Intent intent = new Intent(CreateHypothesisActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } else {
+                Toast.makeText(CreateHypothesisActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
             }
         });
     }
 
+
     @Override
+    // interface for child fragments to report a question has been added by the user
+    // assumes the text and options have been checked for validity
     public void onAddQuestion(String text, List<String> options) {
         hypothesisQuestions.put(text, options); // add to list of questions
         questionsFragment.addQuestionToDisplay(text); // display on screen
     }
 
+    // The questions fragment maintains a space for the user to add questions
+    // to each hypothesis and to see and control what previous questions have
+    // been added.
     public static class QuestionsFragment extends Fragment {
 
-        LinearLayout questionList;
-        Button addButton;
-
-        public QuestionsFragment() {
-
-        }
+        private LinearLayout questionList; // where entered questions are shown
+        private Button addButton; // click to add a question
 
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -242,18 +255,18 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         }
     }
 
+    // The add question fragment allows the user to create one question and
+    // all of its corresponding answers to an hypothesis. It then communicates
+    // to the parent activity (which must implement the OnAddQuestionListener interface)
+    // that the user has added a question
     public static class AddQuestionFragment extends Fragment {
 
-        OnAddQuestionListener mListener;
+        private OnAddQuestionListener mListener;
 
-        EditText questionText;
-        List<EditText> optionsList;
-        LinearLayout questionList;
-        int optionCounter = 3;
-
-        public AddQuestionFragment() {
-
-        }
+        private EditText questionText;
+        private List<EditText> optionsList;
+        private LinearLayout questionList;
+        private int optionCounter = 3;
 
         @Override
         public void onAttach(Activity activity) {
