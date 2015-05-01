@@ -41,6 +41,7 @@
     <string name="create_try_hint">e.g. Open your window at night</string>
     <string name="create_to_accomplish">To accomplish:</string>
     <string name="create_accomplish_hint">e.g. Increase sleep quality</string>
+    <string name="create_preview_explanation">This is what your hypothesis will look like to others:</string>
     <string name="create_category">Category:</string>
     <string name="create_description">Description:</string>
     <string name="create_description_hint">e.g. Studies have shown that opening your window at night while you sleep increase sleep quality and duration by helping your room get to the optimal sleeping temperature which is lower than the comfortable temperature during the day.</string>

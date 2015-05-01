@@ -42,6 +42,20 @@
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/create_preview_explanation"
+            android:id="@+id/hypothesis_preview_explanation" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="timetoadapt.me.adapt.CreateHypothesisActivity"
+            android:id="@+id/hypothesis_preview"/>
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/create_category"
             android:id="@+id/textView5" />
 

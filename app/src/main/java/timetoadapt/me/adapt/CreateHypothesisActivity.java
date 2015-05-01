@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +70,45 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         categorySelector = (Spinner) findViewById(R.id.categories_spinner);
         populateCategorySpinner(categorySelector);
         categorySelector.setOnItemSelectedListener(this);
+
+        // inflate hypothesis preview layout
+        LinearLayout previewLayout = (LinearLayout) findViewById(R.id.hypothesis_preview);
+        View hypothesisPreview = getLayoutInflater().inflate(R.layout.hypothesis_row, previewLayout, false);
+        final TextView hypothesisTryText = (TextView) hypothesisPreview.findViewById(R.id.tryThis);
+        final TextView hypothesisGoalText = (TextView) hypothesisPreview.findViewById(R.id.goal);
+        previewLayout.addView(hypothesisPreview);
+
+        tryThis.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                hypothesisTryText.setText(tryThis.getText().toString().trim());
+            }
+        });
+
+        toAccomplish.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                hypothesisGoalText.setText(toAccomplish.getText().toString().trim());
+            }
+        });
 
         // inflate question add fragment
         questionsFragment = new QuestionsFragment();
@@ -320,14 +361,43 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         }
 
         public void addQuestion() {
-            String text = questionText.getText().toString().trim();
+            String questionString = questionText.getText().toString().trim();
 
+            int enteredQuestionsCount = 0;
             List<String> options = new ArrayList<>();
             for (EditText et : optionsList) {
-                options.add(et.getText().toString().trim());
+                String optionText = et.getText().toString().trim();
+                if (!optionText.isEmpty()) {
+                    enteredQuestionsCount++;
+                    options.add(optionText);
+                }
             }
 
-            mListener.onAddQuestion(text, options);
+            boolean validationError = false;
+            StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
+
+            if (questionString.isEmpty()) {
+                validationError = true;
+                validationErrorMessage.append("enter a question text");
+            }
+            if (enteredQuestionsCount < 2) {
+                if (validationError) {
+                    validationErrorMessage.append(" and ");
+                }
+                validationError = true;
+                validationErrorMessage.append("enter at least 2 options");
+            }
+
+            validationErrorMessage.append(getString(R.string.error_end));
+
+            // If there is a validation error, display the error
+            if (validationError) {
+                Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG)
+                        .show();
+                return;
+            }
+
+            mListener.onAddQuestion(questionString, options);
 
             getActivity().getFragmentManager().beginTransaction().remove(this).commit();
         }
