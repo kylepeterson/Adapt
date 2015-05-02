@@ -1,86 +1,15 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".CreateHypothesisActivity" >
-
+    tools:context=".CreateHypothesisActivity">
     <ScrollView
         android:id="@+id/signup_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-            >
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_try_this"
-            android:id="@+id/textView3" />
-
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/create_try_hint"
-            android:id="@+id/try_this_text" />
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_to_accomplish"
-            android:id="@+id/textView4" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/create_accomplish_hint"
-            android:id="@+id/to_accomplish_text" />
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_category"
-            android:id="@+id/textView5" />
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/categories_spinner"
-            android:layout_gravity="right" />
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_description"
-            android:id="@+id/textView6" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/create_description_hint"
-            android:inputType="textMultiLine"
-            android:lines="6"
-            android:gravity="top|left"
-            android:id="@+id/description_text" />
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context="timetoadapt.me.adapt.CreateHypothesisActivity"
-            android:id="@+id/questions_container"/>
-
-        <Button
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_hypothesis_complete"
-            android:id="@+id/next_button"
-            android:layout_gravity="center_horizontal" />
+            android:id="@+id/creation_container">
 
         </LinearLayout>
     </ScrollView>
