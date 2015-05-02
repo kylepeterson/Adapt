@@ -1,12 +1,15 @@
 package timetoadapt.me.adapt;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.parse.ParseObject;
 
 /**
  * Created by kylepeterson on 4/24/15.
  * This is the object used to populate the hypothesis list page
  */
-public class HypothesisListItem {
+public class HypothesisListItem implements Parcelable {
     public String tryThis;
     public String toAccomplish;
     public int usersJoined;
@@ -31,4 +34,34 @@ public class HypothesisListItem {
         this.rating = parseObject.getDouble("rating");
     }
 
+    public HypothesisListItem(Parcel in) {
+        this.tryThis = in.readString();
+        this.toAccomplish = in.readString();
+        this.usersJoined = in.readInt();
+        this.rating = in.readDouble();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(tryThis);
+        dest.writeString(toAccomplish);
+        dest.writeInt(usersJoined);
+        dest.writeDouble(rating);
+    }
+
+    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
+    public static final Parcelable.Creator<HypothesisListItem> CREATOR = new Parcelable.Creator<HypothesisListItem>() {
+        public HypothesisListItem createFromParcel(Parcel in) {
+            return new HypothesisListItem(in);
+        }
+
+        public HypothesisListItem[] newArray(int size) {
+            return new HypothesisListItem[size];
+        }
+    };
 }

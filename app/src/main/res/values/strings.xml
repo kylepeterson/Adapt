@@ -8,6 +8,7 @@
     <string name="title_activity_create">Create Hypothesis</string>
     <string name="title_activity_question_creation">Add Questions</string>
     <string name="create_user_title">Create User</string>
+    <string name="hypothesis_profile_title">Hypothesis</string>
 
     <!--Strings for managing user creation and account log in-->
     <string name="create_user_welcome">Welcome to Adapt!</string>
@@ -41,6 +42,7 @@
     <string name="create_try_hint">e.g. Open your window at night</string>
     <string name="create_to_accomplish">To accomplish:</string>
     <string name="create_accomplish_hint">e.g. Increase sleep quality</string>
+    <string name="create_preview_explanation">This is what your hypothesis will look like to others:</string>
     <string name="create_category">Category:</string>
     <string name="create_description">Description:</string>
     <string name="create_description_hint">e.g. Studies have shown that opening your window at night while you sleep increase sleep quality and duration by helping your room get to the optimal sleeping temperature which is lower than the comfortable temperature during the day.</string>
@@ -57,5 +59,8 @@
     <string name="sleep_object_id">H5IoNhCT46</string>
     <string name="focus_object_id">2M5E91TvVs</string>
     <string name="nutrition_object_id">ub8DflPZKo</string>
+    
+    <!-- Strings in the hypothesis profile page -->
+    <string name="hypothesis_join_text">Join</string>
 
 </resources>

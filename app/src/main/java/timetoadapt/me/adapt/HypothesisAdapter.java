@@ -57,6 +57,10 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
         return row;
     }
 
+    public HypothesisListItem getItemAtPosition(int position) {
+        return data[position];
+    }
+
     // Holder used so that we dont have to call by findViewById for every new row
     static class HypothesisHolder {
         TextView tryThisView;

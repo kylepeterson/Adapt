@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +67,7 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         arguments.putSerializable("hypothesisQuestions", hypothesisQuestions);
         overviewFragment.setArguments(arguments);
         getFragmentManager().beginTransaction().replace(R.id.creation_container, overviewFragment).commit();
+
     }
 
     // stores the selected hypothesis from the spinner in a field
@@ -292,14 +295,43 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         }
 
         public void addQuestion() {
-            String text = questionText.getText().toString().trim();
+            String questionString = questionText.getText().toString().trim();
 
+            int enteredQuestionsCount = 0;
             List<String> options = new ArrayList<>();
             for (EditText et : optionsList) {
-                options.add(et.getText().toString().trim());
+                String optionText = et.getText().toString().trim();
+                if (!optionText.isEmpty()) {
+                    enteredQuestionsCount++;
+                    options.add(optionText);
+                }
             }
 
-            mListener.onAddQuestion(text, options);
+            boolean validationError = false;
+            StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
+
+            if (questionString.isEmpty()) {
+                validationError = true;
+                validationErrorMessage.append("enter a question text");
+            }
+            if (enteredQuestionsCount < 2) {
+                if (validationError) {
+                    validationErrorMessage.append(" and ");
+                }
+                validationError = true;
+                validationErrorMessage.append("enter at least 2 options");
+            }
+
+            validationErrorMessage.append(getString(R.string.error_end));
+
+            // If there is a validation error, display the error
+            if (validationError) {
+                Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG)
+                        .show();
+                return;
+            }
+
+            mListener.onAddQuestion(questionString, options);
 
             getActivity().getFragmentManager().beginTransaction().remove(this).commit();
         }
