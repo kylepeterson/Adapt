@@ -2,6 +2,7 @@ package timetoadapt.me.adapt;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -177,10 +179,21 @@ public class ListActivity extends Activity {
                 listData[i] = new HypothesisListItem(parseObjects.get(i));
             }
             // Get Adapter
-            HypothesisAdapter adapter = new HypothesisAdapter(ListActivity.this , R.layout.hypothesis_row, listData);
+            final HypothesisAdapter adapter = new HypothesisAdapter(ListActivity.this , R.layout.hypothesis_row, listData);
             ListView listView = (ListView)rootView.findViewById(R.id.hypList);
+
             // set adapter to the list view
             listView.setAdapter(adapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent profilePage = new Intent(ListActivity.this, HypothesisProfileActivity.class);
+                    // Add any extras here for data that needs to be passed to the ListActivity
+                    profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
+                    startActivity(profilePage);
+                }
+            });
         }
     }
 
