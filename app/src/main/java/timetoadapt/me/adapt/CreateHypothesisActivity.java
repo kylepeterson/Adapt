@@ -31,12 +31,7 @@ import java.util.List;
 /**
  * Created by ravnon on 4/16/15.
  */
-public class CreateHypothesisActivity extends Activity implements AdapterView.OnItemSelectedListener, OnAddQuestionListener {
-    private EditText tryThis;
-    private EditText toAccomplish;
-    private Spinner categorySelector;
-    private int selectedCategory;
-    private EditText description;
+public class CreateHypothesisActivity extends Activity implements OnAddQuestionListener {
     protected static HypothesisRepo hypothesisRepo;
 
 
@@ -45,6 +40,11 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
 
     // stores user entered questions and the possible answers for each
     private HashMap<String, List<String>> hypothesisQuestions;
+
+    private String tryThis;
+    private String toAccomplish;
+    private String description;
+    private ParseObject category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,21 +63,8 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
 
         // inflate question fragment
         QuestionOverviewFragment overviewFragment = new QuestionOverviewFragment();
-        Bundle arguments = new Bundle();
-        arguments.putSerializable("hypothesisQuestions", hypothesisQuestions);
-        overviewFragment.setArguments(arguments);
         getFragmentManager().beginTransaction().replace(R.id.creation_container, overviewFragment).commit();
 
-    }
-
-    // stores the selected hypothesis from the spinner in a field
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        selectedCategory = pos;
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -88,47 +75,23 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         questionsFragment.addQuestionToDisplay(text); // display on screen
     }
 
+    @Override
+    public void startQuestionCreation(String tryThis, String toAccomplish, String description, ParseObject category) {
+        this.tryThis = tryThis;
+        this.toAccomplish = toAccomplish;
+        this.description = description;
+        this.category = category;
 
+        questionsFragment = new QuestionsFragment();
+        getFragmentManager().beginTransaction().replace(R.id.creation_container, questionsFragment).commit();
+    }
 
-
-    // get user information from all fields and attempts to create a full hypothesis
-    // alerts the user if something is missing/wrong from one of the fields
-    private void startHypothesisCreation() {
-        String tryText = tryThis.getText().toString().trim();
-        String accomplishText = toAccomplish.getText().toString().trim();
-        String descriptionText = description.getText().toString().trim();
-
+    @Override
+    public void finishQuestionCreation() {
         boolean validationError = false;
         StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
-        if (tryText.isEmpty()) {
-            validationError = true;
-            validationErrorMessage.append(getString(R.string.create_error_try_empty));
-        }
-        if (accomplishText.isEmpty()) {
-            if (validationError) {
-                validationErrorMessage.append(" and ");
-            }
-            validationError = true;
-            validationErrorMessage.append(getString(R.string.create_error_accomplish_empty));
-        }
-        if (selectedCategory == 0) {
-            if (validationError) {
-                validationErrorMessage.append(" and ");
-            }
-            validationError = true;
-            validationErrorMessage.append(getString(R.string.create_error_category_empty));
-        }
-        if (descriptionText.isEmpty()) {
-            if (validationError) {
-                validationErrorMessage.append(" and ");
-            }
-            validationError = true;
-            validationErrorMessage.append(getString(R.string.create_error_description_empty));
-        }
+
         if (hypothesisQuestions.isEmpty()) {
-            if (validationError) {
-                validationErrorMessage.append(" and ");
-            }
             validationError = true;
             validationErrorMessage.append("include at least one question");
         }
@@ -148,11 +111,11 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
 
         ParseObject hypothesis = new ParseObject("Hypothesis");
 
-        hypothesis.put("ifDescription", tryText);
-        hypothesis.put("thenDescription", accomplishText);
-        hypothesis.put("description", descriptionText);
+        hypothesis.put("ifDescription", this.tryThis);
+        hypothesis.put("thenDescription",this.toAccomplish);
+        hypothesis.put("description", this.description);
         // 0 category is not a real one (part of spinner)
-        hypothesis.put("parentCategory", hypothesisRepo.categoryList.get(selectedCategory - 1));
+        hypothesis.put("parentCategory", this.category);
 
         // submit each user entered question to database
         for (String questionText : hypothesisQuestions.keySet()) {
@@ -174,27 +137,198 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
         hypothesis.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-            dialog.dismiss();
-            if (e == null) {
-                Intent intent = new Intent(CreateHypothesisActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } else {
-                Toast.makeText(CreateHypothesisActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+                dialog.dismiss();
+                if (e == null) {
+                    Intent intent = new Intent(CreateHypothesisActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(CreateHypothesisActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 
+    public static class QuestionOverviewFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+        private EditText tryThis;
+        private EditText toAccomplish;
+        private Spinner categorySelector;
+        private int selectedCategory;
+        private EditText description;
+        // stores user entered questions and the possible answers for each
 
+        OnAddQuestionListener mListener;
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            try {
+                mListener = (OnAddQuestionListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+            }
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.question_overview_fragment, container, false);
+
+            tryThis = (EditText) rootView.findViewById(R.id.try_this_text);
+            toAccomplish = (EditText) rootView.findViewById(R.id.to_accomplish_text);
+            description = (EditText) rootView.findViewById(R.id.description_text);
+
+            categorySelector = (Spinner) rootView.findViewById(R.id.categories_spinner);
+            populateCategorySpinner(categorySelector);
+            categorySelector.setOnItemSelectedListener(this);
+
+            // inflate hypothesis preview layout
+            LinearLayout previewLayout = (LinearLayout) rootView.findViewById(R.id.hypothesis_preview);
+            View hypothesisPreview = getActivity().getLayoutInflater().inflate(R.layout.hypothesis_row, previewLayout, false);
+            final TextView hypothesisTryText = (TextView) hypothesisPreview.findViewById(R.id.tryThis);
+            final TextView hypothesisGoalText = (TextView) hypothesisPreview.findViewById(R.id.goal);
+            previewLayout.addView(hypothesisPreview);
+
+            tryThis.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    hypothesisTryText.setText(tryThis.getText().toString().trim());
+                }
+            });
+
+            toAccomplish.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    hypothesisGoalText.setText(toAccomplish.getText().toString().trim());
+                }
+            });
+
+            Button nextButton = (Button) rootView.findViewById(R.id.next_button);
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    startQuestionCreation();
+                }
+            });
+            return rootView;
+        }
+
+        // adds the possible hypothesis categories to the spinner from the hypothesisrepo
+        private void populateCategorySpinner(Spinner categorySpinner) {
+            // create list of all categories
+            List<String> categoryTitles = new ArrayList<String>();
+            categoryTitles.add("Select Category"); // hint to user
+            if (hypothesisRepo.categoryList != null) {
+                for (ParseObject categoryObject : hypothesisRepo.categoryList) {
+                    categoryTitles.add(categoryObject.getString("categoryName"));
+                }
+            }
+
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_spinner_item, categoryTitles);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            categorySpinner.setAdapter(dataAdapter);
+            categorySpinner.setSelection(0); // prompt is shown by default
+        }
+
+        // stores the selected hypothesis from the spinner in a field
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            selectedCategory = pos;
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+            // TODO Auto-generated method stub
+        }
+
+        private void startQuestionCreation() {
+            String tryText = tryThis.getText().toString().trim();
+            String accomplishText = toAccomplish.getText().toString().trim();
+            String descriptionText = description.getText().toString().trim();
+
+            boolean validationError = false;
+            StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
+            if (tryText.isEmpty()) {
+                validationError = true;
+                validationErrorMessage.append(getString(R.string.create_error_try_empty));
+            }
+            if (accomplishText.isEmpty()) {
+                if (validationError) {
+                    validationErrorMessage.append(" and ");
+                }
+                validationError = true;
+                validationErrorMessage.append(getString(R.string.create_error_accomplish_empty));
+            }
+            if (selectedCategory == 0) {
+                if (validationError) {
+                    validationErrorMessage.append(" and ");
+                }
+                validationError = true;
+                validationErrorMessage.append(getString(R.string.create_error_category_empty));
+            }
+            if (descriptionText.isEmpty()) {
+                if (validationError) {
+                    validationErrorMessage.append(" and ");
+                }
+                validationError = true;
+                validationErrorMessage.append(getString(R.string.create_error_description_empty));
+            }
+
+            // If there is a validation error, display the error
+            if (validationError) {
+                validationErrorMessage.append(getString(R.string.error_end));
+                Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG)
+                        .show();
+                return;
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("ifDescription", tryText);
+            bundle.putString("thenDescription", accomplishText);
+            bundle.putString("description", descriptionText);
+            bundle.putString("parentCategory", hypothesisRepo.categoryList.get(selectedCategory - 1).getObjectId());
+
+            mListener.startQuestionCreation(tryText, accomplishText, descriptionText,hypothesisRepo.categoryList.get(selectedCategory - 1));
+        }
+    }
 
     // The questions fragment maintains a space for the user to add questions
     // to each hypothesis and to see and control what previous questions have
     // been added.
     public static class QuestionsFragment extends Fragment {
 
+        private OnAddQuestionListener mListener;
+
         private LinearLayout questionList; // where entered questions are shown
         private Button addButton; // click to add a question
+        private Button doneButton; // click to submit a question
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            try {
+                mListener = (OnAddQuestionListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+            }
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -216,6 +350,14 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
                 }
             });
 
+            doneButton = (Button)  rootView.findViewById(R.id.done_creating_button);
+            doneButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finishQuestionCreation();
+                }
+            });
+
             return rootView;
         }
 
@@ -227,6 +369,10 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
             tv.setTextColor(Color.parseColor("#ff0000"));
             questionList.addView(tv);
             addButton.setVisibility(View.VISIBLE);
+        }
+
+        public void finishQuestionCreation() {
+            mListener.finishQuestionCreation();
         }
     }
 
@@ -334,182 +480,6 @@ public class CreateHypothesisActivity extends Activity implements AdapterView.On
             mListener.onAddQuestion(questionString, options);
 
             getActivity().getFragmentManager().beginTransaction().remove(this).commit();
-        }
-    }
-
-    public static class QuestionOverviewFragment extends Fragment implements AdapterView.OnItemSelectedListener, OnAddQuestionListener {
-        private EditText tryThis;
-        private EditText toAccomplish;
-        private Spinner categorySelector;
-        private int selectedCategory;
-        private EditText description;
-        private QuestionsFragment questionsFragment;
-        // stores user entered questions and the possible answers for each
-        private HashMap<String, List<String>> hypothesisQuestions;
-
-        public QuestionOverviewFragment() {
-
-        }
-
-        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.question_overview_fragment, container, false);
-            tryThis = (EditText) rootView.findViewById(R.id.try_this_text);
-            toAccomplish = (EditText) rootView.findViewById(R.id.to_accomplish_text);
-            description = (EditText) rootView.findViewById(R.id.description_text);
-
-            Bundle args = getArguments();
-            hypothesisQuestions = (HashMap<String, List<String>>) args.getSerializable("hypothesisQuestions");
-            categorySelector = (Spinner) rootView.findViewById(R.id.categories_spinner);
-            populateCategorySpinner(categorySelector);
-            categorySelector.setOnItemSelectedListener(this);
-
-            // inflate question add fragment
-            Button addQuestion = (Button) rootView.findViewById(R.id.add_question_button_1);
-            addQuestion.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    questionsFragment = new QuestionsFragment();
-                    getFragmentManager().beginTransaction().replace(R.id.creation_container, questionsFragment).commit();
-                }
-            });
-
-            Button nextButton = (Button) rootView.findViewById(R.id.next_button);
-            nextButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    startHypothesisCreation();
-                }
-            });
-            return rootView;
-        }
-
-        // adds the possible hypothesis categories to the spinner from the hypothesisrepo
-        private void populateCategorySpinner(Spinner categorySpinner) {
-            // create list of all categories
-            List<String> categoryTitles = new ArrayList<String>();
-            categoryTitles.add("Select Category"); // hint to user
-            if (hypothesisRepo.categoryList != null) {
-                for (ParseObject categoryObject : hypothesisRepo.categoryList) {
-                    categoryTitles.add(categoryObject.getString("categoryName"));
-                }
-            }
-
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_spinner_item, categoryTitles);
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorySpinner.setAdapter(dataAdapter);
-            categorySpinner.setSelection(0); // prompt is shown by default
-        }
-
-        // stores the selected hypothesis from the spinner in a field
-        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            selectedCategory = pos;
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
-            // TODO Auto-generated method stub
-        }
-
-        @Override
-        // interface for child fragments to report a question has been added by the user
-        // assumes the text and options have been checked for validity
-        public void onAddQuestion(String text, List<String> options) {
-            hypothesisQuestions.put(text, options); // add to list of questions
-            questionsFragment.addQuestionToDisplay(text); // display on screen
-        }
-
-        private void startHypothesisCreation() {
-            String tryText = tryThis.getText().toString().trim();
-            String accomplishText = toAccomplish.getText().toString().trim();
-            String descriptionText = description.getText().toString().trim();
-
-            boolean validationError = false;
-            StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
-            if (tryText.isEmpty()) {
-                validationError = true;
-                validationErrorMessage.append(getString(R.string.create_error_try_empty));
-            }
-            if (accomplishText.isEmpty()) {
-                if (validationError) {
-                    validationErrorMessage.append(" and ");
-                }
-                validationError = true;
-                validationErrorMessage.append(getString(R.string.create_error_accomplish_empty));
-            }
-            if (selectedCategory == 0) {
-                if (validationError) {
-                    validationErrorMessage.append(" and ");
-                }
-                validationError = true;
-                validationErrorMessage.append(getString(R.string.create_error_category_empty));
-            }
-            if (descriptionText.isEmpty()) {
-                if (validationError) {
-                    validationErrorMessage.append(" and ");
-                }
-                validationError = true;
-                validationErrorMessage.append(getString(R.string.create_error_description_empty));
-            }
-            if (hypothesisQuestions.isEmpty()) {
-                if (validationError) {
-                    validationErrorMessage.append(" and ");
-                }
-                validationError = true;
-                validationErrorMessage.append("include at least one question");
-            }
-
-            validationErrorMessage.append(getString(R.string.error_end));
-
-            // If there is a validation error, display the error
-            if (validationError) {
-                Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG)
-                        .show();
-                return;
-            }
-
-            final ProgressDialog dialog = new ProgressDialog(getActivity());
-            dialog.setMessage("Creating Hypothesis...");
-            dialog.show();
-
-            ParseObject hypothesis = new ParseObject("Hypothesis");
-
-            hypothesis.put("ifDescription", tryText);
-            hypothesis.put("thenDescription", accomplishText);
-            hypothesis.put("description", descriptionText);
-            // 0 category is not a real one (part of spinner)
-            hypothesis.put("parentCategory", hypothesisRepo.categoryList.get(selectedCategory - 1));
-
-            // submit each user entered question to database
-            for (String questionText : hypothesisQuestions.keySet()) {
-                List<String> options = hypothesisQuestions.get(questionText);
-
-                ParseObject question = new ParseObject("Question");
-
-                question.put("questionType", 1);
-                question.put("questionText", questionText);
-                question.put("hypothesis", hypothesis);
-
-                question.addAllUnique("questionOptions", options);
-
-                question.saveInBackground();
-            }
-
-            // save the actual hypothesis.
-            // we do this last in order to let the spinner dialog spin until the last thing is complete
-            hypothesis.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    dialog.dismiss();
-                    if (e == null) {
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
         }
     }
 }
