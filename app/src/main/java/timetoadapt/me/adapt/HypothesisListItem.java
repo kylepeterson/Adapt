@@ -12,18 +12,20 @@ import com.parse.ParseObject;
 public class HypothesisListItem implements Parcelable {
     public String tryThis;
     public String toAccomplish;
+    public String description;
     public int usersJoined;
     public double rating;
 
-    public HypothesisListItem(String tryThis, String toAccomplish, int usersJoined, double rating) {
+    public HypothesisListItem(String tryThis, String toAccomplish, int usersJoined, double rating, String description) {
         this.tryThis = tryThis;
         this.toAccomplish = toAccomplish;
         this.usersJoined = usersJoined;
         this.rating = rating;
+        this.description = description;
     }
 
     public HypothesisListItem() {
-        this("", "", 0, 0.0);
+        this("", "", 0, 0.0, "");
     }
 
     // Creates a listItem out of a parseObject
@@ -32,6 +34,7 @@ public class HypothesisListItem implements Parcelable {
         this.toAccomplish = parseObject.getString("thenDescription");
         this.usersJoined = parseObject.getInt("usersJoined");
         this.rating = parseObject.getDouble("rating");
+        this.description = parseObject.getString("description");
     }
 
     public HypothesisListItem(Parcel in) {
@@ -39,6 +42,7 @@ public class HypothesisListItem implements Parcelable {
         this.toAccomplish = in.readString();
         this.usersJoined = in.readInt();
         this.rating = in.readDouble();
+        this.description = in.readString();
     }
 
     @Override
@@ -52,6 +56,7 @@ public class HypothesisListItem implements Parcelable {
         dest.writeString(toAccomplish);
         dest.writeInt(usersJoined);
         dest.writeDouble(rating);
+        dest.writeString(description);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods

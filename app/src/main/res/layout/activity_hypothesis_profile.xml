@@ -1,63 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/adapt_dark_grey"
+        android:id="@+id/header_container">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            android:padding="10dp"
+            android:id="@+id/title_box">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Open Your Window"
+                android:id="@+id/hypothesis_try_this"
+                android:layout_gravity="center_horizontal"
+                android:textSize="20dp"
+                android:textColor="@android:color/white"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Better Sleep"
+                android:id="@+id/hypothesis_to_accomplish"
+                android:layout_gravity="center_horizontal"
+                android:layout_below="@+id/hypothesis_try_this"
+                android:textSize="20dp"
+                android:textColor="@android:color/white"
+                android:paddingLeft="25dp"/>
+        </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/hypothesis_try_this"
-        android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/hypothesis_rating"
+            android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/hypothesis_to_accomplish"
-        android:layout_gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/hypothesis_rating"
-        android:layout_gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/hypothesis_number_subscribed"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hypothesis_join_text"
-        android:id="@+id/hypothesis_join_button"
-        android:layout_gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_description"
-        android:id="@+id/textView10"
-        android:layout_gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/hypothesis_description"
-        android:layout_gravity="center_horizontal" />
-
-    <LinearLayout
-        android:orientation="vertical"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/hypothesis_number_subscribed"
+            android:layout_gravity="center_horizontal" />
+        <Button
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="@string/hypothesis_join_text"
+            android:id="@+id/hypothesis_join_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="39dp"
+            android:background="@color/adapt_blue"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/title_box"
+            android:layout_centerHorizontal="true"
+            android:textSize="20dp"/>
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/hypothesis_data" />
+        android:id="@+id/description_container"
+        android:layout_below="@+id/header_container">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/description_title_box"
+            android:text="Description"
+            android:textColor="@android:color/white"
+            android:background="@color/adapt_light_grey"
+            android:gravity="center_horizontal"
+            android:padding="15dp"
+            android:textSize="18dp">
 
-
-</LinearLayout>
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/hypothesis_description"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/description_title_box"
+            android:padding="10dp"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/data_container"
+        android:layout_below="@+id/description_container">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/data_title_box"
+            android:text="Data"
+            android:textColor="@android:color/white"
+            android:background="@color/adapt_light_grey"
+            android:gravity="center_horizontal"
+            android:padding="15dp"
+            android:textSize="18dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/data_title_box"
+            android:id="@+id/data_content"/>
+     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/comments_container"
+        android:layout_below="@+id/data_container">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comments_header_box"
+            android:text="Experiences"
+            android:textColor="@android:color/white"
+            android:background="@color/adapt_light_grey"
+            android:gravity="center_horizontal"
+            android:padding="15dp"
+            android:textSize="18dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/comments_title_box"
+            android:id="@+id/comments_content"/>
+    </RelativeLayout>
+</RelativeLayout>

@@ -18,7 +18,12 @@ public class HypothesisProfileActivity extends Activity {
         HypothesisListItem hypothesisData = (HypothesisListItem) intent.getParcelableExtra("hypothesisData");
 
         TextView tryThis = (TextView) findViewById(R.id.hypothesis_try_this);
+        TextView toAccomplish = (TextView) findViewById(R.id.hypothesis_to_accomplish);
+        TextView description = (TextView) findViewById(R.id.hypothesis_description);
+
         tryThis.setText(hypothesisData.tryThis);
+        toAccomplish.setText(hypothesisData.toAccomplish);
+        description.setText(hypothesisData.description);
 
 
     }
