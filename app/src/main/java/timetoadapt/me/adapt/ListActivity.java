@@ -104,7 +104,7 @@ public class ListActivity extends Activity {
                     nextArgs.putString("category", currentButton.getText().toString());
                     list.setArguments(nextArgs);
                     // Inflate list fragment
-                    getFragmentManager().beginTransaction().replace(R.id.container, list).commit();
+                    getFragmentManager().beginTransaction().addToBackStack("List").replace(R.id.container, list).commit();
                 }
             };
             // Set click listeners to all three buttons

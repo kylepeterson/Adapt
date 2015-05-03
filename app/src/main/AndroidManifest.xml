@@ -30,21 +30,25 @@
 
         <activity
             android:name=".CreateHypothesisActivity"
-            android:label="@string/title_activity_create">
+            android:label="@string/title_activity_create"
+            android:parentActivityName=".MainActivity">
         </activity>
 
         <activity
             android:name=".UserCreationActivity"
-            android:label="@string/create_user_title">
+            android:label="@string/create_user_title"
+            android:parentActivityName=".MainActivity">
         </activity>
 
         <activity
             android:name=".SignInActivity"
-            android:label="@string/sign_in_title">
+            android:label="@string/sign_in_title"
+            android:parentActivityName=".UserCreationActivity">
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:label="@string/sign_up_title">
+            android:label="@string/sign_up_title"
+            android:parentActivityName=".UserCreationActivity">
         </activity>
         <activity
             android:name=".HypothesisProfileActivity"
