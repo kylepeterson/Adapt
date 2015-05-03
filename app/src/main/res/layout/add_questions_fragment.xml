@@ -31,4 +31,12 @@
         android:id="@+id/add_question_button"
         android:layout_gravity="center_horizontal" />
 
+    <Button
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_hypothesis_complete"
+        android:id="@+id/done_creating_button"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>
