@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,6 +181,45 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
             categorySelector = (Spinner) rootView.findViewById(R.id.categories_spinner);
             populateCategorySpinner(categorySelector);
             categorySelector.setOnItemSelectedListener(this);
+
+            // inflate hypothesis preview layout
+            LinearLayout previewLayout = (LinearLayout) rootView.findViewById(R.id.hypothesis_preview);
+            View hypothesisPreview = getActivity().getLayoutInflater().inflate(R.layout.hypothesis_row, previewLayout, false);
+            final TextView hypothesisTryText = (TextView) hypothesisPreview.findViewById(R.id.tryThis);
+            final TextView hypothesisGoalText = (TextView) hypothesisPreview.findViewById(R.id.goal);
+            previewLayout.addView(hypothesisPreview);
+
+            tryThis.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    hypothesisTryText.setText(tryThis.getText().toString().trim());
+                }
+            });
+
+            toAccomplish.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    hypothesisGoalText.setText(toAccomplish.getText().toString().trim());
+                }
+            });
 
             Button nextButton = (Button) rootView.findViewById(R.id.next_button);
             nextButton.setOnClickListener(new View.OnClickListener() {
