@@ -4,9 +4,10 @@
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:background="@color/adapt_dark_grey"
-        android:id="@+id/header_container">
+        android:id="@+id/header_container"
+        android:paddingBottom="30dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
