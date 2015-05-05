@@ -15,17 +15,19 @@ public class HypothesisListItem implements Parcelable {
     public String description;
     public int usersJoined;
     public double rating;
+    public String objectID;
 
-    public HypothesisListItem(String tryThis, String toAccomplish, int usersJoined, double rating, String description) {
+    public HypothesisListItem(String tryThis, String toAccomplish, int usersJoined, double rating, String description, String objectID) {
         this.tryThis = tryThis;
         this.toAccomplish = toAccomplish;
         this.usersJoined = usersJoined;
         this.rating = rating;
         this.description = description;
+        this.objectID = objectID;
     }
 
     public HypothesisListItem() {
-        this("", "", 0, 0.0, "");
+        this("", "", 0, 0.0, "", "");
     }
 
     // Creates a listItem out of a parseObject
@@ -35,6 +37,7 @@ public class HypothesisListItem implements Parcelable {
         this.usersJoined = parseObject.getInt("usersJoined");
         this.rating = parseObject.getDouble("rating");
         this.description = parseObject.getString("description");
+        this.objectID = parseObject.getObjectId();
     }
 
     public HypothesisListItem(Parcel in) {
@@ -43,6 +46,7 @@ public class HypothesisListItem implements Parcelable {
         this.usersJoined = in.readInt();
         this.rating = in.readDouble();
         this.description = in.readString();
+        this.objectID = in.readString();
     }
 
     @Override
@@ -57,6 +61,7 @@ public class HypothesisListItem implements Parcelable {
         dest.writeInt(usersJoined);
         dest.writeDouble(rating);
         dest.writeString(description);
+        dest.writeString(objectID);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods

@@ -178,8 +178,7 @@ public class MainActivity extends Activity {
                 // put code here to append rows to the list view for each hypothesis
                 // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
                 String userName = currentUser.getUsername();
-                String email = currentUser.getEmail();
-                Log.d("joined", "user: " + userName + ", email: " + email + " ... joined hypotheses: " + joinedIds);
+                Log.d("joined", "user: " + userName + ", ... joined hypotheses: " + joinedIds);
 
                 final List<ParseObject> hypothesesParseObjects = new ArrayList<ParseObject>();
                 List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
