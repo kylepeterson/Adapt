@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
     <resources>
+        <color name="adapt_green">#7AA276</color>
         <color name="adapt_blue">#5E8985</color>
         <color name="adapt_mustard">#D6CD90</color>
         <color name="adapt_dark_grey">#3A3431</color>

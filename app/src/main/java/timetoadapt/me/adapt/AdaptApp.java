@@ -9,6 +9,7 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class AdaptApp extends Application {
     private static AdaptApp instance;
     public HypothesisRepo hypothesisRepo;
+    public static ParseUser currentUser;
     private static Context context;
 
     @Override
@@ -28,6 +30,7 @@ public class AdaptApp extends Application {
         Parse.initialize(this, getResources().getString(R.string.parse_application_id), getResources().getString(R.string.parse_client_key));
         HypothesisRepo repo = createHypothesisRepo();
         initInstance(repo);
+        currentUser = ParseUser.getCurrentUser();
         context = getApplicationContext();
     }
 
@@ -71,6 +74,14 @@ public class AdaptApp extends Application {
             }
         });
         return repo;
+    }
+
+    public ParseUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void updateCurrentUser() {
+        currentUser.fetchInBackground();
     }
 
     public static Context getAppContext(){
