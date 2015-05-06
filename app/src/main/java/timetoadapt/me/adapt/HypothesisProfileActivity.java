@@ -47,7 +47,7 @@ public class HypothesisProfileActivity extends Activity {
     }
 
     public void updateJoinButton() {
-        if (instance.getCurrentUser() != null && instance.getCurrentUser().getList("joined").contains(hypothesisData.objectID)) {
+        if (instance.hasUserJoinedHypothesis(hypothesisData.objectID)) {
             join.setText("Joined");
             join.setBackgroundColor(getResources().getColor(R.color.adapt_green));
             join.setOnClickListener(new View.OnClickListener() {

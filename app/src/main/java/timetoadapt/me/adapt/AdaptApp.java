@@ -91,6 +91,16 @@ public class AdaptApp extends Application {
         currentUser.logOut();
     }
 
+    public boolean hasUserJoinedHypothesis(String objectID) {
+        if (currentUser != null) {
+            List<String> joined = currentUser.getList("joined");
+            if (joined != null && joined.contains(objectID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static Context getAppContext(){
         return context;
     }

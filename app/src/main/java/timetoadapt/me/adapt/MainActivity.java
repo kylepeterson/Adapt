@@ -58,31 +58,35 @@ public class MainActivity extends Activity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            // Navigate to the create screen activity
-            if (instance.getCurrentUser() != null) { // user is signed in, can create hypothesis
-                Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
-                startActivity(createIntent);
-            } else { // not signed in
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage(R.string.user_required_dialog_message);
+                // Navigate to the create screen activity
+                if (instance.getCurrentUser() != null) { // user is signed in, can create hypothesis
+                    Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
+                    startActivity(createIntent);
+                } else { // not signed in
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.user_required_dialog_message);
 
-                builder.setPositiveButton(R.string.user_required_dialog_positive, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        startActivity(new Intent(MainActivity.this, UserCreationActivity.class));
-                    }
-                });
+                    builder.setPositiveButton(R.string.user_required_dialog_positive, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(new Intent(MainActivity.this, UserCreationActivity.class));
+                        }
+                    });
 
-                builder.setNegativeButton(R.string.user_required_dialog_negative, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // negative click does nothing, just dismisses dialog
-                    }
-                });
+                    builder.setNegativeButton(R.string.user_required_dialog_negative, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // negative click does nothing, just dismisses dialog
+                        }
+                    });
 
-                builder.create().show();
-            }
+                    builder.create().show();
+                }
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         // choose which fragment to inflate
         if (ParseUser.getCurrentUser() == null) { // user not signed in
             // user creation fragment
