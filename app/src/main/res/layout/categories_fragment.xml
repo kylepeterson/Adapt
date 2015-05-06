@@ -5,11 +5,12 @@
     tools:context="timetoadapt.me.adapt.ListActivity"
     android:id="@+id/list"
     android:orientation="vertical"
+    android:background="@color/adapt_dark_grey"
     android:weightSum="4.5">
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:textAlignment="center"
         style="?android:attr/borderlessButtonStyle"
         android:clickable="true"
@@ -17,14 +18,14 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:textAlignment="center"
         style="?android:attr/borderlessButtonStyle"
         android:id="@+id/cat2"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:textAlignment="center"
         style="?android:attr/borderlessButtonStyle"
         android:id="@+id/cat3"/>

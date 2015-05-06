@@ -35,7 +35,7 @@ public class ListActivity extends Activity {
         AdaptApp instance = app.getInstance();
         hypothesisRepo = instance.hypothesisRepo;
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             // When entered through browse button
             // Create new categories fragment
             CategoriesFragment topic = new CategoriesFragment();
@@ -70,7 +70,7 @@ public class ListActivity extends Activity {
 
     // Fragment representing the overview of the categories of hypotheses
     // For now this is just sleep, focus and nutrition
-    public  class CategoriesFragment extends Fragment {
+    public class CategoriesFragment extends Fragment {
 
         public CategoriesFragment() {
 
@@ -92,6 +92,20 @@ public class ListActivity extends Activity {
 
             category2.setText(categoryList.get(1).getString("categoryName"));
             category3.setText(categoryList.get(2).getString("categoryName"));
+
+            category1.setTextAppearance(getApplicationContext(), R.style.TextShadow);
+            category2.setTextAppearance(getApplicationContext(), R.style.TextShadow);
+            category3.setTextAppearance(getApplicationContext(), R.style.TextShadow);
+
+            // set background images of buttons
+            category1.setBackgroundResource(R.drawable.category_sleep);
+            category2.setBackgroundResource(R.drawable.category_focus);
+            category3.setBackgroundResource(R.drawable.category_nutrition);
+
+            category1.getBackground().setAlpha(150);
+            category2.getBackground().setAlpha(150);
+            category3.getBackground().setAlpha(150);
+
             // Generalized click listener for all three buttons
             View.OnClickListener clickListener = new View.OnClickListener() {
                 @Override
@@ -117,7 +131,7 @@ public class ListActivity extends Activity {
 
     // Fragment for the list of Hypothesis reached when a category is clicked
     // or a hypothesis is searched for
-    public  class HypothesisListFragment extends Fragment {
+    public class HypothesisListFragment extends Fragment {
 
         public HypothesisListFragment() {
 
@@ -134,18 +148,18 @@ public class ListActivity extends Activity {
             // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
             // Set appropriate category
-            if(category.equals("Sleep")) {
+            if (category.equals("Sleep")) {
                 Log.d("list", "sleep category chosen : " + R.string.sleep_object_id);
                 //query.whereEqualTo("categoryName", "Sleep");
                 ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.sleep_object_id));
                 query.whereEqualTo("parentCategory", obj);
 
-            } else if(category.equals("Focus")) {
+            } else if (category.equals("Focus")) {
                 Log.d("list", "focus category chosen : " + R.string.focus_object_id);
                 //query.whereEqualTo("categoryName", "Focus");
-                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.focus_object_id ));
+                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.focus_object_id));
                 query.whereEqualTo("parentCategory", obj);
-            } else if(category.equals("Nutrition")) {
+            } else if (category.equals("Nutrition")) {
                 Log.d("list", "nutrition category chosen: " + R.string.nutrition_object_id);
                 //query.whereEqualTo("categoryName", "Nutrition");
                 ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.nutrition_object_id));
@@ -155,10 +169,10 @@ public class ListActivity extends Activity {
             }
             query.orderByDescending("usersJoined");
             // execute query sorted by userJoined for now
-            query.findInBackground( new FindCallback<ParseObject>() {
+            query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
-                    if(e == null) {
+                    if (e == null) {
                         // populate list with returned hypotheses
                         populateHypothesesList(parseObjects, rootView);
                         Log.i("application", "Hypotheses retrieved " + parseObjects);
@@ -175,12 +189,12 @@ public class ListActivity extends Activity {
         public void populateHypothesesList(List<ParseObject> parseObjects, View rootView) {
             // Convert list of parseobjects to array of hypothesisListItems
             HypothesisListItem[] listData = new HypothesisListItem[parseObjects.size()];
-            for(int i = 0; i < parseObjects.size(); i++) {
+            for (int i = 0; i < parseObjects.size(); i++) {
                 listData[i] = new HypothesisListItem(parseObjects.get(i));
             }
             // Get Adapter
-            final HypothesisAdapter adapter = new HypothesisAdapter(ListActivity.this , R.layout.hypothesis_row, listData);
-            ListView listView = (ListView)rootView.findViewById(R.id.hypList);
+            final HypothesisAdapter adapter = new HypothesisAdapter(ListActivity.this, R.layout.hypothesis_row, listData);
+            ListView listView = (ListView) rootView.findViewById(R.id.hypList);
 
             // set adapter to the list view
             listView.setAdapter(adapter);
