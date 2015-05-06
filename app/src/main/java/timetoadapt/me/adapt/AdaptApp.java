@@ -81,7 +81,14 @@ public class AdaptApp extends Application {
     }
 
     public void updateCurrentUser() {
+        if (currentUser == null) {
+            currentUser = ParseUser.getCurrentUser();
+        }
         currentUser.fetchInBackground();
+    }
+
+    public void logoutCurrentUser() {
+        currentUser.logOut();
     }
 
     public static Context getAppContext(){

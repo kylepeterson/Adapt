@@ -18,6 +18,7 @@ import com.parse.SignUpCallback;
  * Created by ravnon on 4/14/15.
  */
 public class SignUpActivity extends Activity {
+    protected static AdaptApp instance;
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -27,6 +28,9 @@ public class SignUpActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        AdaptApp app = (AdaptApp) getApplication();
+        instance = app.getInstance();
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_sign_up");
@@ -105,6 +109,7 @@ public class SignUpActivity extends Activity {
                     Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
                     // Start an intent for the dispatch activity
+                    instance.updateCurrentUser();
                     Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

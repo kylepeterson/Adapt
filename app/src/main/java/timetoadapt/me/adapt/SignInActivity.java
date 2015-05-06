@@ -18,6 +18,7 @@ import com.parse.ParseUser;
  * Created by ravnon on 4/14/15.
  */
 public class SignInActivity extends Activity {
+    protected static AdaptApp instance;
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -26,6 +27,9 @@ public class SignInActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        AdaptApp app = (AdaptApp) getApplication();
+        instance = app.getInstance();
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_sign_in");
@@ -76,6 +80,7 @@ public class SignInActivity extends Activity {
         final ProgressDialog dialog = new ProgressDialog(SignInActivity.this);
         dialog.setMessage(getString(R.string.progress_login));
         dialog.show();
+
         // Call the Parse login method
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
@@ -86,6 +91,7 @@ public class SignInActivity extends Activity {
                     Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
                     // Start an intent for the dispatch activity
+                    instance.updateCurrentUser();
                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

@@ -28,22 +28,19 @@ import java.util.List;
 
 
 public class MainActivity extends Activity {
-    protected AdaptApp app;
-    private static ParseUser currentUser;
+    protected static AdaptApp instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        app = (AdaptApp) getApplication();
-        AdaptApp instance = app.getInstance();
+        AdaptApp app = (AdaptApp) getApplication();
+        instance = app.getInstance();
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "app_open");
         analObject.saveInBackground();
-
-        currentUser = ParseUser.getCurrentUser();
 
         // Set up click handlers on navigation buttons
         Button browseButton = (Button) findViewById(R.id.browse);
@@ -62,7 +59,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
             // Navigate to the create screen activity
-            if (currentUser != null) { // user is signed in, can create hypothesis
+            if (instance.getCurrentUser() != null) { // user is signed in, can create hypothesis
                 Intent createIntent = new Intent(MainActivity.this, CreateHypothesisActivity.class);
                 startActivity(createIntent);
             } else { // not signed in
@@ -118,7 +115,7 @@ public class MainActivity extends Activity {
             case R.id.action_settings:
                 return true;
             case R.id.action_log_out:
-                ParseUser.logOut();
+                instance.logoutCurrentUser();
                 startActivity(new Intent(MainActivity.this, MainActivity.class));
         }
 
@@ -169,7 +166,7 @@ public class MainActivity extends Activity {
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
             // find all the hypotheses the user subscribed to.
-            List<String> joinedIds = currentUser.getList("joined");
+            List<String> joinedIds = instance.getCurrentUser().getList("joined");
 
             // if the user has some subscriptions, display them. Otherwise, prompt user to subscribe
             if (joinedIds != null) {
@@ -177,7 +174,7 @@ public class MainActivity extends Activity {
                 ListView list = (ListView) rootView.findViewById(R.id.hypList);
                 // put code here to append rows to the list view for each hypothesis
                 // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
-                String userName = currentUser.getUsername();
+                String userName = instance.getCurrentUser().getUsername();
                 Log.d("joined", "user: " + userName + ", ... joined hypotheses: " + joinedIds);
 
                 final List<ParseObject> hypothesesParseObjects = new ArrayList<ParseObject>();
@@ -214,7 +211,7 @@ public class MainActivity extends Activity {
                 return rootView;
             } else {
                 TextView tv = new TextView(getActivity());
-                tv.setText("Welcome " + currentUser.getUsername() + "!\nYour subscribed hypothesis will show up here. Hit Browse to find hypotheses that work for you!");
+                tv.setText("Welcome " + instance.getCurrentUser().getUsername() + "!\nYour subscribed hypothesis will show up here. Hit Browse to find hypotheses that work for you!");
                 tv.setTextColor(Color.parseColor("#1DAD74"));
                 tv.setTop(20);
                 tv.setTextSize(25);
