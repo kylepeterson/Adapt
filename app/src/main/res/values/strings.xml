@@ -9,6 +9,7 @@
     <string name="title_activity_question_creation">Add Questions</string>
     <string name="create_user_title">Create User</string>
     <string name="hypothesis_profile_title">Hypothesis</string>
+    <string name="splash_title">Splash</string>
 
     <!--Strings for managing user creation and account log in-->
     <string name="create_user_welcome">Welcome to Adapt!</string>
