@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
                     startActivity(createIntent);
                 } else { // not signed in
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage(R.string.user_required_dialog_message);
+                    builder.setMessage(R.string.user_required_create_dialog_message);
 
                     builder.setPositiveButton(R.string.user_required_dialog_positive, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -82,6 +82,7 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
     }
 
     @Override

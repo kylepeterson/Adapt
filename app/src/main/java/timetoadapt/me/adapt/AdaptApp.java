@@ -88,7 +88,8 @@ public class AdaptApp extends Application {
     }
 
     public void logoutCurrentUser() {
-        currentUser.logOut();
+        currentUser.logOutInBackground();
+        currentUser = null;
     }
 
     public boolean hasUserJoinedHypothesis(String objectID) {

@@ -33,7 +33,8 @@
     <string name="error_end">.</string>
     <string name="progress_login">Logging you in&#8230;</string>
     <string name="progress_signup">Signing you up&#8230;</string>
-    <string name="user_required_dialog_message">You need to be registered to create an hypothesis. Would you like to sign up now?</string>
+    <string name="user_required_create_dialog_message">You need to be registered to create an hypothesis. Would you like to sign up now?</string>
+    <string name="user_required_subscribe_dialog_message">You need to be registered to subscribe to an hypothesis. Would you like to sign up now?</string>
     <string name="user_required_dialog_positive">Take me there!</string>
     <string name="user_required_dialog_negative">Not right now</string>
 
