@@ -15,9 +15,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden|screenSize">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".ListActivity"
@@ -52,10 +50,12 @@
             android:label="@string/hypothesis_profile_title">
         </activity>
         <activity
-            android:name=".Splash"
-            android:label="@string/splash_title">
+            android:name=".AdaptSplash"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
