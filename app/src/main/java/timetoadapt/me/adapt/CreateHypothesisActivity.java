@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class CreateHypothesisActivity extends Activity implements OnAddQuestionListener {
     protected static HypothesisRepo hypothesisRepo;
+    private AdaptApp instance;
 
 
     // fragment that allows user to add self report questions for hypothesis
@@ -52,7 +53,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         setContentView(R.layout.activity_create_hypothesis);
 
         AdaptApp app = (AdaptApp) getApplication();
-        AdaptApp instance = app.getInstance();
+        instance = app.getInstance();
         hypothesisRepo = instance.hypothesisRepo;
 
         hypothesisQuestions = new HashMap<>();
@@ -110,7 +111,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         dialog.show();
 
         ParseObject hypothesis = new ParseObject("Hypothesis");
-
+        hypothesis.put("author", instance.getCurrentUser());
         hypothesis.put("ifDescription", this.tryThis);
         hypothesis.put("thenDescription",this.toAccomplish);
         hypothesis.put("description", this.description);
