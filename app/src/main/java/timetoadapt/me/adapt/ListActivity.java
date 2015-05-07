@@ -19,6 +19,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -188,9 +189,9 @@ public class ListActivity extends Activity {
         // Given a list of parseObjects containing hypotheses populate the list fragment
         public void populateHypothesesList(List<ParseObject> parseObjects, View rootView) {
             // Convert list of parseobjects to array of hypothesisListItems
-            HypothesisListItem[] listData = new HypothesisListItem[parseObjects.size()];
+            List<HypothesisListItem> listData = new ArrayList<>();
             for (int i = 0; i < parseObjects.size(); i++) {
-                listData[i] = new HypothesisListItem(parseObjects.get(i));
+                listData.add(new HypothesisListItem(parseObjects.get(i)));
             }
             // Get Adapter
             final HypothesisAdapter adapter = new HypothesisAdapter(ListActivity.this, R.layout.hypothesis_row, listData);

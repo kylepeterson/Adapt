@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.SaveCallback;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by ravnon on 5/1/15.
@@ -53,7 +55,8 @@ public class HypothesisProfileActivity extends Activity {
             join.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(HypothesisProfileActivity.this, "You already joined this hypothesis", Toast.LENGTH_LONG).show();
+                    Crouton.makeText(HypothesisProfileActivity.this, "You already joined this hypothesis", Style.INFO).show();
+
                 }
             });
         } else {
@@ -99,7 +102,7 @@ public class HypothesisProfileActivity extends Activity {
                     instance.updateCurrentUser();
                     updateJoinButton();
                 } else {
-                    Toast.makeText(HypothesisProfileActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    Crouton.makeText(HypothesisProfileActivity.this, e.getMessage(), Style.ALERT).show();
                 }
             }
         });

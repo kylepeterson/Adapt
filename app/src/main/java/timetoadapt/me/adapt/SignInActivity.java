@@ -5,14 +5,17 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by ravnon on 4/14/15.
@@ -71,8 +74,7 @@ public class SignInActivity extends Activity {
 
         // If there is a validation error, display the error
         if (validationError) {
-            Toast.makeText(SignInActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG)
-                    .show();
+            Crouton.makeText(SignInActivity.this, validationErrorMessage.toString(), Style.ALERT, (ViewGroup) findViewById(R.id.crouton_error)).show();
             return;
         }
 
@@ -88,7 +90,7 @@ public class SignInActivity extends Activity {
                 dialog.dismiss();
                 if (e != null) {
                     // Show the error message
-                    Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    Crouton.makeText(SignInActivity.this, e.getMessage(), Style.ALERT, (ViewGroup) findViewById(R.id.crouton_error)).show();
                 } else {
                     // Start an intent for the dispatch activity
                     instance.updateCurrentUser();

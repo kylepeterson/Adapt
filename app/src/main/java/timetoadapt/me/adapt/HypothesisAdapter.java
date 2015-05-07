@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * Created by kylepeterson on 4/24/15.
  *
@@ -15,11 +17,12 @@ import android.widget.TextView;
 public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
     protected Context context;
     protected int layoutResourceId;
-    protected HypothesisListItem[] data;
+    protected List<HypothesisListItem> data;
 
     // Creates a new adapter used to populate the hypothesis list
-    public HypothesisAdapter(Context context, int layoutResourceId, HypothesisListItem[] data) {
+    public HypothesisAdapter(Context context, int layoutResourceId, List<HypothesisListItem> data) {
         super(context, layoutResourceId, data);
+
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = data;
@@ -47,7 +50,7 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
             holder = (HypothesisHolder) row.getTag();
         }
 
-        HypothesisListItem listItem = data[position];
+        HypothesisListItem listItem = data.get(position);
         // Set items to current rows contents
         holder.tryThisView.setText(listItem.tryThis);
         holder.toAccomplishView.setText(listItem.toAccomplish);
@@ -58,7 +61,7 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
     }
 
     public HypothesisListItem getItemAtPosition(int position) {
-        return data[position];
+        return data.get(position);
     }
 
     // Holder used so that we dont have to call by findViewById for every new row

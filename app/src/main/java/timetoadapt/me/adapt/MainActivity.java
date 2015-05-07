@@ -17,12 +17,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -175,36 +175,38 @@ public class MainActivity extends Activity {
             // if the user has some subscriptions, display them. Otherwise, prompt user to subscribe
             if (joinedIds != null) {
                 final View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
-                ListView list = (ListView) rootView.findViewById(R.id.hypList);
                 // put code here to append rows to the list view for each hypothesis
                 // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
                 String userName = instance.getCurrentUser().getUsername();
-                Log.d("joined", "user: " + userName + ", ... joined hypotheses: " + joinedIds);
+                Log.d("joined", "user: " + userName + " joined hypotheses: " + joinedIds);
 
+                // we find all objectIDs contained in the list stored in the user table
                 ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
                 mainQuery.whereContainedIn("objectId", joinedIds);
 
-                mainQuery.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> parseObjects, ParseException e) {
-                        if (e == null) {
-                            HypothesisListItem[] listData = new HypothesisListItem[parseObjects.size()];
-                            for (int i = 0; i < parseObjects.size(); i++) {
-                                // add returned hypotheses to the array of list items
-                                listData[i] = new HypothesisListItem(parseObjects.get(i));
-                            }
-                            // Adapter to create listView rows
-                            HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
-                            ListView listView = (ListView) rootView.findViewById(R.id.hypList);
-                            // set adapter to the list view
-                            listView.setAdapter(adapter);
-                            Log.i("userHypotheses", "user hypotheses retrieved" + parseObjects);
-                        } else {
-                            Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
-                            Log.i("application", "error retrieving hypothesis " + e.getMessage());
-                        }
-                    }
-                });
+                List<ParseObject> parseObjects;
+
+                // we need to use the not-background "find" to make sure that we get items from the
+                // query before we create our list adapter
+                try {
+                    parseObjects = mainQuery.find();
+                } catch (ParseException e) {
+                    parseObjects = new ArrayList<>();
+                    Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
+                    Log.i("application", "error retrieving hypothesis " + e.getMessage());
+                }
+
+                List<HypothesisListItem> listData = new ArrayList<>();
+                for (int i = 0; i < parseObjects.size(); i++) {
+                    // add returned hypotheses to the array of list items
+                    listData.add(new HypothesisListItem(parseObjects.get(i)));
+                }
+
+                // Adapter to create listView rows
+                HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
+                ListView listView = (ListView) rootView.findViewById(R.id.hypList);
+                // set adapter to the list view
+                listView.setAdapter(adapter);
                 return rootView;
             } else {
                 TextView tv = new TextView(getActivity());

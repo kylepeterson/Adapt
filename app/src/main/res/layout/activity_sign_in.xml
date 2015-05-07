@@ -2,57 +2,64 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".CreateHypothesisActivity" >
+    tools:context=".CreateHypothesisActivity">
 
     <ScrollView
         android:id="@+id/signup_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_in_title"
-        android:textSize="40dp"
-        android:maxLines="1"
-        android:textColor="@color/accent_material_light"
-        android:layout_marginTop="20dp"
-        android:id="@+id/textView2"
-        android:layout_gravity="center_horizontal" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:maxLines="1"
+                android:text="@string/sign_in_title"
+                android:textColor="@color/accent_material_light"
+                android:textSize="40dp" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/username"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:layout_marginTop="60dp"
-        android:id="@+id/username"
-        android:layout_gravity="center_horizontal" />
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:hint="@string/username"
+                android:maxLines="1"
+                android:singleLine="true" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:hint="@string/password"
-        android:layout_marginTop="20dp"
-        android:id="@+id/password"
-        android:layout_gravity="center_horizontal" />
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_in_title"
-        android:textColor="@color/accent_material_dark"
-        android:layout_marginTop="20dp"
-        android:id="@+id/sign_in_button"
-        android:layout_gravity="center_horizontal" />
+            <Button
+                android:id="@+id/sign_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:text="@string/sign_in_title"
+                android:textColor="@color/accent_material_dark" />
 
-</LinearLayout>
+            <LinearLayout
+                android:id="@+id/crouton_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </LinearLayout>
     </ScrollView>
 </merge>

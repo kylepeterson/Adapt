@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -27,6 +26,9 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by ravnon on 4/16/15.
@@ -101,8 +103,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
         // If there is a validation error, display the error
         if (validationError) {
-            Toast.makeText(CreateHypothesisActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG)
-                    .show();
+            Crouton.makeText(CreateHypothesisActivity.this, validationErrorMessage.toString(), Style.ALERT).show();
             return;
         }
 
@@ -113,7 +114,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         ParseObject hypothesis = new ParseObject("Hypothesis");
         hypothesis.put("author", instance.getCurrentUser());
         hypothesis.put("ifDescription", this.tryThis);
-        hypothesis.put("thenDescription",this.toAccomplish);
+        hypothesis.put("thenDescription", this.toAccomplish);
         hypothesis.put("description", this.description);
         // 0 category is not a real one (part of spinner)
         hypothesis.put("parentCategory", this.category);
@@ -144,7 +145,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(CreateHypothesisActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    Crouton.makeText(CreateHypothesisActivity.this, e.getMessage(), Style.ALERT).show();
                 }
             }
         });
@@ -295,8 +296,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
             // If there is a validation error, display the error
             if (validationError) {
                 validationErrorMessage.append(getString(R.string.error_end));
-                Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG)
-                        .show();
+                Crouton.makeText(getActivity(), validationErrorMessage.toString(), Style.ALERT).show();
                 return;
             }
 
@@ -306,7 +306,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
             bundle.putString("description", descriptionText);
             bundle.putString("parentCategory", hypothesisRepo.categoryList.get(selectedCategory - 1).getObjectId());
 
-            mListener.startQuestionCreation(tryText, accomplishText, descriptionText,hypothesisRepo.categoryList.get(selectedCategory - 1));
+            mListener.startQuestionCreation(tryText, accomplishText, descriptionText, hypothesisRepo.categoryList.get(selectedCategory - 1));
         }
     }
 
@@ -351,7 +351,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
                 }
             });
 
-            doneButton = (Button)  rootView.findViewById(R.id.done_creating_button);
+            doneButton = (Button) rootView.findViewById(R.id.done_creating_button);
             doneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -473,8 +473,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
             // If there is a validation error, display the error
             if (validationError) {
-                Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG)
-                        .show();
+                Crouton.makeText(getActivity(), validationErrorMessage.toString(), Style.ALERT).show();
                 return;
             }
 
