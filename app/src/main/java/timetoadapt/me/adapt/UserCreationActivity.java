@@ -40,6 +40,6 @@ public class UserCreationActivity extends Activity {
         });
 
         ((TextView) findViewById(R.id.user_creation_title)).setText(R.string.create_user_welcome);
-        ((TextView) findViewById(R.id.user_creation_explanation_text)).setText(R.string.hypothesis_subscription_explanation);
+        ((TextView) findViewById(R.id.user_creation_explanation_text)).setText("");
     }
 }

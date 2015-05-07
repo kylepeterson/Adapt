@@ -23,7 +23,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -182,15 +181,8 @@ public class MainActivity extends Activity {
                 String userName = instance.getCurrentUser().getUsername();
                 Log.d("joined", "user: " + userName + ", ... joined hypotheses: " + joinedIds);
 
-                final List<ParseObject> hypothesesParseObjects = new ArrayList<ParseObject>();
-                List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
-                for (String id : joinedIds) {
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
-                    query.whereMatches("objectId", id);
-                    queries.add(query);
-                }
-                // Get all hypotheses the user is signed up for
-                ParseQuery<ParseObject> mainQuery = ParseQuery.or(queries);
+                ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
+                mainQuery.whereContainedIn("objectId", joinedIds);
 
                 mainQuery.findInBackground(new FindCallback<ParseObject>() {
                     @Override
