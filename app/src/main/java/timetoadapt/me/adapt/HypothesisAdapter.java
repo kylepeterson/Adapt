@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.joanzapata.android.iconify.Iconify;
+
 import java.util.List;
 
 /**
@@ -55,7 +57,8 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
         holder.tryThisView.setText(listItem.tryThis);
         holder.toAccomplishView.setText(listItem.toAccomplish);
         holder.usersJoinedView.setText(listItem.usersJoined + "");
-        holder.ratingView.setText(listItem.rating + "");
+        holder.ratingView.setText(listItem.rating + " " + Iconify.IconValue.fa_star.formattedName());
+        Iconify.addIcons(holder.ratingView);
 
         return row;
     }
