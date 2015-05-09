@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -161,7 +162,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static class HypothesisListFragment extends Fragment {
+    public class HypothesisListFragment extends Fragment {
 
         public HypothesisListFragment() {
 
@@ -203,10 +204,21 @@ public class MainActivity extends Activity {
                 }
 
                 // Adapter to create listView rows
-                HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
+                final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
                 ListView listView = (ListView) rootView.findViewById(R.id.hypList);
                 // set adapter to the list view
                 listView.setAdapter(adapter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent profilePage = new Intent(MainActivity.this, HypothesisProfileActivity.class);
+                        // Add any extras here for data that needs to be passed to the ListActivity
+                        profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
+                        startActivity(profilePage);
+                    }
+                });
+
                 return rootView;
             } else {
                 TextView tv = new TextView(getActivity());

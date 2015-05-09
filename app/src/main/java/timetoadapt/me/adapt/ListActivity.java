@@ -143,31 +143,22 @@ public class ListActivity extends Activity {
             final View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
             Bundle arguments = getArguments();
             String category = arguments.getString("category");
-            // put code here to query parse for all hypothesis mapping to the category
-            ListView list = (ListView) rootView.findViewById(R.id.hypList);
-            // put code here to append rows to the list view for each hypothesis
+
             // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
-            // Set appropriate category
-            if (category.equals("Sleep")) {
-                Log.d("list", "sleep category chosen : " + R.string.sleep_object_id);
-                //query.whereEqualTo("categoryName", "Sleep");
-                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.sleep_object_id));
-                query.whereEqualTo("parentCategory", obj);
 
-            } else if (category.equals("Focus")) {
-                Log.d("list", "focus category chosen : " + R.string.focus_object_id);
-                //query.whereEqualTo("categoryName", "Focus");
-                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.focus_object_id));
-                query.whereEqualTo("parentCategory", obj);
-            } else if (category.equals("Nutrition")) {
-                Log.d("list", "nutrition category chosen: " + R.string.nutrition_object_id);
-                //query.whereEqualTo("categoryName", "Nutrition");
-                ParseObject obj = ParseObject.createWithoutData("Category", getString(R.string.nutrition_object_id));
+            // Set appropriate category
+            if (!category.isEmpty()) {
+                Log.d("list", category + " category chosen");
+                String categoryString = category.toLowerCase() + "_object_id";
+                String categoryID = getString(getResources().getIdentifier(categoryString, "string", getPackageName()));
+
+                ParseObject obj = ParseObject.createWithoutData("Category", categoryID);
                 query.whereEqualTo("parentCategory", obj);
             } else {
                 Log.d("list", "no specific category chosen, all hypothesis queried");
             }
+
             query.orderByDescending("usersJoined");
             // execute query sorted by userJoined for now
             query.findInBackground(new FindCallback<ParseObject>() {
