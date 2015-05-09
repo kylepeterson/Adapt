@@ -187,9 +187,13 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
             // inflate hypothesis preview layout
             LinearLayout previewLayout = (LinearLayout) rootView.findViewById(R.id.hypothesis_preview);
             View hypothesisPreview = getActivity().getLayoutInflater().inflate(R.layout.hypothesis_row, previewLayout, false);
-            final TextView hypothesisTryText = (TextView) hypothesisPreview.findViewById(R.id.tryThis);
-            final TextView hypothesisGoalText = (TextView) hypothesisPreview.findViewById(R.id.goal);
-            previewLayout.addView(hypothesisPreview);
+
+            // set fake number in the rating and users joined boxes
+            ((TextView) hypothesisPreview.findViewById(R.id.usersCount)).setText(HypothesisAdapter.formatJoinedNumber(9999));
+            HypothesisAdapter.formatRatingNumber((TextView) hypothesisPreview.findViewById(R.id.rating), 4.2);
+
+            // set listeners to update the preview every time the user changes the input
+            final TextView hypothesisTextView = (TextView) hypothesisPreview.findViewById(R.id.hypothesis_text);
 
             tryThis.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -203,7 +207,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    hypothesisTryText.setText(tryThis.getText().toString().trim());
+                    hypothesisTextView.setText(HypothesisAdapter.formatHypothesisText(toAccomplish.getText().toString().trim(), tryThis.getText().toString().trim()));
                 }
             });
 
@@ -219,9 +223,11 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    hypothesisGoalText.setText(toAccomplish.getText().toString().trim());
-                }
+                    hypothesisTextView.setText(HypothesisAdapter.formatHypothesisText(toAccomplish.getText().toString().trim(), tryThis.getText().toString().trim()));                }
             });
+
+            // add the preview to the layout
+            previewLayout.addView(hypothesisPreview);
 
             Button nextButton = (Button) rootView.findViewById(R.id.next_button);
             nextButton.setOnClickListener(new View.OnClickListener() {

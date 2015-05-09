@@ -164,8 +164,26 @@ public class MainActivity extends Activity {
 
     public class HypothesisListFragment extends Fragment {
 
+        public final HypothesisListFragment newInstance(String crsCode) {
+            HypothesisListFragment fragment = new HypothesisListFragment();
+
+            final Bundle args = new Bundle(1);
+            args.putString("EXTRA_CRS_CODE", crsCode);
+            fragment.setArguments(args);
+
+            return fragment;
+        }
+
         public HypothesisListFragment() {
 
+        }
+
+        private String mCrsCode;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+          //  mCrsCode = getArguments().getString("EXTRA_CRS_CODE");
         }
 
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -228,6 +246,11 @@ public class MainActivity extends Activity {
                 tv.setTextSize(25);
                 return tv;
             }
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
         }
     }
 }

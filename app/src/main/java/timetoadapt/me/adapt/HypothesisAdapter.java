@@ -2,6 +2,9 @@ package timetoadapt.me.adapt;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +44,7 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new HypothesisHolder();
-            holder.tryThisView = (TextView) row.findViewById(R.id.tryThis);
-            holder.toAccomplishView = (TextView) row.findViewById(R.id.goal);
+            holder.hypothesisText = (TextView) row.findViewById(R.id.hypothesis_text);
             holder.usersJoinedView = (TextView) row.findViewById(R.id.usersCount);
             holder.ratingView = (TextView) row.findViewById(R.id.rating);
 
@@ -54,13 +56,60 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
 
         HypothesisListItem listItem = data.get(position);
         // Set items to current rows contents
-        holder.tryThisView.setText(listItem.tryThis);
-        holder.toAccomplishView.setText(listItem.toAccomplish);
-        holder.usersJoinedView.setText(listItem.usersJoined + "");
-        holder.ratingView.setText(listItem.rating + " " + Iconify.IconValue.fa_star.formattedName());
-        Iconify.addIcons(holder.ratingView);
+
+        // create formatted hypothesis string
+        String toAccomplish = listItem.toAccomplish.trim();
+        String tryThis = listItem.tryThis.trim();
+
+        holder.hypothesisText.setText(formatHypothesisText(toAccomplish, tryThis));
+        holder.usersJoinedView.setText(formatJoinedNumber(listItem.usersJoined));
+        formatRatingNumber(holder.ratingView, listItem.rating);
+
+        // set zebra stripes of rows
+        if (position % 2 == 0) {
+            row.setBackgroundColor(context.getResources().getColor(R.color.adapt_white));
+        } else {
+            row.setBackgroundColor(context.getResources().getColor(R.color.adapt_zebra_list_grey));
+        }
 
         return row;
+    }
+
+    // returns a string that formats the given "toAccomplish" in bold and adds a colon
+    // between the two strings
+    public static SpannableString formatHypothesisText(String toAccomplish, String tryThis) {
+        SpannableString spanString = new SpannableString(toAccomplish + ": " + tryThis);
+        spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, toAccomplish.length() + 1, 0);
+
+        return spanString;
+    }
+
+    // returns a string that puts a comma between every 3 digits of the number
+    // 6969 -> "6,969 joined"
+    public static String formatJoinedNumber(int num) {
+        String result = "";
+
+        int count = 0;
+        do {
+            if (count == 3) {
+                result = "," + result;
+                count = 0;
+            }
+
+            int lastDigit = num % 10;
+            result = lastDigit + result;
+            count++;
+
+            num = num / 10;
+        } while (num > 0);
+
+        return result + " joined";
+    }
+
+    // formats the rating number to add a star icon to its right in the given TextView
+    public static void formatRatingNumber(TextView view, double rating) {
+        view.setText(rating + " " + Iconify.IconValue.fa_star.formattedName());
+        Iconify.addIcons(view);
     }
 
     public HypothesisListItem getItemAtPosition(int position) {
@@ -69,8 +118,7 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
 
     // Holder used so that we dont have to call by findViewById for every new row
     static class HypothesisHolder {
-        TextView tryThisView;
-        TextView toAccomplishView;
+        TextView hypothesisText;
         TextView usersJoinedView;
         TextView ratingView;
     }

@@ -6,6 +6,7 @@
         <color name="adapt_mustard">#D6CD90</color>
         <color name="adapt_dark_grey">#3A3431</color>
         <color name="adapt_light_grey">#5E5D5B</color>
+        <color name="adapt_zebra_list_grey">#f2eded</color>
         <color name="adapt_red">#C64133</color>
         <color name="adapt_white">#ffffff</color>
     </resources>

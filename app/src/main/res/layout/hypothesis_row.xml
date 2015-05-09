@@ -7,16 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Try This"
-        android:id="@+id/tryThis"
-        android:textSize="20dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="To Accomplish This"
-        android:id="@+id/goal"
-        android:layout_below="@+id/tryThis"
-        android:paddingLeft="20dp"
+        android:id="@+id/hypothesis_text"
         android:textSize="20dp"/>
 
     <TextView
@@ -24,15 +15,15 @@
         android:layout_height="wrap_content"
         android:text="4923 Joined"
         android:id="@+id/usersCount"
-        android:layout_below="@+id/goal"
+        android:layout_below="@+id/hypothesis_text"
         android:layout_marginTop="5dp"/>
 
     <android.widget.IconTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="4 {fa-star}"
+        android:text=""
         android:id="@+id/rating"
-        android:layout_below="@+id/goal"
+        android:layout_below="@+id/hypothesis_text"
         android:layout_marginTop="5dp"
         android:layout_alignParentRight="true"
          />
