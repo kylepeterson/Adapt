@@ -187,6 +187,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
             // inflate hypothesis preview layout
             LinearLayout previewLayout = (LinearLayout) rootView.findViewById(R.id.hypothesis_preview);
             View hypothesisPreview = getActivity().getLayoutInflater().inflate(R.layout.hypothesis_row, previewLayout, false);
+            hypothesisPreview.setBackgroundColor(getResources().getColor(R.color.adapt_zebra_list_grey));
 
             // set fake number in the rating and users joined boxes
             ((TextView) hypothesisPreview.findViewById(R.id.usersCount)).setText(HypothesisAdapter.formatJoinedNumber(9999));
@@ -194,6 +195,8 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
             // set listeners to update the preview every time the user changes the input
             final TextView hypothesisTextView = (TextView) hypothesisPreview.findViewById(R.id.hypothesis_text);
+
+            hypothesisTextView.setText(HypothesisAdapter.formatHypothesisText("To accomplish this", "Try this"));
 
             tryThis.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -207,7 +210,17 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    hypothesisTextView.setText(HypothesisAdapter.formatHypothesisText(toAccomplish.getText().toString().trim(), tryThis.getText().toString().trim()));
+                    String toAccomplishText = toAccomplish.getText().toString().trim();
+                    String tryThisText = tryThis.getText().toString().trim();
+
+                    if (toAccomplishText.isEmpty()) {
+                        toAccomplishText = "To accomplish this";
+                    }
+                    if (tryThisText.isEmpty()) {
+                        tryThisText = "Try this";
+                    }
+
+                    hypothesisTextView.setText(HypothesisAdapter.formatHypothesisText(toAccomplishText, tryThisText));
                 }
             });
 
@@ -223,7 +236,17 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    hypothesisTextView.setText(HypothesisAdapter.formatHypothesisText(toAccomplish.getText().toString().trim(), tryThis.getText().toString().trim()));                }
+                    String toAccomplishText = toAccomplish.getText().toString().trim();
+                    String tryThisText = tryThis.getText().toString().trim();
+
+                    if (toAccomplishText.isEmpty()) {
+                        toAccomplishText = "To accomplish this";
+                    }
+                    if (tryThisText.isEmpty()) {
+                        tryThisText = "Try this";
+                    }
+
+                    hypothesisTextView.setText(HypothesisAdapter.formatHypothesisText(toAccomplishText, tryThisText));                }
             });
 
             // add the preview to the layout

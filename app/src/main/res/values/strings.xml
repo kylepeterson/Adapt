@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_log_out">Logout</string>
     <string name="title_activity_list">ListActivity</string>
-    <string name="title_activity_create">Create Hypothesis</string>
+    <string name="title_activity_create">create an idea</string>
     <string name="title_activity_question_creation">Add Questions</string>
     <string name="create_user_title">Create User</string>
     <string name="hypothesis_profile_title">Hypothesis</string>
@@ -47,8 +47,8 @@
     <string name="create_preview_explanation">This is what your hypothesis will look like to others:</string>
     <string name="create_category">Category:</string>
     <string name="create_description">Description:</string>
-    <string name="create_description_hint">e.g. Studies have shown that opening your window at night while you sleep increase sleep quality and duration by helping your room get to the optimal sleeping temperature which is lower than the comfortable temperature during the day.</string>
-    <string name="create_next">Next</string>
+    <string name="create_description_hint">Enter a brief description of your idea...</string>
+    <string name="create_next">NEXT</string>
     <string name="create_error_try_empty">enter a "Try this" suggestion</string>
     <string name="create_error_accomplish_empty">enter a "To accomplish" suggestion</string>
     <string name="create_error_category_empty">select a category</string>
