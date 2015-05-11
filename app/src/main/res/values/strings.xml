@@ -64,5 +64,6 @@
     
     <!-- Strings in the hypothesis profile page -->
     <string name="hypothesis_join_text">Join</string>
+    <string name="hypothesis_joined_text">Joined</string>
 
 </resources>
