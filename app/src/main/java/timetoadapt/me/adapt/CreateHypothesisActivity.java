@@ -116,8 +116,9 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         hypothesis.put("ifDescription", this.tryThis);
         hypothesis.put("thenDescription", this.toAccomplish);
         hypothesis.put("description", this.description);
-        // 0 category is not a real one (part of spinner)
         hypothesis.put("parentCategory", this.category);
+        hypothesis.put("usersJoined", 0);
+
 
         // submit each user entered question to database
         for (String questionText : hypothesisQuestions.keySet()) {
