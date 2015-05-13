@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="inspirational_quotes">
+        <item>I have just three things to teach: simplicity, patience, compassion. These three are
+            your greatest treasures.
+        </item>
+        <item>In character, in manner, in style, in all things, the supreme excellence is
+            simplicity.
+        </item>
+        <item>If we don\'t discipline ourselves, the world will do it for us.</item>
+        <item>Rule your mind or it will rule you.</item>
+        <item>All that we are is the result of what we have thought.</item>
+        <item>Doing just a little bit during the time we have available puts you that much further
+            ahead than if you took no action at all.
+        </item>
+        <item>Never leave that till tomorrow which you can do today.</item>
+        <item>Procrastination is like a credit card: it\'s a lot of fun until you get the bill.
+        </item>
+        <item>Someday is not a day of the week.</item>
+        <item>Tomorrow is often the busiest day of the week.</item>
+        <item>I can accept failure, everyone fails at something. But I can\'t accept not trying.
+        </item>
+        <item>There\'s a myth that time is money. In fact, time is more precious than money. It\'s a
+            nonrenewable resource. Once you\'ve spent it, and if you\'ve spent it badly, it\'s gone
+            forever.
+        </item>
+        <item>Nothing can stop the man with the right mental attitude from achieving his goal;
+            nothing on earth can help the man with the wrong mental attitude.
+        </item>
+        <item>There is only one success--to be able to spend your life in your own way.</item>
+        <item>Success is the good fortune that comes from aspiration, desperation, perspiration and
+            inspiration.
+        </item>
+        <item>We are still masters of our fate. We are still captains of our souls.</item>
+        <item>Our truest life is when we are in dreams awake.</item>
+        <item>The best way to make your dreams come true is to wake up.</item>
+        <item>Life without endeavor is like entering a jewel mine and coming out with empty hands.
+        </item>
+        <item>Happiness does not consist in pastimes and amusements but in virtuous activities.
+        </item>
+        <item>By constant self-discipline and self-control, you can develop greatness of
+            character.
+        </item>
+        <item>The difference between a successful person and others is not a lack of strength, not a
+            lack of knowledge, but rather a lack in will.
+        </item>
+        <item>At the end of the day, let there be no excuses, no explanations, no regrets.</item>
+        <item>Inaction will cause a man to sink into the slough of despond and vanish without a
+            trace.
+        </item>
+        <item>True freedom is impossible without a mind made free by discipline.</item>
+        <item>The most powerful control we can ever attain, is to be in control of ourselves.</item>
+        <item>Idleness is only the refuge of weak minds, and the holiday of fools.</item>
+        <item>This is your life and it\'s ending one minute at a time.</item>
+        <item>You create opportunities by performing, not complaining.</item>
+        <item>Great achievement is usually born of great sacrifice, and is never the result of
+            selfishness.
+        </item>
+        <item>Whether you think you can, or you think you can\'t, you\'re right.</item>
+        <item>Even if I knew that tomorrow the world would go to pieces, I would still plant my
+            apple tree.
+        </item>
+    </array>
+
+    <array name="authors">
+        <item>Lao Tzu</item>
+        <item>Henry Wadsworth Longfellow</item>
+        <item>William Feather</item>
+        <item>Horace</item>
+        <item>Buddha</item>
+        <item>Pulsifer, Take Action; Don\'t Procrastinate</item>
+        <item>Benjamin Franklin</item>
+        <item>Christopher Parker</item>
+        <item>Author Unknown</item>
+        <item>Spanish Proverb</item>
+        <item>Michael Jordan</item>
+        <item>Neil A. Fiore</item>
+        <item>Thomas Jefferson</item>
+        <item>Christopher Morley</item>
+        <item>Evan Esar</item>
+        <item>Winston Churchill</item>
+        <item>Henry David Thoreau</item>
+        <item>Paul Valery</item>
+        <item>Japanese Proverb</item>
+        <item>Aristotle</item>
+        <item>Grenville Kleiser</item>
+        <item>Vince Lombardi Jr.</item>
+        <item>Steve Maraboli</item>
+        <item>Farley Mowat</item>
+        <item>Mortimer J. Adler</item>
+        <item>Chris Page</item>
+        <item>Philip Dormer Stanhope</item>
+        <item>Tyler Durden, Fight Club</item>
+        <item>Muriel Siebert</item>
+        <item>Napoleon Hill</item>
+        <item>Henry Ford</item>
+        <item>Martin Luther</item>
+    </array>
+</resources>
