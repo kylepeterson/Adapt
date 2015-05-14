@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -95,9 +96,9 @@ public class MainActivity extends Activity {
         // choose which fragment to inflate
         if (ParseUser.getCurrentUser() == null) { // user not signed in
             // user creation fragment
-            UserCreationFragment topic = new UserCreationFragment();
-            topic.setArguments(getIntent().getExtras());
-            getFragmentManager().beginTransaction().replace(R.id.subscriptions_container, topic).commit();
+            QuoteFragment quotes = new QuoteFragment();
+            quotes.setArguments(getIntent().getExtras());
+            getFragmentManager().beginTransaction().replace(R.id.subscriptions_container, quotes).commit();
         } else { // user totally signed in
             // current subscriptions fragment
             FragmentManager fm = getFragmentManager();
@@ -139,41 +140,6 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public static class UserCreationFragment extends Fragment {
-
-        public UserCreationFragment() {
-
-        }
-
-        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                                 Bundle savedInstanceState) {
-            // Set layout to category fragment
-            View rootView = inflater.inflate(R.layout.user_creation_fragment, container, false);
-
-            // Grab category buttons from layout
-            final Button signinButton = (Button) rootView.findViewById(R.id.signin_button);
-            signinButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(getActivity(), SignInActivity.class));
-                }
-            });
-
-            final Button signupButton = (Button) rootView.findViewById(R.id.signup_button);
-            signupButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(getActivity(), SignUpActivity.class));
-                }
-            });
-
-            ((TextView) rootView.findViewById(R.id.user_creation_title)).setText(R.string.create_user_welcome);
-            //((TextView) rootView.findViewById(R.id.user_creation_explanation_text)).setText(R.string.hypothesis_subscription_explanation);
-
-            return rootView;
-        }
     }
 
     public class HypothesisListFragment extends Fragment {
@@ -368,6 +334,34 @@ public class MainActivity extends Activity {
         @Override
         public void onResume() {
             super.onResume();
+        }
+    }
+
+    public class QuoteFragment extends Fragment {
+
+        public QuoteFragment() {
+
+        }
+
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                                 Bundle savedInstanceState) {
+            // Set layout to quote fragment
+            View rootView = inflater.inflate(R.layout.quote_fragment, container, false);
+
+            TypedArray quotes = getResources().obtainTypedArray(R.array.inspirational_quotes);
+            TypedArray authors = getResources().obtainTypedArray(R.array.authors);
+
+            int choice = (int) (Math.random() * quotes.length());
+            String quote = quotes.getString(choice);
+            String author = authors.getString(choice);
+
+            TextView quoteView = (TextView) rootView.findViewById(R.id.quote_view);
+            TextView authorView = (TextView) rootView.findViewById(R.id.author_view);
+
+            quoteView.setText("\"" + quote + "\"");
+            authorView.setText(" - " + author);
+
+            return rootView;
         }
     }
 }

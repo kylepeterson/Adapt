@@ -38,11 +38,13 @@
         <activity
             android:name=".SignInActivity"
             android:label="@string/sign_in_title"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"
             android:parentActivityName=".UserCreationActivity">
         </activity>
         <activity
             android:name=".SignUpActivity"
             android:label="@string/sign_up_title"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"
             android:parentActivityName=".UserCreationActivity">
         </activity>
         <activity

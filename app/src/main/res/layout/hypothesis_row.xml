@@ -13,7 +13,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="4923 Joined"
+        android:text=""
         android:id="@+id/usersCount"
         android:layout_below="@+id/hypothesis_text"
         android:layout_marginTop="5dp"/>

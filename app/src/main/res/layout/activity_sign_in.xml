@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".CreateHypothesisActivity">
 
     <ScrollView
-        android:id="@+id/signup_form"
+        android:id="@+id/signin_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView2"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/adapt_logo"
+                android:src="@drawable/logo_without_text"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:maxLines="1"
-                android:text="@string/sign_in_title"
-                android:textColor="@color/accent_material_light"
-                android:textSize="40dp" />
+                android:layout_marginTop="30dp"/>
 
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
                 android:hint="@string/username"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -41,6 +42,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword" />
@@ -52,7 +55,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:text="@string/sign_in_title"
-                android:textColor="@color/accent_material_dark" />
+                android:background="@drawable/button_background"
+                android:textColor="@color/adapt_blue" />
 
             <LinearLayout
                 android:id="@+id/crouton_error"

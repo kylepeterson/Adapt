@@ -34,6 +34,9 @@ public class SignInActivity extends Activity {
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
 
+        findViewById(R.id.signin_form).setBackgroundResource(R.drawable.mountain);
+        findViewById(R.id.signin_form).getBackground().setAlpha(150);
+
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_sign_in");
         analObject.saveInBackground();
@@ -49,6 +52,7 @@ public class SignInActivity extends Activity {
                 login();
             }
         });
+
 
     }
 
