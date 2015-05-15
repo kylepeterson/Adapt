@@ -1,5 +1,6 @@
 package timetoadapt.me.adapt;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -54,6 +55,10 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_hypothesis);
 
+        // Hide name of activity in actionbar
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
         hypothesisRepo = instance.hypothesisRepo;

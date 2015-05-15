@@ -1,5 +1,6 @@
 package timetoadapt.me.adapt;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,10 @@ public class UserCreationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_creation_fragment);
+
+        // Hide name of activity in actionbar
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_creation_screen");

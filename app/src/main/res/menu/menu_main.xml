@@ -2,21 +2,16 @@
     xmlns:adapt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
-    <item android:id="@+id/logo"
-        android:title="Logo"
-        android:icon="@drawable/logo_without_text"
-        adapt:showAsAction="ifRoom"
-        android:orderInCategory="400"/>
+
 
     <item android:id="@+id/action_search"
         android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-        adapt:showAsAction="ifRoom"
-        android:title="Search"
-        android:orderInCategory="600"/>
+        android:showAsAction="ifRoom"
+        android:title="Search"/>
 
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="500" adapt:showAsAction="ifRoom" />
+        android:orderInCategory="500" android:showAsAction="never" />
 
     <item android:id="@+id/action_log_out" android:title="@string/action_log_out"
-        android:orderInCategory="100" adapt:showAsAction="ifRoom" />
+        android:orderInCategory="100" android:showAsAction="never" />
 </menu>

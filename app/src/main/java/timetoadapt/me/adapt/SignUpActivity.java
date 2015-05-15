@@ -1,5 +1,6 @@
 package timetoadapt.me.adapt;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -34,6 +35,10 @@ public class SignUpActivity extends Activity {
 
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
+
+        // Hide name of activity in actionbar
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_sign_up");

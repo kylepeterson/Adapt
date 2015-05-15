@@ -4,13 +4,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:divider="?android:actionBarDivider"
+        android:showDividers="middle">
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Browse"
-            android:background="#527E7A"
+            android:background="@color/adapt_blue"
             android:textColor="#FFFFFF"
             android:id="@+id/browse"/>
         <Button
@@ -18,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Create"
-            android:background="#545351"
+            android:background="@color/adapt_blue"
             android:textColor="#FFFFFF"
             android:id="@+id/create"/>
 

@@ -1,5 +1,6 @@
 package timetoadapt.me.adapt;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -31,6 +32,10 @@ public class ListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        // Hide name of activity in actionbar
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
 
         app = (AdaptApp) getApplication();
         AdaptApp instance = app.getInstance();

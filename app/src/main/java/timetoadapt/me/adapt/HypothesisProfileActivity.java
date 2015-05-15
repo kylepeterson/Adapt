@@ -1,5 +1,6 @@
 package timetoadapt.me.adapt;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -33,6 +34,10 @@ public class HypothesisProfileActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hypothesis_profile);
+
+        // Hide name of activity in actionbar
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
 
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();

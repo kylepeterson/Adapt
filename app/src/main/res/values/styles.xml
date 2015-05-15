@@ -4,6 +4,8 @@
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
     </style>
 
+    <style name="ActionBarStyle" parent="android:Widget.Holo.ActionBar.Solid">
+    </style>
     <style name="TextShadow">
         <item name="android:paddingLeft">4px</item>
         <item name="android:paddingBottom">4px</item>
