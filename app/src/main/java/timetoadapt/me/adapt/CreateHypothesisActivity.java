@@ -9,7 +9,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -58,7 +61,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
-        
+
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
         hypothesisRepo = instance.hypothesisRepo;
@@ -155,6 +158,35 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
                 }
             }
         });
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        //noinspection SimplifiableIfStatement
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                final Intent nextActivity = new Intent(CreateHypothesisActivity.this, UserSettingActivity.class);
+                Log.d("actionbar", "settings clicked");
+                startActivity(nextActivity);
+                return true;
+            case R.id.action_log_out:
+                instance.logoutCurrentUser();
+                startActivity(new Intent(CreateHypothesisActivity.this, MainActivity.class));
+                Log.d("actionbar", "logout clicked");
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public static class QuestionOverviewFragment extends Fragment implements AdapterView.OnItemSelectedListener {

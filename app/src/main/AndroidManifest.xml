@@ -61,6 +61,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".UserSettingActivity"
+            android:label="User Settings"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
+
+        </activity>
+
     </application>
 
 </manifest>

@@ -134,10 +134,15 @@ public class MainActivity extends Activity {
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
             case R.id.action_settings:
+                final Intent nextActivity = new Intent(MainActivity.this, UserSettingActivity.class);
+                Log.d("actionbar", "settings clicked");
+                startActivity(nextActivity);
                 return true;
             case R.id.action_log_out:
                 instance.logoutCurrentUser();
                 startActivity(new Intent(MainActivity.this, MainActivity.class));
+                Log.d("actionbar", "logout clicked");
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

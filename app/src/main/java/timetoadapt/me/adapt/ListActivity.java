@@ -64,11 +64,19 @@ public class ListActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                final Intent nextActivity = new Intent(ListActivity.this, UserSettingActivity.class);
+                Log.d("actionbar", "settings clicked");
+                startActivity(nextActivity);
+                return true;
+            case R.id.action_log_out:
+                app.logoutCurrentUser();
+                startActivity(new Intent(ListActivity.this, MainActivity.class));
+                Log.d("actionbar", "logout clicked");
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -1,6 +1,5 @@
 package timetoadapt.me.adapt;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -32,9 +31,7 @@ public class SignInActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        // Hide name of activity in actionbar
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
+
 
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
