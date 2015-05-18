@@ -31,8 +31,6 @@ public class SignInActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-
-
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
 

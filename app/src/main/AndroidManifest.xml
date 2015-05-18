@@ -30,22 +30,16 @@
         </activity>
 
         <activity
-            android:name=".UserCreationActivity"
-            android:label="@string/create_user_title"
-            android:parentActivityName=".MainActivity">
-        </activity>
-
-        <activity
             android:name=".SignInActivity"
             android:label="@string/sign_in_title"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"
-            android:parentActivityName=".UserCreationActivity">
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity
             android:name=".SignUpActivity"
             android:label="@string/sign_up_title"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"
-            android:parentActivityName=".UserCreationActivity">
+            android:parentActivityName=".SignInActivity">
         </activity>
         <activity
             android:name=".HypothesisProfileActivity"

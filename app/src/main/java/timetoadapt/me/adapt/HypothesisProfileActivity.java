@@ -93,7 +93,7 @@ public class HypothesisProfileActivity extends Activity {
 
                         builder.setPositiveButton(R.string.user_required_dialog_positive, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Intent intent = new Intent(HypothesisProfileActivity.this, UserCreationActivity.class);
+                                Intent intent = new Intent(HypothesisProfileActivity.this, SignInActivity.class);
                                 startActivity(intent);
                             }
                         });

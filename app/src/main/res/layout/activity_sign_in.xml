@@ -30,10 +30,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginLeft="30dp"
                 android:hint="@string/username"
                 android:maxLines="1"
+                style="@style/adaptEditText"
                 android:singleLine="true" />
 
             <EditText
@@ -42,10 +41,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginLeft="30dp"
                 android:ems="10"
+                android:maxLines="1"
                 android:hint="@string/password"
+                style="@style/adaptEditText"
                 android:inputType="textPassword" />
 
             <Button

@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
 
                     builder.setPositiveButton(R.string.user_required_dialog_positive, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            startActivity(new Intent(MainActivity.this, UserCreationActivity.class));
+                            startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         }
                     });
 
