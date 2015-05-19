@@ -22,14 +22,14 @@
                 android:id="@+id/adapt_logo"
                 android:src="@drawable/logo_without_text"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="20dp"/>
 
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:hint="@string/username"
                 android:maxLines="1"
                 style="@style/adaptEditText"
@@ -56,6 +56,16 @@
                 android:text="@string/sign_in_title"
                 android:background="@drawable/button_background"
                 android:textColor="@color/adapt_blue" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_prompt"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:textColor="@color/adapt_green"
+                android:textSize="20dp"
+                android:id="@+id/sign_up_text_prompt"/>
 
             <LinearLayout
                 android:id="@+id/crouton_error"

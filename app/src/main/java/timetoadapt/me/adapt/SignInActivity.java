@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -34,8 +36,10 @@ public class SignInActivity extends Activity {
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
 
-        findViewById(R.id.signin_form).setBackgroundResource(R.drawable.mountain);
-        findViewById(R.id.signin_form).getBackground().setAlpha(150);
+        ScrollView layout = (ScrollView) findViewById(R.id.signin_form);
+        layout.setBackgroundColor(getResources().getColor(R.color.adapt_dark_grey));
+        layout.setBackgroundResource(R.drawable.mountain);
+        layout.getBackground().setAlpha(50);
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_sign_in");
@@ -50,6 +54,15 @@ public class SignInActivity extends Activity {
         actionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 login();
+            }
+        });
+
+        TextView signUp = (TextView) findViewById(R.id.sign_up_text_prompt);
+        signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signUpIntent = new Intent(SignInActivity.this, SignUpActivity.class);
+                startActivity(signUpIntent);
             }
         });
 

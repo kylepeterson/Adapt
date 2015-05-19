@@ -19,7 +19,7 @@
 
     <style name="adaptEditText" parent="@android:style/Widget.Holo.Light.EditText">
         <item name="android:background">@color/adapt_light_grey_alpha</item>
-        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textCursorDrawable">@drawable/text_cursor_shape</item>
         <item name="android:textColor">@color/adapt_green</item>
         <item name="android:textColorHint">@color/adapt_green_alpha</item>
         <item name="android:height">40sp</item>
@@ -30,6 +30,5 @@
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
     </style>
-
 
 </resources>

@@ -30,6 +30,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:hint="@string/username"
+                style="@style/adaptEditText"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -38,20 +39,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/username_explanation"
                 android:textColor="@color/accent_material_light"
-                android:textSize="18dp" />
+                android:textSize="14dp" />
 
             <EditText
                 android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:ems="10"
+                style="@style/adaptEditText"
+
                 android:hint="@string/password"
                 android:inputType="textPassword" />
 
@@ -62,6 +65,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:ems="10"
+                style="@style/adaptEditText"
                 android:hint="@string/password_confirm"
                 android:inputType="textPassword" />
 
@@ -72,6 +76,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:text="@string/sign_up_title"
+                android:background="@drawable/button_background"
                 android:textColor="@color/accent_material_dark" />
 
             <LinearLayout

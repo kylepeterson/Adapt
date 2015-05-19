@@ -1,6 +1,5 @@
 package timetoadapt.me.adapt;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -36,7 +36,10 @@ public class SignUpActivity extends Activity {
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
 
-
+        ScrollView layout = (ScrollView) findViewById(R.id.signup_form);
+        layout.setBackgroundColor(getResources().getColor(R.color.adapt_dark_grey));
+        layout.setBackgroundResource(R.drawable.mountain2);
+        layout.getBackground().setAlpha(50);
 
         ParseObject analObject = new ParseObject("Analytics");
         analObject.put("action", "user_sign_up");
