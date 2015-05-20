@@ -26,7 +26,9 @@
         <activity
             android:name=".CreateHypothesisActivity"
             android:label="@string/title_activity_create"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+
         </activity>
 
         <activity
@@ -45,6 +47,12 @@
             android:name=".HypothesisProfileActivity"
             android:label="@string/hypothesis_profile_title">
         </activity>
+
+        <activity
+            android:name=".AskQuestionActivity"
+            android:label="@string/hypothesis_profile_title">
+        </activity>
+
         <activity
             android:name=".AdaptSplash"
             android:label="@string/app_name"

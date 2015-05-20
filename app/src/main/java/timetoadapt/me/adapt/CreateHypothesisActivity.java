@@ -30,6 +30,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -46,7 +47,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
     private QuestionsFragment questionsFragment;
 
     // stores user entered questions and the possible answers for each
-    private HashMap<String, List<String>> hypothesisQuestions;
+    private Map<String, Map<Integer, List<String>>> hypothesisQuestions;
 
     private String tryThis;
     private String toAccomplish;
@@ -82,8 +83,19 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
     // interface for child fragments to report a question has been added by the user
     // assumes the text and options have been checked for validity
     public void onAddQuestion(String text, List<String> options) {
-        hypothesisQuestions.put(text, options); // add to list of questions
+        Map<Integer, List<String>> toPut = new HashMap<>();
+        toPut.put(2, new ArrayList<String>());
+
+        hypothesisQuestions.put(text, toPut); // add to list of questions
         questionsFragment.addQuestionToDisplay(text); // display on screen
+    }
+
+    @Override
+    public void onAddQuestion(String text, int timeToAsk) {
+        Map<Integer, List<String>> toPut = new HashMap<>();
+        toPut.put(timeToAsk, new ArrayList<String>());
+
+        hypothesisQuestions.put(text, toPut);
     }
 
     @Override
@@ -130,15 +142,23 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
 
         // submit each user entered question to database
         for (String questionText : hypothesisQuestions.keySet()) {
-            List<String> options = hypothesisQuestions.get(questionText);
+            Map<Integer, List<String>> timeToAskMap = hypothesisQuestions.get(questionText);
+            List<String> options = new ArrayList<>();
+            int time = 0;
+            for (int timeToAsk : timeToAskMap.keySet()) {
+                options = timeToAskMap.get(timeToAsk);
+                time = timeToAsk;
+            }
 
             ParseObject question = new ParseObject("Question");
 
             question.put("questionType", 1);
             question.put("questionText", questionText);
             question.put("hypothesis", hypothesis);
+            question.put("timeToAsk", time);
 
             question.addAllUnique("questionOptions", options);
+
 
             question.saveInBackground();
         }
@@ -158,6 +178,11 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
                 }
             }
         });
+    }
+
+    @Override
+    public ParseObject getSelectedCategory() {
+        return category;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -401,9 +426,32 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
-            // Set layout to category fragment
             View rootView = inflater.inflate(R.layout.add_questions_fragment, container, false);
-            // Grab category buttons from layout
+
+            ParseObject category = mListener.getSelectedCategory();
+            String categoryName = category.getString("categoryName").toLowerCase();
+
+            TextView beforeText = (TextView) rootView.findViewById(R.id.before_question_text);
+            TextView afterText = (TextView) rootView.findViewById(R.id.after_question_text);
+
+            String beforeString;
+            String afterString;
+
+            if (categoryName.equals("sleep")) {
+                beforeString = getResources().getString(R.string.sleep_before_question);
+                afterString = getResources().getString(R.string.sleep_after_question);
+            } else if (categoryName.equals("focus")) {
+                beforeString = getResources().getString(R.string.focus_before_question);
+                afterString = getResources().getString(R.string.focus_after_question);
+            } else {
+                beforeString = getResources().getString(R.string.nutrition_before_question);
+                afterString = getResources().getString(R.string.nutrition_after_question);
+            }
+
+            beforeText.setText(beforeString);
+            afterText.setText(afterString);
+            mListener.onAddQuestion(beforeString, 0);
+            mListener.onAddQuestion(afterString, 1);
 
             questionList = (LinearLayout) rootView.findViewById(R.id.question_list);
 

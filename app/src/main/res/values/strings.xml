@@ -58,6 +58,19 @@
     <string name="add_question_button">Add a question</string>
     <string name="create_hypothesis_complete">Done</string>
 
+    <string name="before_question_explanation">This question will be asked every time a new user joins your hypothesis:</string>
+    <string name="after_question_explanation">This question will be asked every time a user submits data:</string>
+
+    <string name="sleep_before_question">How would you rate your current average sleep?</string>
+    <string name="focus_before_question">How would you rate your current average focus level?</string>
+    <string name="nutrition_before_question">How would you rate your current nutrition habits?</string>
+
+    <string name="sleep_after_question">How would you rate your sleep last night?</string>
+    <string name="focus_after_question">How would you rate your focus after trying this hypothesis?</string>
+    <string name="nutrition_after_question">How would you rate your nutrition habits after trying this hypothesis?</string>
+
+
+
     <!-- Strings for parse queries -->
     <string name="sleep_object_id">H5IoNhCT46</string>
     <string name="focus_object_id">2M5E91TvVs</string>
