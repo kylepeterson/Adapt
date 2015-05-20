@@ -54,9 +54,9 @@
     <string name="create_error_accomplish_empty">enter a "To accomplish" suggestion</string>
     <string name="create_error_category_empty">select a category</string>
     <string name="create_error_description_empty">enter an hypothesis description</string>
-    <string name="add_question_description">Add questions to ask subscribers to your hypothesis every time that they enter data</string>
+    <string name="add_question_description">If you would like, you can add more questions to ask subscribers to your idea every time that they enter data:</string>
     <string name="add_question_button">Add a question</string>
-    <string name="create_hypothesis_complete">Done</string>
+    <string name="create_hypothesis_complete">Create Idea</string>
 
     <string name="before_question_explanation">This question will be asked every time a new user joins your hypothesis:</string>
     <string name="after_question_explanation">This question will be asked every time a user submits data:</string>

@@ -150,12 +150,6 @@ public class MainActivity extends Activity {
 
     public class HypothesisListFragment extends Fragment {
 
-
-        public HypothesisListFragment() {
-
-        }
-
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -177,18 +171,7 @@ public class MainActivity extends Activity {
                 // we find all objectIDs contained in the list stored in the user table
                 ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
                 mainQuery.whereContainedIn("objectId", joinedIds);
-
-                /*List<ParseObject> parseObjects;
-
-                // we need to use the not-background "find" to make sure that we get items from the
-                // query before we create our list adapter
-                try {
-                    parseObjects = mainQuery.find();
-                } catch (ParseException e) {
-                    parseObjects = new ArrayList<>();
-                    Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
-                    Log.i("application", "error retrieving hypothesis " + e.getMessage());
-                }*/
+                
                 mainQuery.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {
