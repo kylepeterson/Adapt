@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/row" android:padding="5dp"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:id="@+id/text_content"
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="boys willl be boys and will go to the store"
+            android:id="@+id/hypothesis_text"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hello do not get snacks boys"
+            android:id="@+id/usersCount"
+            android:layout_below="@+id/hypothesis_text"
+            android:layout_marginTop="5dp"/>
+
+        <android.widget.IconTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/rating"
+            android:layout_below="@+id/hypothesis_text"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+    <Button
+        android:layout_height="match_parent"
+        android:layout_width="0px"
+        android:background="@color/adapt_blue"
+        android:layout_weight="2"
+        android:layout_toRightOf="@+id/text_content"
+        android:padding="5dp"
+        android:text="Self Report"/>
+</LinearLayout>

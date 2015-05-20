@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="20dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/quote_view"/>
+        android:id="@+id/quote_view"
+        android:textSize="25dp"
+        android:text="yes my boys, come to the store. buy my snacks and open my door"
+
+        android:textColor="@color/adapt_dark_grey"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/author_view"/>
+        android:id="@+id/author_view"
+        android:textSize="14dp"
+        android:text="Reginald Fuck"
+        android:paddingTop="10dp"
+        android:layout_gravity="right"
+
+        android:textColor="@color/adapt_light_grey"/>
 
 </LinearLayout>
