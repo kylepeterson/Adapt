@@ -1,6 +1,5 @@
 package timetoadapt.me.adapt;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -104,15 +103,19 @@ public class MainActivity extends Activity {
             // current subscriptions fragment
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            HypothesisListFragment list = new HypothesisListFragment();
+            // HypothesisListFragment list = new HypothesisListFragment();
             // Next three commented lines are for inflating created list
-            //CreatedListFragment createdList = new CreatedListFragment();
-
+            // CreatedListFragment createdList = new CreatedListFragment();
+/*
             list.setArguments(getIntent().getExtras());
-            //createdList.setArguments(getIntent().getExtras());
+            createdList.setArguments(getIntent().getExtras());
 
             ft.replace(R.id.subscriptions_container, list);
-            //ft.replace(R.id.created_container, createdList);
+
+            ft.replace(R.id.created_container, createdList);*/
+            CombinedFragment combinedFragment = new CombinedFragment();
+            combinedFragment.setArguments(getIntent().getExtras());
+            ft.replace(R.id.subscriptions_container, combinedFragment);
             ft.commit();
 
         }
@@ -186,7 +189,7 @@ public class MainActivity extends Activity {
                             }
 
                             // Adapter to create listView rows
-                            final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
+                            final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.report_row, listData);
                             ListView listView = (ListView) rootView.findViewById(R.id.hypList);
                             // set adapter to the list view
                             listView.setAdapter(adapter);
@@ -238,42 +241,6 @@ public class MainActivity extends Activity {
                 Log.d("mainpage", "rootView: " + rootView);
                 ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
                 mainQuery.whereContainedIn("objectId", createdIds);
-
-                // This is the old non synchronous way of querying:
-
-                //List<ParseObject> parseObjects;
-/*
-                try {
-                    parseObjects = mainQuery.find();
-                } catch (ParseException e) {
-                    parseObjects = new ArrayList<>();
-                    Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
-                    Log.i("application", "error retrieving hypothesis " + e.getMessage());
-                }
-                Log.d("mainpage", "parseObjets: " + parseObjects);
-                List<HypothesisListItem> listData = new ArrayList<>();
-                for (int i = 0; i < parseObjects.size(); i++) {
-                    // add returned hypotheses to the array of list items
-                    listData.add(new HypothesisListItem(parseObjects.get(i)));
-                }
-                Log.d("mainpage", "listdata: " + listData);
-                // Adapter to create listView rows
-                final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
-                ListView listView = (ListView) rootView.getChildAt(0);
-                // set adapter to the list view
-                listView.setAdapter(adapter);
-                Log.d("mainpage", "listview: " + listView);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent profilePage = new Intent(MainActivity.this, HypothesisProfileActivity.class);
-                        // Add any extras here for data that needs to be passed to the ListActivity
-                        profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
-                        startActivity(profilePage);
-                    }
-                });
-*/
-                //try {
                 mainQuery.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {
@@ -307,11 +274,6 @@ public class MainActivity extends Activity {
                         }
                     }
                 });
-                /*} catch (ParseException e) {
-                    parseObjects = new ArrayList<>();
-                    Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
-                    Log.i("application", "error retrieving hypothesis " + e.getMessage());
-                }*/
                 return rootView;
             } else {
                 // display message if empty?
@@ -351,6 +313,132 @@ public class MainActivity extends Activity {
             authorView.setText(" - " + author);
 
             return rootView;
+        }
+    }
+
+    public class CombinedFragment extends Fragment {
+
+        public CombinedFragment() {
+
+        }
+
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            // find all the hypotheses the user subscribed to.
+            List<String> joinedIds = instance.getCurrentUser().getList("joined");
+            List<String> createdIds = instance.getCurrentUser().getList("created");
+
+            // if the user has some subscriptions, display them. Otherwise, prompt user to subscribe
+            if (joinedIds != null || createdIds != null) {
+                final View rootView = inflater.inflate(R.layout.combined_list_fragment, container, false);
+                if(joinedIds != null) {
+                    // put code here to append rows to the list view for each hypothesis
+                    // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+                    String userName = instance.getCurrentUser().getUsername();
+                    Log.d("joined", "user: " + userName + " joined hypotheses: " + joinedIds);
+
+                    // Make header visible
+                    rootView.findViewById(R.id.hypTitle).setVisibility(View.VISIBLE);
+                    // we find all objectIDs contained in the list stored in the user table
+                    ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
+                    mainQuery.whereContainedIn("objectId", joinedIds);
+
+                    mainQuery.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> parseObjects, ParseException e) {
+                            if (e != null) {
+                                Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
+                                Log.i("application", "error retrieving hypothesis " + e.getMessage());
+                            } else {
+                                List<HypothesisListItem> listData = new ArrayList<>();
+                                for (int i = 0; i < parseObjects.size(); i++) {
+                                    // add returned hypotheses to the array of list items
+                                    listData.add(new HypothesisListItem(parseObjects.get(i)));
+                                }
+
+                                // Adapter to create listView rows
+                                final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.report_row, listData);
+                                ListView listView = (ListView) rootView.findViewById(R.id.hypList);
+                                // set adapter to the list view
+                                listView.setAdapter(adapter);
+
+                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Intent profilePage = new Intent(MainActivity.this, HypothesisProfileActivity.class);
+                                        // Add any extras here for data that needs to be passed to the ListActivity
+                                        profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
+                                        startActivity(profilePage);
+                                    }
+                                });
+
+                            }
+                        }
+                    });
+                } else {
+                    // No joined hypotheses, hide title
+                    rootView.findViewById(R.id.hypTitle).setVisibility(View.GONE);
+                }
+                if(createdIds != null) {
+                    Log.d("mainpage", "rootView: " + rootView);
+                    ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
+                    // show title
+                    rootView.findViewById(R.id.createdTitle).setVisibility(View.VISIBLE);
+                    mainQuery.whereContainedIn("objectId", createdIds);
+                    mainQuery.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> parseObjects, ParseException e) {
+                            if (e != null) {
+                                Log.d("parseError", "error retrieving hypothesis " + e.getMessage());
+                                Log.i("application", "error retrieving hypothesis " + e.getMessage());
+                                ;
+                            } else {
+                                Log.d("mainpage", "parseObjets: " + parseObjects);
+                                List<HypothesisListItem> listData = new ArrayList<>();
+                                for (int i = 0; i < parseObjects.size(); i++) {
+                                    // add returned hypotheses to the array of list items
+                                    listData.add(new HypothesisListItem(parseObjects.get(i)));
+                                }
+                                Log.d("mainpage", "listdata: " + listData);
+                                Log.d("mainpage", "first hypothesis" + listData.get(0).tryThis);
+                                // Adapter to create listView rows
+                                ListView listView = (ListView) rootView.findViewById(R.id.createdList);
+                                final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
+                                // set adapter to the list view
+                                listView.setAdapter(adapter);
+                                Log.d("mainpage", "listview: " + listView);
+                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Intent profilePage = new Intent(MainActivity.this, HypothesisProfileActivity.class);
+                                        // Add any extras here for data that needs to be passed to the ListActivity
+                                        profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
+                                        startActivity(profilePage);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    // No created hypotheses, hide title
+                    rootView.findViewById(R.id.createdTitle).setVisibility(View.GONE);
+                }
+                return rootView;
+            } else {
+                // No joined or created hypotheses
+                TextView tv = new TextView(getActivity());
+                tv.setText("Welcome " + instance.getCurrentUser().getUsername() + "!\nYour subscribed hypothesis will show up here. Hit Browse to find hypotheses that work for you!");
+                tv.setTextColor(Color.parseColor("#1DAD74"));
+                tv.setTop(20);
+                tv.setTextSize(25);
+                return tv;
+            }
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
         }
     }
 }

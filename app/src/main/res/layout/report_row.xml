@@ -6,10 +6,11 @@
 
     <RelativeLayout
         android:layout_width="0px"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="8"
         android:id="@+id/text_content"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:paddingRight="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,11 +36,16 @@
             android:layout_alignParentRight="true" />
     </RelativeLayout>
     <Button
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_width="0px"
         android:background="@color/adapt_blue"
         android:layout_weight="2"
         android:layout_toRightOf="@+id/text_content"
-        android:padding="5dp"
-        android:text="Self Report"/>
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:textColor="@color/adapt_white"
+        android:text="Self Report"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp" />
 </LinearLayout>
