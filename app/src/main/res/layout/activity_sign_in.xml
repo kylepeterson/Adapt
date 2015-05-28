@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/adapt_logo"
-                android:src="@drawable/logo_without_text"
+                android:src="@drawable/logo_withouttext_big"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"/>
 
@@ -33,7 +33,10 @@
                 android:hint="@string/username"
                 android:maxLines="1"
                 style="@style/adaptEditText"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/adapt_white"
+                android:background="@color/adapt_dark_grey"
+                android:textIsSelectable="false" />
 
             <EditText
                 android:id="@+id/password"
@@ -45,7 +48,9 @@
                 android:maxLines="1"
                 android:hint="@string/password"
                 style="@style/adaptEditText"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:background="@color/adapt_dark_grey"
+                android:textColor="@color/adapt_white" />
 
             <Button
                 android:id="@+id/sign_in_button"
@@ -54,8 +59,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:text="@string/sign_in_title"
-                android:background="@drawable/button_background"
-                android:textColor="@color/adapt_blue" />
+                android:background="@color/adapt_blue"
+                android:textColor="@color/adapt_white"
+                android:padding="15dp"/>
             
             <TextView
                 android:layout_width="wrap_content"
@@ -63,7 +69,7 @@
                 android:text="@string/sign_up_prompt"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="30dp"
-                android:textColor="@color/adapt_green"
+                android:textColor="@color/adapt_dark_grey"
                 android:textSize="20dp"
                 android:id="@+id/sign_up_text_prompt"/>
 
