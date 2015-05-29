@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -60,10 +59,6 @@ public class HypothesisProfileActivity extends Activity {
         join = (Button) findViewById(R.id.hypothesis_join_button);
         ubsubscribe = (TextView) findViewById(R.id.unsubscribe_button);
         updateJoinButton();
-
-        WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
-        dataWebView.getSettings().setJavaScriptEnabled(true);
-        dataWebView.loadUrl("http://roeeavnon.com/");
 
     }
 
@@ -140,6 +135,9 @@ public class HypothesisProfileActivity extends Activity {
         Intent questionPage = new Intent(HypothesisProfileActivity.this, AskQuestionActivity.class);
         // Add any extras here for data that needs to be passed to the QuestionActivity
         questionPage.putExtra("hypothesisID", hypothesisID);
+        Log.d("HYPOTHESISCATEGORy", hypothesisData.category);
+        questionPage.putExtra("hypothesisCategory", hypothesisData.category);
+        questionPage.putExtra("timeToAsk", 1);
         startActivity(questionPage);
     }
 

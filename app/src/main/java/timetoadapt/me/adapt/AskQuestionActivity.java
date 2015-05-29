@@ -28,6 +28,8 @@ public class AskQuestionActivity extends Activity {
 
     private AdaptApp instance;
     private String hypothesisID;
+    private String hypothesisCategory;
+    private int timeToAsk;
     private RatingBar rating;
     private TextView questionText;
     private ParseObject question;
@@ -46,21 +48,51 @@ public class AskQuestionActivity extends Activity {
 
         Intent intent = getIntent();
         hypothesisID = intent.getStringExtra("hypothesisID");
+        hypothesisCategory = intent.getStringExtra("hypothesisCategory");
+        timeToAsk = intent.getIntExtra("timeToAsk", 0);
+
 
         questionText = (TextView) findViewById(R.id.question_text);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Question");
-        ParseObject obj = ParseObject.createWithoutData("Hypothesis", hypothesisID);
+        final ParseObject obj = ParseObject.createWithoutData("Hypothesis", hypothesisID);
         query.whereEqualTo("hypothesis", obj);
 
-        query.whereEqualTo("timeToAsk", 0);
+        query.whereEqualTo("timeToAsk", timeToAsk);
 
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
                 if (e == null) {
-                    question = list.get(0);
-                    displayData();
+                    if (!list.isEmpty()) {
+                        question = list.get(0);
+                        displayData();
+                    } else {
+                        final ParseObject newQuestion = new ParseObject("Question");
+                        newQuestion.put("hypothesis", obj);
+                        newQuestion.put("questionType", 1);
+                        String questionText;
+                        if (hypothesisCategory.equals(getResources().getString(R.string.focus_object_id))) {
+                            questionText = getResources().getString(R.string.focus_before_question);
+                        } else if (hypothesisCategory.equals(getResources().getString(R.string.sleep_object_id))) {
+                            questionText = getResources().getString(R.string.sleep_before_question);
+                        } else {
+                            questionText = getResources().getString(R.string.nutrition_before_question);
+                        }
+                        newQuestion.put("questionText", questionText);
+                        newQuestion.put("timeToAsk", 0);
+                        newQuestion.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    question = newQuestion;
+                                    displayData();
+                                } else {
+                                    Crouton.makeText(AskQuestionActivity.this, e.getMessage(), Style.ALERT).show();
+                                }
+                            }
+                        });
+                    }
                 } else {
                     Crouton.makeText(AskQuestionActivity.this, e.getMessage(), Style.ALERT).show();
                 }
