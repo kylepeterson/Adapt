@@ -103,19 +103,19 @@ public class MainActivity extends Activity {
             // current subscriptions fragment
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            // HypothesisListFragment list = new HypothesisListFragment();
+            HypothesisListFragment list = new HypothesisListFragment();
             // Next three commented lines are for inflating created list
             // CreatedListFragment createdList = new CreatedListFragment();
-/*
+
             list.setArguments(getIntent().getExtras());
-            createdList.setArguments(getIntent().getExtras());
+            //createdList.setArguments(getIntent().getExtras());
 
             ft.replace(R.id.subscriptions_container, list);
 
-            ft.replace(R.id.created_container, createdList);*/
+            /*(ft.replace(R.id.created_container, createdList);
             CombinedFragment combinedFragment = new CombinedFragment();
             combinedFragment.setArguments(getIntent().getExtras());
-            ft.replace(R.id.subscriptions_container, combinedFragment);
+            ft.replace(R.id.subscriptions_container, combinedFragment); */
             ft.commit();
 
         }

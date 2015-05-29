@@ -28,12 +28,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/subscriptions_container" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Joined"
+            android:background="@color/adapt_light_grey"
+            android:textColor="#FFFFFF"
+            android:id="@+id/joinedButton"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Created"
+            android:background="@color/adapt_dark_grey"
+            android:textColor="#FFFFFF"
+            android:id="@+id/createdButton"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/created_container" />
+        android:id="@+id/subscriptions_container" />
 </LinearLayout>

@@ -63,7 +63,7 @@ public class HypothesisProfileActivity extends Activity {
 
         WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         dataWebView.getSettings().setJavaScriptEnabled(true);
-        dataWebView.loadUrl("http://roeeavnon.com/");
+        dataWebView.loadUrl("http://bud.haus/~pi/dangus_cam/");
 
     }
 
