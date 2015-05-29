@@ -114,9 +114,15 @@
             android:textSize="18dp" />
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/data_title_box"
-            android:id="@+id/data_content"/>
+            android:id="@+id/data_content">
+
+            <WebView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/data_web_view"/>
+            </RelativeLayout>
      </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -126,7 +132,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/comments_header_box"
+            android:id="@+id/comments_title_box"
             android:text="Experiences"
             android:textColor="@android:color/white"
             android:background="@color/adapt_light_grey"
