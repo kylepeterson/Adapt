@@ -30,4 +30,7 @@
         <item name="android:paddingRight">10dp</item>
     </style>
 
+    <style name="selectedTab">
+    </style>
+
 </resources>
