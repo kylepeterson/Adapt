@@ -29,4 +29,5 @@ dependencies {
         exclude group: 'com.google.android', module: 'support-v4'
     }
     compile 'com.joanzapata.android:android-iconify:1.0.9'
+
 }
