@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Created"
-            android:background="@color/adapt_dark_grey"
+            android:background="@color/adapt_light_grey"
             android:textColor="#FFFFFF"
             android:id="@+id/createdButton"/>
     </LinearLayout>

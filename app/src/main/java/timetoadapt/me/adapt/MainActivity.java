@@ -88,6 +88,36 @@ public class MainActivity extends Activity {
             }
         });
 
+        final Button joinedButton = (Button) findViewById(R.id.joinedButton);
+        final Button createdViewButton = (Button) findViewById(R.id.createdButton);
+        joinedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                joinedButton.setBackgroundColor(getResources().getColor(R.color.adapt_light_grey));
+                createdViewButton.setBackgroundColor(getResources().getColor(R.color.adapt_dark_grey));
+                HypothesisListFragment list = new HypothesisListFragment();
+                list.setArguments(getIntent().getExtras());
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.subscriptions_container, list);
+                ft.commit();
+            }
+        });
+
+        createdViewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createdViewButton.setBackgroundColor(getResources().getColor(R.color.adapt_light_grey));
+                joinedButton.setBackgroundColor(getResources().getColor(R.color.adapt_dark_grey));
+                CreatedListFragment list = new CreatedListFragment();
+                list.setArguments(getIntent().getExtras());
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.subscriptions_container, list);
+                ft.commit();
+            }
+        });
+
     }
 
     @Override
