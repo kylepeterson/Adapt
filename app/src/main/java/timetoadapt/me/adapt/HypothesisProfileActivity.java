@@ -139,7 +139,6 @@ public class HypothesisProfileActivity extends Activity {
         Intent questionPage = new Intent(HypothesisProfileActivity.this, AskQuestionActivity.class);
         // Add any extras here for data that needs to be passed to the QuestionActivity
         questionPage.putExtra("hypothesisID", hypothesisID);
-        Log.d("HYPOTHESISCATEGORy", hypothesisData.category);
         questionPage.putExtra("hypothesisCategory", hypothesisData.category);
         questionPage.putExtra("timeToAsk", 1);
         startActivity(questionPage);

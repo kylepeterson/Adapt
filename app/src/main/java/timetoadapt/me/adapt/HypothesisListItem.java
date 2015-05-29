@@ -2,7 +2,6 @@ package timetoadapt.me.adapt;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.parse.ParseObject;
 
@@ -41,7 +40,6 @@ public class HypothesisListItem implements Parcelable {
         this.rating = parseObject.getDouble("rating");
         this.description = parseObject.getString("description");
         this.category = parseObject.getParseObject("parentCategory").getString("categoryName");
-        Log.d("HYPOTHESISCATEGORy", this.category);
         this.objectID = parseObject.getObjectId();
     }
 

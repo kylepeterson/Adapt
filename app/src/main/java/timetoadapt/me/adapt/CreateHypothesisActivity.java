@@ -131,7 +131,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         dialog.setMessage("Creating Hypothesis...");
         dialog.show();
 
-        ParseObject hypothesis = new ParseObject("Hypothesis");
+        final ParseObject hypothesis = new ParseObject("Hypothesis");
         hypothesis.put("author", instance.getCurrentUser());
         hypothesis.put("ifDescription", this.tryThis);
         hypothesis.put("thenDescription", this.toAccomplish);
@@ -170,9 +170,20 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
             public void done(ParseException e) {
                 dialog.dismiss();
                 if (e == null) {
-                    Intent intent = new Intent(CreateHypothesisActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    instance.getCurrentUser().add("created", hypothesis.getObjectId());
+                    instance.getCurrentUser().saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Intent intent = new Intent(CreateHypothesisActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            } else {
+                                Crouton.makeText(CreateHypothesisActivity.this, e.getMessage(), Style.ALERT).show();
+                            }
+                        }
+                    });
+
                 } else {
                     Crouton.makeText(CreateHypothesisActivity.this, e.getMessage(), Style.ALERT).show();
                 }
