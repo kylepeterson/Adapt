@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -64,6 +65,17 @@ public class HypothesisProfileActivity extends Activity {
         WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         dataWebView.getSettings().setJavaScriptEnabled(true);
         dataWebView.loadUrl("http://bud.haus/~pi/dangus_cam/");
+
+        // disable scroll on touch
+        dataWebView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return (event.getAction() == MotionEvent.ACTION_MOVE);
+            }
+        });
+
+        dataWebView.setVerticalScrollBarEnabled(false);
+        dataWebView.setHorizontalScrollBarEnabled(false);
     }
 
     public void updateJoinButton() {
