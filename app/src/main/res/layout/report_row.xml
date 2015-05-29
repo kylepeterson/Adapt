@@ -50,5 +50,6 @@
         android:layout_gravity="center_vertical"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:id="@+id/report_data"/>
 </LinearLayout>
