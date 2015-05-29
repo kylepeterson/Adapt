@@ -2,6 +2,7 @@ package timetoadapt.me.adapt;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.joanzapata.android.iconify.Iconify;
@@ -34,7 +36,7 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
         HypothesisHolder holder = null;
 
@@ -70,6 +72,21 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
             row.setBackgroundColor(context.getResources().getColor(R.color.adapt_white));
         } else {
             row.setBackgroundColor(context.getResources().getColor(R.color.adapt_zebra_list_grey));
+        }
+
+        Button report = (Button) row.findViewById(R.id.report_data);
+        if (report != null) { // this is a repoting row
+            report.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent reportDataActivity = new Intent(v.getContext(), AskQuestionActivity.class);
+                    // Add any extras here for data that needs to be passed to the ListActivity
+                    reportDataActivity.putExtra("hypothesisID", data.get(position).objectID);
+                    reportDataActivity.putExtra("hypothesisCategory", data.get(position).category);
+                    reportDataActivity.putExtra("timeToAsk", 1);
+                    v.getContext().startActivity(reportDataActivity);
+                }
+            });
         }
 
         return row;

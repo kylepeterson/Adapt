@@ -73,14 +73,25 @@ public class AskQuestionActivity extends Activity {
                         newQuestion.put("questionType", 1);
                         String questionText;
                         if (hypothesisCategory.equals(getResources().getString(R.string.focus_object_id))) {
-                            questionText = getResources().getString(R.string.focus_before_question);
+                            if (timeToAsk == 0) {
+                                questionText = getResources().getString(R.string.focus_before_question);
+                            } else {
+                                questionText = getResources().getString(R.string.focus_after_question);
+                            }
                         } else if (hypothesisCategory.equals(getResources().getString(R.string.sleep_object_id))) {
-                            questionText = getResources().getString(R.string.sleep_before_question);
+                            if (timeToAsk == 0) {
+                                questionText = getResources().getString(R.string.sleep_before_question);
+                            } else {
+                                questionText = getResources().getString(R.string.sleep_after_question);
+                            }
                         } else {
-                            questionText = getResources().getString(R.string.nutrition_before_question);
-                        }
+                            if (timeToAsk == 0) {
+                                questionText = getResources().getString(R.string.nutrition_before_question);
+                            } else {
+                                questionText = getResources().getString(R.string.nutrition_after_question);
+                            }                        }
                         newQuestion.put("questionText", questionText);
-                        newQuestion.put("timeToAsk", 0);
+                        newQuestion.put("timeToAsk", timeToAsk);
                         newQuestion.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {

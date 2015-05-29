@@ -47,5 +47,6 @@
         android:text="Self Report"
         android:layout_gravity="center_vertical"
         android:paddingTop="15dp"
-        android:paddingBottom="15dp" />
+        android:paddingBottom="15dp"
+        android:id="@+id/report_data"/>
 </LinearLayout>
