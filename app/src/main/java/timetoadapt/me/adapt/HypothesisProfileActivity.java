@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -60,6 +61,9 @@ public class HypothesisProfileActivity extends Activity {
         ubsubscribe = (TextView) findViewById(R.id.unsubscribe_button);
         updateJoinButton();
 
+        WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
+        dataWebView.getSettings().setJavaScriptEnabled(true);
+        dataWebView.loadUrl("http://bud.haus/~pi/dangus_cam/");
     }
 
     public void updateJoinButton() {
