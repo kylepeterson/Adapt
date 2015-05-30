@@ -40,16 +40,26 @@ function queryDummy(constructor, id) {
    return res;
 }
 
-// Renders the chart html template with the given list of 'answers' for data.
-function report(response, answers) {
+// Renders the chart html template with the given list of 'answers' for data and
+// given 'labels' map (from id to human-readable name).
+function report(response, labels, answers) {
    return response.render('chart', {
-      data: JSON.stringify(answers.map(toDict))
+      data: JSON.stringify(answers.map(toDict)),
+      labels: JSON.stringify(labels)
    });
 }
 
 // Returns a query find Promise matching all Answers by the given 'user' (id) to
-// any question in 'questions' (Parse.object list).
-function retrieveAnswers(user, questions) {
+// any question in 'questions' (Parse.object list). Populates 'labels' with an
+// id->human-readable name mapping for every question.
+function retrieveAnswers(user, labels, questions) {
+   // Populate name map.
+   questions.forEach(function(question) {
+      alert(question.id + ' -- ' + question.get('questionText'));
+      labels[question.id] = question.get('questionText');
+   });
+
+   // Generate answer list query.
    var query = new Parse.Query(Answer);
    query.equalTo('user', queryDummy(User, user));
    query.containedIn('question', questions);
@@ -78,10 +88,11 @@ app.get('/chart', function(req, response) {
    }
    var error = function() {
       res.send('Parse query error. My bad...');
-   }
+   };
+   var labels = {};
    retrieveQuestions(hypothesis)
-      .then(partial(retrieveAnswers, user), error)
-      .then(partial(report, response), error);
+      .then(partial(retrieveAnswers, user, labels), error)
+      .then(partial(report, response, labels), error);
 });
 
 app.listen();

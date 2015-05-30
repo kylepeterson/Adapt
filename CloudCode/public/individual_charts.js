@@ -7,6 +7,9 @@ ChartLoader.LEGEND_SELECTOR = '.legend';
 
 // Loads the chart data in window.ANSWERS into the Chart.js module.
 window.onload = ChartLoader.init = function() {
+   // If there's nothing to render, stop now.
+   if (window.ANSWERS.length == 0) return;
+
    var chart = document.querySelector(CL.CANVAS_SELECTOR);
    var ctx = chart.getContext('2d');
    var data = window.ANSWERS.map(Util.partial(Util.convertDate, 'created'));
@@ -30,8 +33,9 @@ ChartLoader.toDataset = function(xAxis, answers) {
       return points ? Util.mean(Util.extract(points, 'value')) : null;
    });
    var foregroundColor = Colors.nextChartColor();
+   var questionText = window.LABELS[answers[0]['question']];
    return {
-      label: answers[0]['question'],
+      label: questionText,
       data: data,
       strokeColor: foregroundColor,
       pointColor: foregroundColor,
