@@ -6,19 +6,24 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +68,8 @@ public class HypothesisProfileActivity extends Activity {
         updateJoinButton();
 
         WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
+        // enable javascript
         dataWebView.getSettings().setJavaScriptEnabled(true);
-        dataWebView.loadUrl("http://bud.haus/~pi/dangus_cam/");
 
         // disable scroll on touch
         dataWebView.setOnTouchListener(new View.OnTouchListener() {
@@ -74,8 +79,62 @@ public class HypothesisProfileActivity extends Activity {
             }
         });
 
+        //disable scrolling
         dataWebView.setVerticalScrollBarEnabled(false);
         dataWebView.setHorizontalScrollBarEnabled(false);
+
+        // Enable html5 features in webview
+        WebSettings ws = dataWebView.getSettings();
+        ws.setAllowFileAccess(true);
+
+
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.ECLAIR) {
+            try {
+                Log.d("webview", "Enabling HTML5-Features");
+                Method m1 = WebSettings.class.getMethod("setDomStorageEnabled", new Class[]{Boolean.TYPE});
+                m1.invoke(ws, Boolean.TRUE);
+
+                Method m2 = WebSettings.class.getMethod("setDatabaseEnabled", new Class[]{Boolean.TYPE});
+                m2.invoke(ws, Boolean.TRUE);
+
+                Method m3 = WebSettings.class.getMethod("setDatabasePath", new Class[]{String.class});
+                m3.invoke(ws, "/data/data/" + getPackageName() + "/databases/");
+
+                Method m4 = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[]{Long.TYPE});
+                m4.invoke(ws, 1024*1024*8);
+
+                Method m5 = WebSettings.class.getMethod("setAppCachePath", new Class[]{String.class});
+                m5.invoke(ws, "/data/data/" + getPackageName() + "/cache/");
+
+                Method m6 = WebSettings.class.getMethod("setAppCacheEnabled", new Class[]{Boolean.TYPE});
+                m6.invoke(ws, Boolean.TRUE);
+
+                Log.d("webview", "Enabled HTML5-Features");
+            }
+            catch (NoSuchMethodException e) {
+                Log.e("webview", "Reflection fail", e);
+            }
+            catch (InvocationTargetException e) {
+                Log.e("webview", "Reflection fail", e);
+            }
+            catch (IllegalAccessException e) {
+                Log.e("webview", "Reflection fail", e);
+            }
+        }
+        // get parameters
+        String hypId = hypothesisData.objectID;
+        String userId = instance.getCurrentUser().getObjectId();
+        Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
+        // load chart
+        dataWebView.loadUrl("http://bud.haus/~pi/dangus_cam/");
+
+        // bring focus to top of scrollview not to top of webview
+        final ScrollView main = (ScrollView) findViewById(R.id.scrollWrapper);
+        main.post(new Runnable() {
+            public void run() {
+                main.scrollTo(0, 0);
+            }
+        });
     }
 
     public void updateJoinButton() {
