@@ -126,7 +126,8 @@ public class HypothesisProfileActivity extends Activity {
         String userId = instance.getCurrentUser().getObjectId();
         Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
         // load chart
-        dataWebView.loadUrl("http://bud.haus/~pi/dangus_cam/");
+        String chartUrl = "http://adapt.parseapp.com/chart?user=" + userId + "&hypothesis=" + hypId;
+        dataWebView.loadUrl(chartUrl);
 
         // bring focus to top of scrollview not to top of webview
         final ScrollView main = (ScrollView) findViewById(R.id.scrollWrapper);

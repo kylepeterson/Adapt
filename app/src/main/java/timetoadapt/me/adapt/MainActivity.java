@@ -154,7 +154,14 @@ public class MainActivity extends Activity {
             ft.replace(R.id.subscriptions_container, combinedFragment); */
             ft.commit();
 
+            final Button joinedButton = (Button) findViewById(R.id.joinedButton);
+            final Button createdViewButton = (Button) findViewById(R.id.createdButton);
+            joinedButton.setBackgroundColor(getResources().getColor(R.color.adapt_dark_grey));
+            createdViewButton.setBackgroundColor(getResources().getColor(R.color.adapt_light_grey));
+
         }
+
+
     }
 
     @Override

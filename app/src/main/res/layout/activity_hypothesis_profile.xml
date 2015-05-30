@@ -114,7 +114,7 @@
 
             <WebView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="500dp"
                 android:id="@+id/data_web_view"
                 android:layout_below="@+id/data_title_box"
                 android:layout_alignParentLeft="true"
