@@ -14,24 +14,23 @@ var User = Parse.Object.extend('User');
 // 'var_args'.length arguments are fixed to the values in 'var_args'.
 // Straight ripped off from Google Closure (see goog.bind docs).
 function partial(fn, var_args) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  return function() {
-    // Clone the array (with slice()) and append additional arguments
-    // to the existing arguments.
-    var newArgs = args.slice();
-    newArgs.push.apply(newArgs, arguments);
-    return fn.apply(this, newArgs);
-  };
+   var args = Array.prototype.slice.call(arguments, 1);
+   return function() {
+      var newArgs = args.slice();
+      newArgs.push.apply(newArgs, arguments);
+      return fn.apply(this, newArgs);
+   };
 };
 
-// Returns a dictionary keyed on every element k in 'keys', with values obj.get(k),
-// given a Parse.Object 'obj'.
-function toDict(keys, obj) {
-   var res = {};
-   keys.forEach(function(key) {
-      res[key] = obj.get(key);
-   });
-   return JSON.stringify(res);
+// Returns a dictionary containing on the necessary fields from answer (question
+// id, answer content value, created timestamp).
+function toDict(answer) {
+   var res = {
+      question: answer.get('question').id,
+      value: answer.get('answerContent'),
+      created: answer.createdAt
+   };
+   return res;
 }
 
 // Returns a object constructed by given 'constructor' prepopulated with given id.
@@ -43,9 +42,8 @@ function queryDummy(constructor, id) {
 
 // Renders the chart html template with the given list of 'answers' for data.
 function report(response, answers) {
-   var serialize = partial(toDict, ['question', 'updatedAt', 'answerContent']);
    return response.render('chart', {
-      data: answers.map(serialize)
+      data: JSON.stringify(answers.map(toDict))
    });
 }
 

@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+   <link rel="stylesheet" type="text/css" href="/chart.css">
    <script> window.ANSWERS = <%- data %>; </script>
-   <script type="text/javascript">
-window.onload = function() {
-   document.querySelector('body').innerHTML = window.ANSWERS;
-}
-   </script>
+   <script type="text/javascript" src="/chart.min.js"></script>
+   <script type="text/javascript" src="/util.js"></script>
+   <script type="text/javascript" src="/chart_config.js"></script>
+   <script type="text/javascript" src="/colors.js"></script>
+   <script type="text/javascript" src="/individual_charts.js"></script>
 </head>
-<body></body>
+<body>
+<canvas></canvas>
+<div class="legend"></div>
+</body>
 </html>
