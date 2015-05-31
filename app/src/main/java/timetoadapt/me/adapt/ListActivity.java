@@ -213,9 +213,7 @@ public class ListActivity extends Activity {
                 query.orderByDescending("usersJoined");
                 // split keywords on spaces
                 String[] queryTerms = searchQuery.split(" ");
-                for(int i = 0; i < queryTerms.length; i++) {
-                    query.
-                }
+                
                 return rootView;
             }
         }
