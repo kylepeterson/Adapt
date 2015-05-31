@@ -48,8 +48,7 @@ public class ListActivity extends Activity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             doSearch(query);
-        }
-        if (savedInstanceState == null) {
+        } else if (savedInstanceState == null) {
             // When entered through browse button
             // Create new categories fragment
             CategoriesFragment topic = new CategoriesFragment();
@@ -171,6 +170,7 @@ public class ListActivity extends Activity {
             Bundle arguments = getArguments();
             boolean search = arguments.getBoolean("search");
             if(!search) {
+
                 // Display entire category case
                 String category = arguments.getString("category");
 
@@ -204,18 +204,51 @@ public class ListActivity extends Activity {
                         }
                     }
                 });
-                return rootView;
             } else {
+                Log.d("search", "entered search case in OnCreateView");
                 // Display search results
                 String searchQuery = arguments.getString("query");
                 // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
-                query.orderByDescending("usersJoined");
+
                 // split keywords on spaces
                 String[] queryTerms = searchQuery.split(" ");
+                // Here is where we need the complex query. We have n search terms in the above array.
+                // We need all hypotheses whose ifDescription (or thenDescription) contain at least one of these keywords
+                // Can use another search strategy, but this seems like a valid and basic strategy.
 
-                return rootView;
+                // I gave it a shot but this does not work
+                // Create list of queries to match all keywords
+                List<ParseQuery<ParseObject>> compoundQuery = new ArrayList<ParseQuery<ParseObject>>();
+
+                for(int i = 0; i < queryTerms.length; i++) {
+                    // make single query for each keyword
+                    ParseQuery<ParseObject> currentQuery = ParseQuery.getQuery("Hypothesis");
+                    currentQuery.whereContains("ifDescription", queryTerms[i]);
+                    compoundQuery.add(currentQuery);
+                }
+                // we want the 'or' of all the queries
+                ParseQuery<ParseObject> finalQuery = ParseQuery.or(compoundQuery);
+                finalQuery.orderByDescending("usersJoined");
+
+                Log.d("search", "termsList: " + queryTerms);
+                finalQuery.whereEqualTo("ifDescription", searchQuery);
+                finalQuery.whereEqualTo("thenDescription", searchQuery);
+                finalQuery.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
+                        if (e == null) {
+                            // populate list with returned hypotheses
+                            // Once the query works this method call will populate the listview with all rturned queries
+                            populateHypothesesList(parseObjects, rootView);
+                            Log.i("application", "Hypotheses retrieved " + parseObjects);
+                        } else {
+                            Log.d("parseError", "error retrieving hypotheses " + e.getMessage());
+                            Log.i("application", "error retrieving hypotheses " + e.getMessage());
+                        }
+                    }
+                });
             }
+            return rootView;
         }
 
         // Given a list of parseObjects containing hypotheses populate the list fragment
