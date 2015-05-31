@@ -44,8 +44,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="BROWSE"
-            android:background="@color/adapt_blue"
-            android:textColor="#FFFFFF"
+            android:background="@color/adapt_white"
+            android:textColor="@color/adapt_dark_grey"
             android:id="@+id/browse"
             android:textSize="14sp"/>
         <Button
@@ -53,8 +53,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="CREATE"
-            android:background="@color/adapt_blue"
-            android:textColor="#FFFFFF"
+            android:background="@color/adapt_white"
+            android:textColor="@color/adapt_dark_grey"
             android:id="@+id/create"
             android:textSize="14sp"/>
 

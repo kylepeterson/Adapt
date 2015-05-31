@@ -20,7 +20,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:text="@string/sign_up_title"
-                android:textColor="@color/accent_material_light"
+                android:textColor="@color/adapt_dark_grey"
                 android:textSize="40dp" />
 
             <EditText
@@ -30,9 +30,12 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:hint="@string/username"
-                style="@style/adaptEditText"
                 android:maxLines="1"
-                android:singleLine="true" />
+                style="@style/adaptEditText"
+                android:singleLine="true"
+                android:textColor="@color/adapt_white"
+                android:background="@color/adapt_dark_grey"
+                android:textIsSelectable="false" />
 
             <TextView
                 android:id="@+id/username_explanation"
@@ -43,7 +46,7 @@
                 android:layout_marginRight="40dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/username_explanation"
-                android:textColor="@color/accent_material_light"
+                android:textColor="@color/adapt_dark_grey"
                 android:textSize="14dp" />
 
             <EditText
@@ -52,8 +55,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:ems="10"
+                android:maxLines="1"
                 style="@style/adaptEditText"
+                android:singleLine="true"
+                android:textColor="@color/adapt_white"
+                android:background="@color/adapt_dark_grey"
+                android:textIsSelectable="false"
 
                 android:hint="@string/password"
                 android:inputType="textPassword" />
@@ -63,9 +70,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:ems="10"
+                android:layout_marginTop="20dp"
+                android:maxLines="1"
                 style="@style/adaptEditText"
+                android:singleLine="true"
+                android:textColor="@color/adapt_white"
+                android:background="@color/adapt_dark_grey"
+                android:textIsSelectable="false"
                 android:hint="@string/password_confirm"
                 android:inputType="textPassword" />
 
@@ -74,10 +85,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
-                android:text="@string/sign_up_title"
-                android:background="@drawable/button_background"
-                android:textColor="@color/accent_material_dark" />
+                android:layout_marginTop="20dp"
+                android:text="SIGN UP"
+                android:background="@color/adapt_blue"
+                android:textColor="@color/adapt_white"
+                android:padding="15dp" />
 
             <LinearLayout
                 android:id="@+id/crouton_error"

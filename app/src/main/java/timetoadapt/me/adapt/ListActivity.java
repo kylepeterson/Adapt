@@ -3,6 +3,9 @@ package timetoadapt.me.adapt;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -40,7 +44,11 @@ public class ListActivity extends Activity {
         app = (AdaptApp) getApplication();
         AdaptApp instance = app.getInstance();
         hypothesisRepo = instance.hypothesisRepo;
-
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            doSearch(query);
+        }
         if (savedInstanceState == null) {
             // When entered through browse button
             // Create new categories fragment
@@ -56,6 +64,11 @@ public class ListActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
         return true;
     }
 
@@ -129,6 +142,7 @@ public class ListActivity extends Activity {
                     // Attach name of category to fragment
                     Bundle nextArgs = new Bundle();
                     Button currentButton = (Button) v;
+                    nextArgs.putBoolean("search", false);
                     nextArgs.putString("category", currentButton.getText().toString());
                     list.setArguments(nextArgs);
                     // Inflate list fragment
@@ -155,39 +169,55 @@ public class ListActivity extends Activity {
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.hypothesis_list_fragment, container, false);
             Bundle arguments = getArguments();
-            String category = arguments.getString("category");
+            boolean search = arguments.getBoolean("search");
+            if(!search) {
+                // Display entire category case
+                String category = arguments.getString("category");
 
-            // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
+                // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
 
-            // Set appropriate category
-            if (!category.isEmpty()) {
-                Log.d("list", category + " category chosen");
-                String categoryString = category.toLowerCase() + "_object_id";
-                String categoryID = getString(getResources().getIdentifier(categoryString, "string", getPackageName()));
+                // Set appropriate category
+                if (!category.isEmpty()) {
+                    Log.d("list", category + " category chosen");
+                    String categoryString = category.toLowerCase() + "_object_id";
+                    String categoryID = getString(getResources().getIdentifier(categoryString, "string", getPackageName()));
 
-                ParseObject obj = ParseObject.createWithoutData("Category", categoryID);
-                query.whereEqualTo("parentCategory", obj);
-            } else {
-                Log.d("list", "no specific category chosen, all hypothesis queried");
-            }
-
-            query.orderByDescending("usersJoined");
-            // execute query sorted by userJoined for now
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> parseObjects, ParseException e) {
-                    if (e == null) {
-                        // populate list with returned hypotheses
-                        populateHypothesesList(parseObjects, rootView);
-                        Log.i("application", "Hypotheses retrieved " + parseObjects);
-                    } else {
-                        Log.d("parseError", "error retrieving hypotheses " + e.getMessage());
-                        Log.i("application", "error retrieving hypotheses " + e.getMessage());
-                    }
+                    ParseObject obj = ParseObject.createWithoutData("Category", categoryID);
+                    query.whereEqualTo("parentCategory", obj);
+                } else {
+                    Log.d("list", "no specific category chosen, all hypothesis queried");
                 }
-            });
-            return rootView;
+
+                query.orderByDescending("usersJoined");
+                // execute query sorted by userJoined for now
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
+                        if (e == null) {
+                            // populate list with returned hypotheses
+                            populateHypothesesList(parseObjects, rootView);
+                            Log.i("application", "Hypotheses retrieved " + parseObjects);
+                        } else {
+                            Log.d("parseError", "error retrieving hypotheses " + e.getMessage());
+                            Log.i("application", "error retrieving hypotheses " + e.getMessage());
+                        }
+                    }
+                });
+                return rootView;
+            } else {
+                // Display search results
+                String searchQuery = arguments.getString("query");
+                // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Hypothesis");
+                query.orderByDescending("usersJoined");
+                // split keywords on spaces
+                String[] queryTerms = searchQuery.split(" ");
+                for(int i = 0; i < queryTerms.length; i++) {
+                    query.
+                }
+                return rootView;
+            }
         }
 
         // Given a list of parseObjects containing hypotheses populate the list fragment
@@ -214,6 +244,19 @@ public class ListActivity extends Activity {
                 }
             });
         }
+    }
+
+    public void doSearch(String query) {
+        Log.d("search", "received query of " + query);
+        HypothesisListFragment list = new HypothesisListFragment();
+        // Attach name of category to fragment
+        Bundle nextArgs = new Bundle();
+        // create new hypothesis list fragment with a flag for search and pass along the query
+        nextArgs.putBoolean("search", true);
+        nextArgs.putString("query", query);
+        list.setArguments(nextArgs);
+        // Inflate list fragment
+        getFragmentManager().beginTransaction().addToBackStack("List").replace(R.id.container, list).commit();
     }
 
 }

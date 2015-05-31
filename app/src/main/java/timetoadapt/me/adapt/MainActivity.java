@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -20,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -135,6 +139,11 @@ public class MainActivity extends Activity {
             QuoteFragment quotes = new QuoteFragment();
             quotes.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().replace(R.id.subscriptions_container, quotes).commit();
+            final Button joinedButton = (Button) findViewById(R.id.joinedButton);
+            final Button createdViewButton = (Button) findViewById(R.id.createdButton);
+            joinedButton.setVisibility(View.GONE);
+            createdViewButton.setVisibility(View.GONE);
+
         } else { // user totally signed in
             // current subscriptions fragment
             FragmentManager fm = getFragmentManager();
@@ -156,8 +165,12 @@ public class MainActivity extends Activity {
 
             final Button joinedButton = (Button) findViewById(R.id.joinedButton);
             final Button createdViewButton = (Button) findViewById(R.id.createdButton);
+            joinedButton.setVisibility(View.VISIBLE);
+            createdViewButton.setVisibility(View.VISIBLE);
             joinedButton.setBackgroundColor(getResources().getColor(R.color.adapt_dark_grey));
             createdViewButton.setBackgroundColor(getResources().getColor(R.color.adapt_light_grey));
+            joinedButton.setClickable(false);
+            createdViewButton.setClickable(true);
 
         }
 
@@ -168,7 +181,15 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
         return true;
+
+
     }
 
     @Override
@@ -250,6 +271,7 @@ public class MainActivity extends Activity {
                         }
                     }
                 });
+
                 return rootView;
             } else {
                 TextView tv = new TextView(getActivity());

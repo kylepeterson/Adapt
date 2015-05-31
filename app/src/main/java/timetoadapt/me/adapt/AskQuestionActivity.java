@@ -3,11 +3,18 @@ package timetoadapt.me.adapt;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -150,5 +157,39 @@ public class AskQuestionActivity extends Activity {
             }
         });
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        //noinspection SimplifiableIfStatement
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                final Intent nextActivity = new Intent(AskQuestionActivity.this, UserSettingActivity.class);
+                Log.d("actionbar", "settings clicked");
+                startActivity(nextActivity);
+                return true;
+            case R.id.action_log_out:
+                instance.logoutCurrentUser();
+                startActivity(new Intent(AskQuestionActivity.this, MainActivity.class));
+                Log.d("actionbar", "logout clicked");
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
