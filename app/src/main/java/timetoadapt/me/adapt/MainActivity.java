@@ -261,6 +261,7 @@ public class MainActivity extends Activity {
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Log.d("mainpage", "redirect fired from onClick");
                                     Intent profilePage = new Intent(MainActivity.this, HypothesisProfileActivity.class);
                                     // Add any extras here for data that needs to be passed to the ListActivity
                                     profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
@@ -330,6 +331,7 @@ public class MainActivity extends Activity {
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Log.d("mainpage", "created redirect onItemClick fired");
                                     Intent profilePage = new Intent(MainActivity.this, HypothesisProfileActivity.class);
                                     // Add any extras here for data that needs to be passed to the ListActivity
                                     profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
