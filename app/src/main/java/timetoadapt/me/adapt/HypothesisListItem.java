@@ -13,23 +13,21 @@ public class HypothesisListItem implements Parcelable {
     public String tryThis;
     public String toAccomplish;
     public String description;
-    public String category;
+    public String categoryID;
+    public String categoryName;
     public int usersJoined;
     public double rating;
     public String objectID;
 
-    public HypothesisListItem(String tryThis, String toAccomplish, int usersJoined, double rating, String description, String objectID, String category) {
+    public HypothesisListItem(String tryThis, String toAccomplish, int usersJoined, double rating, String description, String objectID, String categoryID, String categoryName) {
         this.tryThis = tryThis;
         this.toAccomplish = toAccomplish;
         this.usersJoined = usersJoined;
         this.rating = rating;
         this.description = description;
         this.objectID = objectID;
-        this.category = category;
-    }
-
-    public HypothesisListItem() {
-        this("", "", 0, 0.0, "", "", "");
+        this.categoryID = categoryID;
+        this.categoryName = categoryName;
     }
 
     // Creates a listItem out of a parseObject
@@ -39,7 +37,8 @@ public class HypothesisListItem implements Parcelable {
         this.usersJoined = parseObject.getInt("usersJoined");
         this.rating = parseObject.getDouble("rating");
         this.description = parseObject.getString("description");
-        this.category = parseObject.getParseObject("parentCategory").getString("categoryName");
+        this.categoryID = parseObject.getParseObject("parentCategory").getObjectId();
+        this.categoryName = parseObject.getParseObject("parentCategory").getString("categoryName");
         this.objectID = parseObject.getObjectId();
     }
 
@@ -49,7 +48,8 @@ public class HypothesisListItem implements Parcelable {
         this.usersJoined = in.readInt();
         this.rating = in.readDouble();
         this.description = in.readString();
-        this.category = in.readString();
+        this.categoryID = in.readString();
+        this.categoryName = in.readString();
         this.objectID = in.readString();
     }
 
@@ -65,7 +65,8 @@ public class HypothesisListItem implements Parcelable {
         dest.writeInt(usersJoined);
         dest.writeDouble(rating);
         dest.writeString(description);
-        dest.writeString(category);
+        dest.writeString(categoryID);
+        dest.writeString(categoryName);
         dest.writeString(objectID);
     }
 

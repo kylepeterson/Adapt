@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.SearchView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -34,8 +35,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class AskQuestionActivity extends Activity {
 
     private AdaptApp instance;
-    private String hypothesisID;
-    private String hypothesisCategory;
+    private HypothesisListItem hypothesisData;
     private int timeToAsk;
     private RatingBar rating;
     private TextView questionText;
@@ -54,74 +54,86 @@ public class AskQuestionActivity extends Activity {
         instance = app.getInstance();
 
         Intent intent = getIntent();
-        hypothesisID = intent.getStringExtra("hypothesisID");
-        hypothesisCategory = intent.getStringExtra("hypothesisCategory");
-        timeToAsk = intent.getIntExtra("timeToAsk", 0);
+        hypothesisData = intent.getParcelableExtra("hypothesisData");
+        timeToAsk = intent.getIntExtra("timeToAsk", -1);
+
+        Log.d("askQuestion", "Asking hypothesis id = " + hypothesisData.objectID + " in category = " + hypothesisData.categoryName + " with timeToAsk = " + timeToAsk);
+
+        if (timeToAsk == -1) {
+            Crouton.makeText(AskQuestionActivity.this, "We're sorry, there was a problem getting data. Please try again.", Style.ALERT).show();
+        } else {
 
 
-        questionText = (TextView) findViewById(R.id.question_text);
+            questionText = (TextView) findViewById(R.id.question_text);
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Question");
-        final ParseObject obj = ParseObject.createWithoutData("Hypothesis", hypothesisID);
-        query.whereEqualTo("hypothesis", obj);
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Question");
+            final ParseObject obj = ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID);
+            query.whereEqualTo("hypothesis", obj);
 
-        query.whereEqualTo("timeToAsk", timeToAsk);
+            query.whereEqualTo("timeToAsk", timeToAsk);
 
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-                if (e == null) {
-                    if (!list.isEmpty()) {
-                        question = list.get(0);
-                        displayData();
-                    } else {
-                        final ParseObject newQuestion = new ParseObject("Question");
-                        newQuestion.put("hypothesis", obj);
-                        newQuestion.put("questionType", 1);
-                        String questionText;
-                        if (hypothesisCategory.equals(getResources().getString(R.string.focus_object_id))) {
-                            if (timeToAsk == 0) {
-                                questionText = getResources().getString(R.string.focus_before_question);
-                            } else {
-                                questionText = getResources().getString(R.string.focus_after_question);
-                            }
-                        } else if (hypothesisCategory.equals(getResources().getString(R.string.sleep_object_id))) {
-                            if (timeToAsk == 0) {
-                                questionText = getResources().getString(R.string.sleep_before_question);
-                            } else {
-                                questionText = getResources().getString(R.string.sleep_after_question);
-                            }
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> list, ParseException e) {
+                    if (e == null) {
+                        if (!list.isEmpty()) {
+                            question = list.get(0);
+                            displayData();
                         } else {
-                            if (timeToAsk == 0) {
-                                questionText = getResources().getString(R.string.nutrition_before_question);
-                            } else {
-                                questionText = getResources().getString(R.string.nutrition_after_question);
-                            }                        }
-                        newQuestion.put("questionText", questionText);
-                        newQuestion.put("timeToAsk", timeToAsk);
-                        newQuestion.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    question = newQuestion;
-                                    displayData();
-                                } else {
-                                    Crouton.makeText(AskQuestionActivity.this, e.getMessage(), Style.ALERT).show();
+                            final ParseObject newQuestion = new ParseObject("Question");
+                            newQuestion.put("hypothesis", obj);
+                            newQuestion.put("questionType", 1);
+                            String toAskText = getHypothesisQuestion(hypothesisData, timeToAsk);
+                            newQuestion.put("questionText", toAskText);
+                            newQuestion.put("timeToAsk", timeToAsk);
+                            newQuestion.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        question = newQuestion;
+                                        displayData();
+                                    } else {
+                                        Crouton.makeText(AskQuestionActivity.this, e.getMessage(), Style.ALERT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+                    } else {
+                        Crouton.makeText(AskQuestionActivity.this, e.getMessage(), Style.ALERT).show();
                     }
-                } else {
-                    Crouton.makeText(AskQuestionActivity.this, e.getMessage(), Style.ALERT).show();
                 }
-            }
-        });
+            });
+        }
     }
 
     private void displayData() {
         questionText.setText(question.getString("questionText"));
 
-        rating = (RatingBar) findViewById(R.id.ratingBar);
+        if (question.getInt("questionType") == 1) {
+            SeekBar sb = (SeekBar) findViewById(R.id.ratingSeekBar);
+            sb.setVisibility(View.VISIBLE);
+
+            final TextView ratingCaption = (TextView) findViewById(R.id.seekBarCaption);
+            ratingCaption.setVisibility(View.VISIBLE);
+            sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    ratingCaption.setText(progress + "/10");
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+        } else {
+            findViewById(R.id.ratingStarBar).setVisibility(View.VISIBLE);
+        }
 
         Button submit = (Button) findViewById(R.id.submit_data_button);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +145,13 @@ public class AskQuestionActivity extends Activity {
                 dialog.setMessage("Submitting data...");
                 dialog.show();
 
-                float numStars = rating.getRating();
+                float numStars;
+
+                if (question.getInt("questionType") == 1) {
+                    numStars = ((SeekBar) findViewById(R.id.ratingSeekBar)).getProgress();
+                } else {
+                    numStars = ((RatingBar) findViewById(R.id.ratingStarBar)).getRating();
+                }
 
                 ParseObject answer = new ParseObject("Answer");
                 answer.put("question", question);
@@ -158,6 +176,31 @@ public class AskQuestionActivity extends Activity {
         });
 
     }
+
+    public String getHypothesisQuestion(HypothesisListItem hypothesis, int timeToAsk) {
+        String questionText;
+        if (hypothesis.categoryID.equals(getResources().getString(R.string.focus_object_id))) {
+            if (timeToAsk == 0) {
+                questionText = getResources().getString(R.string.focus_before_question);
+            } else {
+                questionText = getResources().getString(R.string.focus_after_question);
+            }
+        } else if (hypothesis.categoryID.equals(getResources().getString(R.string.sleep_object_id))) {
+            if (timeToAsk == 0) {
+                questionText = getResources().getString(R.string.sleep_before_question);
+            } else {
+                questionText = getResources().getString(R.string.sleep_after_question);
+            }
+        } else {
+            if (timeToAsk == 0) {
+                questionText = getResources().getString(R.string.nutrition_before_question);
+            } else {
+                questionText = getResources().getString(R.string.nutrition_after_question);
+            }
+        }
+        return questionText;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
