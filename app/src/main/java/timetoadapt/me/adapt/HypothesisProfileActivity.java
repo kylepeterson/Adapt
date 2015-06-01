@@ -41,7 +41,7 @@ public class HypothesisProfileActivity extends Activity {
 
     private AdaptApp instance;
     private Button join;
-    private TextView ubsubscribe;
+    private TextView unsubscribe;
     private HypothesisListItem hypothesisData;
 
     @Override
@@ -68,7 +68,7 @@ public class HypothesisProfileActivity extends Activity {
         description.setText(hypothesisData.description);
 
         join = (Button) findViewById(R.id.hypothesis_join_button);
-        ubsubscribe = (TextView) findViewById(R.id.unsubscribe_button);
+        unsubscribe = (TextView) findViewById(R.id.unsubscribe_button);
         updateJoinButton();
 
         WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
@@ -153,8 +153,8 @@ public class HypothesisProfileActivity extends Activity {
 
                 }
             });
-            ubsubscribe.setVisibility(View.VISIBLE);
-            ubsubscribe.setOnClickListener(new View.OnClickListener() {
+            unsubscribe.setVisibility(View.VISIBLE);
+            unsubscribe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     unsubscribeUser(hypothesisData.objectID);
@@ -167,7 +167,7 @@ public class HypothesisProfileActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     if (instance.getCurrentUser() != null) {
-                        subscribeUser(hypothesisData.objectID);
+                        subscribeUser();
                     } else { // not signed in
                         AlertDialog.Builder builder = new AlertDialog.Builder(HypothesisProfileActivity.this);
                         builder.setMessage(R.string.user_required_subscribe_dialog_message);
@@ -188,24 +188,24 @@ public class HypothesisProfileActivity extends Activity {
                     }
                 }
             });
-            ubsubscribe.setVisibility(View.GONE);
+            unsubscribe.setVisibility(View.GONE);
         }
     }
 
 
-    public void subscribeUser(String hypothesisID) {
+    public void subscribeUser() {
         final ProgressDialog dialog = new ProgressDialog(HypothesisProfileActivity.this);
         dialog.setMessage("Joining you...");
         dialog.show();
 
-        instance.getCurrentUser().add("joined", hypothesisID);
+        instance.getCurrentUser().addUnique("joined", hypothesisData.objectID);
         instance.getCurrentUser().saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 dialog.dismiss();
                 if (e == null) {
                     instance.updateCurrentUser();
-                    updateJoinButton();
+                //    updateJoinButton();
                 } else {
                     Crouton.makeText(HypothesisProfileActivity.this, e.getMessage(), Style.ALERT).show();
                 }
@@ -214,9 +214,8 @@ public class HypothesisProfileActivity extends Activity {
 
         Intent questionPage = new Intent(HypothesisProfileActivity.this, AskQuestionActivity.class);
         // Add any extras here for data that needs to be passed to the QuestionActivity
-        questionPage.putExtra("hypothesisID", hypothesisID);
-        questionPage.putExtra("hypothesisCategory", hypothesisData.category);
-        questionPage.putExtra("timeToAsk", 1);
+        questionPage.putExtra("hypothesisData", hypothesisData);
+        questionPage.putExtra("timeToAsk", 0);
         startActivity(questionPage);
     }
 

@@ -56,7 +56,7 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
             holder = (HypothesisHolder) row.getTag();
         }
 
-        HypothesisListItem listItem = data.get(position);
+        final HypothesisListItem listItem = data.get(position);
         // Set items to current rows contents
 
         // create formatted hypothesis string
@@ -81,8 +81,7 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
                 public void onClick(View v) {
                     Intent reportDataActivity = new Intent(v.getContext(), AskQuestionActivity.class);
                     // Add any extras here for data that needs to be passed to the ListActivity
-                    reportDataActivity.putExtra("hypothesisID", data.get(position).objectID);
-                    reportDataActivity.putExtra("hypothesisCategory", data.get(position).category);
+                    reportDataActivity.putExtra("hypothesisData", listItem);
                     reportDataActivity.putExtra("timeToAsk", 1);
                     v.getContext().startActivity(reportDataActivity);
                 }

@@ -12,20 +12,43 @@
         android:layout_marginRight="40dp"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="40dp"
-        android:textSize="18dp"
+        android:textSize="20sp"
         android:id="@+id/question_text"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingSeekBar"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:max="10"
+        android:progress="0"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="0/10"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:id="@+id/seekBarCaption"/>
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:id="@+id/ratingBar"
+        android:layout_marginTop="40dp"
+        android:id="@+id/ratingStarBar"
+        android:visibility="gone"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:id="@+id/submit_data_button"
         android:text="SUBMIT"
         android:layout_gravity="center_horizontal"
