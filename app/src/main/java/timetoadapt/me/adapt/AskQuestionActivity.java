@@ -210,6 +210,17 @@ public class AskQuestionActivity extends Activity {
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        // log in vs log out
+        if(instance.getCurrentUser() == null) {
+            // not logged in
+            menu.findItem(R.id.action_log_in).setVisible(true);
+            menu.findItem(R.id.action_log_out).setVisible(false);
+        } else {
+            // logged in
+            menu.findItem(R.id.action_log_in).setVisible(false);
+            menu.findItem(R.id.action_log_out).setVisible(true);
+        }
         return true;
     }
 
@@ -230,6 +241,10 @@ public class AskQuestionActivity extends Activity {
                 instance.logoutCurrentUser();
                 startActivity(new Intent(AskQuestionActivity.this, MainActivity.class));
                 Log.d("actionbar", "logout clicked");
+                return true;
+            case R.id.action_log_in:
+                final Intent signInActivity = new Intent(AskQuestionActivity.this, SignInActivity.class);
+                startActivity(signInActivity);
                 return true;
         }
 
