@@ -5,7 +5,7 @@ ChartConfiguration.options = {
    scaleOverride: true,
    scaleStartValue: 0,
    scaleStepWidth: 1,
-   scaleSteps: 5,
+   scaleSteps: 10,
 
    // Simplify style a bit.
    datasetFill: false,

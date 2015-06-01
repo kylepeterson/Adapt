@@ -23,12 +23,12 @@ function partial(fn, var_args) {
 };
 
 // Returns a dictionary containing on the necessary fields from answer (question
-// id, answer content value, created timestamp).
+// id, answer content value, submitted timestamp).
 function toDict(answer) {
    var res = {
       question: answer.get('question').id,
       value: answer.get('answerContent'),
-      created: answer.createdAt
+      submitted: answer.get('submittedAt')
    };
    return res;
 }

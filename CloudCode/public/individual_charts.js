@@ -12,7 +12,7 @@ window.onload = ChartLoader.init = function() {
 
    var chart = document.querySelector(CL.CANVAS_SELECTOR);
    var ctx = chart.getContext('2d');
-   var data = window.ANSWERS.map(Util.partial(Util.convertDate, 'created'));
+   var data = window.ANSWERS.map(Util.partial(Util.convertDate, 'submitted'));
    var answers = CL.chartData(data);
    var chart = new Chart(ctx).Line(answers, CConfig.options);
    document.querySelector(CL.LEGEND_SELECTOR).innerHTML
@@ -27,7 +27,7 @@ window.onload = ChartLoader.init = function() {
 ChartLoader.toDataset = function(xAxis, answers) {
    if (answers.length == 0)
       return {};
-   var answersByDate = Util.groupBy(answers, 'created');
+   var answersByDate = Util.groupBy(answers, 'submitted');
    var data = xAxis.map(function(date) {
       var points = answersByDate[date];
       return points ? Util.mean(Util.extract(points, 'value')) : null;
@@ -46,7 +46,7 @@ ChartLoader.toDataset = function(xAxis, answers) {
 // Converts a list of Parse Answer 'answers' to a list of Chart.js data
 // datasets.
 ChartLoader.chartData = function(answers) {
-   var dates = Util.extract(answers, 'created');
+   var dates = Util.extract(answers, 'submitted');
    dates = Util.fullDateRange(dates);
    var datasets = Util.values(Util.groupBy(answers, 'question'))
       .map(Util.partial(CL.toDataset, dates));
