@@ -73,7 +73,6 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
         } else {
             row.setBackgroundColor(context.getResources().getColor(R.color.adapt_zebra_list_grey));
         }
-
         Button report = (Button) row.findViewById(R.id.report_data);
         if (report != null) { // this is a repoting row
             report.setOnClickListener(new View.OnClickListener() {

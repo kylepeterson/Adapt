@@ -25,6 +25,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -212,27 +213,36 @@ public class ListActivity extends Activity {
 
                 // split keywords on spaces
                 String[] queryTerms = searchQuery.split(" ");
+                List<String> queryList = Arrays.asList(queryTerms);
+
                 // Here is where we need the complex query. We have n search terms in the above array.
                 // We need all hypotheses whose ifDescription (or thenDescription) contain at least one of these keywords
                 // Can use another search strategy, but this seems like a valid and basic strategy.
 
-                // I gave it a shot but this does not work
-                // Create list of queries to match all keywords
-                List<ParseQuery<ParseObject>> compoundQuery = new ArrayList<ParseQuery<ParseObject>>();
+                // I gave it a shot but this is a more garvage version which is not very useful
+                // if a keyword matches a title exactly
+                ParseQuery<ParseObject> ifQuery = ParseQuery.getQuery("Hypothesis");
+                ifQuery.whereContainedIn("ifDescription", queryList);
+                ParseQuery<ParseObject> thenQuery = ParseQuery.getQuery("Hypothesis");
+                thenQuery.whereContainedIn("thenDescription", queryList);
 
-                for(int i = 0; i < queryTerms.length; i++) {
-                    // make single query for each keyword
-                    ParseQuery<ParseObject> currentQuery = ParseQuery.getQuery("Hypothesis");
-                    currentQuery.whereContains("ifDescription", queryTerms[i]);
-                    compoundQuery.add(currentQuery);
-                }
-                // we want the 'or' of all the queries
+                // If a full query is the beginning of a title
+                List<ParseQuery<ParseObject>> compoundQuery = new ArrayList<ParseQuery<ParseObject>>();
+                ParseQuery<ParseObject> ifStartsQuery = ParseQuery.getQuery("Hypothesis");
+                ifStartsQuery.whereStartsWith("ifDescription", searchQuery);
+                ParseQuery<ParseObject> tempQuery2 = ParseQuery.getQuery("Hypothesis");
+                tempQuery2.whereStartsWith("thenDescription", searchQuery);
+                compoundQuery.add(tempQuery2);
+
+                compoundQuery.add(ifQuery);
+                compoundQuery.add(thenQuery);
                 ParseQuery<ParseObject> finalQuery = ParseQuery.or(compoundQuery);
-                finalQuery.orderByDescending("usersJoined");
 
                 Log.d("search", "termsList: " + queryTerms);
-                finalQuery.whereEqualTo("ifDescription", searchQuery);
-                finalQuery.whereEqualTo("thenDescription", searchQuery);
+
+                // Sort by users
+                finalQuery.addDescendingOrder("usersJoined");
+                
                 finalQuery.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {
