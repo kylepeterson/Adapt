@@ -7,8 +7,10 @@ ChartLoader.LEGEND_SELECTOR = '.legend';
 
 // Loads the chart data in window.ANSWERS into the Chart.js module.
 window.onload = ChartLoader.init = function() {
-   // If there's nothing to render, stop now.
-   if (window.ANSWERS.length == 0) return;
+   if (window.ANSWERS.length == 0) {
+      document.querySelector('.missing').classList.remove('hide');
+      return;
+   }
 
    var chart = document.querySelector(CL.CANVAS_SELECTOR);
    var ctx = chart.getContext('2d');

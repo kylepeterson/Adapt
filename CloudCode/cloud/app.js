@@ -55,7 +55,6 @@ function report(response, labels, answers) {
 function retrieveAnswers(user, labels, questions) {
    // Populate name map.
    questions.forEach(function(question) {
-      alert(question.id + ' -- ' + question.get('questionText'));
       labels[question.id] = question.get('questionText');
    });
 
@@ -70,6 +69,7 @@ function retrieveAnswers(user, labels, questions) {
 // (id).
 function retrieveQuestions(hypothesis) {
    var query = new Parse.Query(Question);
+   query.equalTo('timeToAsk', 1)
    query.equalTo('hypothesis', queryDummy(Hypothesis, hypothesis));
    return query.find();
 }

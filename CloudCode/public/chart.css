@@ -36,3 +36,13 @@ body {
    display: inline-block;
    margin: 5px;
 }
+
+.hide {
+   display: none;
+}
+
+.missing {
+   margin: 20px;
+   text-align: center;
+   font-style: italic;
+}
