@@ -3,7 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="action_log_out">Logout</string>
+    <string name="action_log_out">Log Out</string>
+    <string name="action_log_in">Sign In</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_create">create an idea</string>
     <string name="title_activity_question_creation">Add Questions</string>
@@ -69,7 +70,8 @@
     <string name="focus_after_question">How would you rate your focus after trying this hypothesis?</string>
     <string name="nutrition_after_question">How would you rate your nutrition habits after trying this hypothesis?</string>
 
-
+    <!-- Strings for user data reporting -->
+    <string name="rate_hypothesis_question">Overall, how would you rate the quality of this hypothesis?</string>
 
     <!-- Strings for parse queries -->
     <string name="sleep_object_id">H5IoNhCT46</string>

@@ -6,15 +6,23 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +30,7 @@ import java.util.List;
  *
  */
 public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
+    private AdaptApp instance;
     protected Context context;
     protected int layoutResourceId;
     protected List<HypothesisListItem> data;
@@ -29,6 +38,8 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
     // Creates a new adapter used to populate the hypothesis list
     public HypothesisAdapter(Context context, int layoutResourceId, List<HypothesisListItem> data) {
         super(context, layoutResourceId, data);
+
+        instance = AdaptApp.getInstance();
 
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -77,12 +88,56 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
         if (report != null) { // this is a repoting row
             report.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Intent reportDataActivity = new Intent(v.getContext(), AskQuestionActivity.class);
-                    // Add any extras here for data that needs to be passed to the ListActivity
-                    reportDataActivity.putExtra("hypothesisData", listItem);
-                    reportDataActivity.putExtra("timeToAsk", 1);
-                    v.getContext().startActivity(reportDataActivity);
+                public void onClick(final View v) {
+                    Log.d("SelfReport", "clicked on self report button");
+                    ParseQuery<ParseObject> innerQuestionQuery = ParseQuery.getQuery("Question");
+                    innerQuestionQuery.whereEqualTo("hypothesis", ParseObject.createWithoutData("Hypothesis", listItem.objectID));
+                    innerQuestionQuery.whereEqualTo("timeToAsk", 1);
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Answer");
+                    query.whereMatchesQuery("question", innerQuestionQuery);
+                    query.whereEqualTo("user", instance.getCurrentUser());
+                    query.orderByDescending("submittedAt");
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> list, ParseException e) {
+                            Log.d("SelfReport", "found " + list.size() + " answers");
+                            if (e != null) {
+                                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            } else {
+                                boolean canReport = true;
+                                if (!list.isEmpty()) {
+                                    Date d = list.get(0).getCreatedAt(); //.getDate("submittedAt");
+                                    Log.d("SelfReport", "Last answer = " + d);
+                                    Calendar rightNow = Calendar.getInstance();
+                                    // set the calendar to start of today
+                                    rightNow.set(Calendar.HOUR, 0);
+                                    rightNow.set(Calendar.MINUTE, 0);
+                                    rightNow.set(Calendar.SECOND, 0);
+
+                                    Date today = rightNow.getTime();
+                                    Log.d("SelfReport", "today = " + today);
+
+                                    if (d.after(today)) {
+                                        canReport = false;
+                                        Log.d("SelfReport", "last answer is after today");
+                                        Toast.makeText(getContext(), "You can only report data once a day", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                                if (canReport) {
+                                    Log.d("SelfReport", "let them report");
+                                    Intent reportDataActivity = new Intent(v.getContext(), AskQuestionActivity.class);
+                                    // Add any extras here for data that needs to be passed to the ListActivity
+                                    reportDataActivity.putExtra("hypothesisData", listItem);
+                                    // if they have reported more than 5 times we can ask them to rate the hypothesis
+                                    //int timeToAsk = list.size() < 5 ? 1 : 2;
+                                    reportDataActivity.putExtra("timeToAsk", 1);
+                                    reportDataActivity.putExtra("timesAnswered", list.size());
+                                    v.getContext().startActivity(reportDataActivity);
+                                }
+
+                            }
+                        }
+                    });
                 }
             });
         }

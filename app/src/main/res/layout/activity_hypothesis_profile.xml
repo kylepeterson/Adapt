@@ -113,9 +113,18 @@
                 android:textSize="18dp"
                 android:layout_below="@+id/hypothesis_description"/>
 
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible"
+                android:indeterminate="true"
+                android:layout_below="@+id/data_title_box"
+                android:layout_marginTop="40dp"/>
             <WebView
                 android:layout_width="match_parent"
-                android:layout_height="475dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/data_web_view"
                 android:layout_below="@+id/data_title_box"
                 android:layout_alignParentLeft="true"
@@ -133,12 +142,14 @@
                 android:padding="15dp"
                 android:textSize="18dp"
                 android:layout_below="@+id/data_web_view"/>
-            <TextView
+            <EditText
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:id="@+id/comments_content"
-                android:background="@color/adapt_blue"
-                android:layout_below="@+id/comments_title_box"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/comments_title_box"
+                android:layout_margin="20dp"
+                android:hint="Write your experience or a question..."
+                android:inputType="textMultiLine"
+                android:imeActionLabel="Submit"/>
 
         </RelativeLayout>
     </ScrollView>

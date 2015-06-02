@@ -18,12 +18,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import java.lang.reflect.InvocationTargetException;
@@ -59,6 +65,10 @@ public class HypothesisProfileActivity extends Activity {
         Intent intent = getIntent();
         hypothesisData = intent.getParcelableExtra("hypothesisData");
 
+        // get parameters
+        String hypId = hypothesisData.objectID;
+        String userId = instance.getCurrentUser().getObjectId();
+
         TextView tryThis = (TextView) findViewById(R.id.hypothesis_try_this);
         TextView toAccomplish = (TextView) findViewById(R.id.hypothesis_to_accomplish);
         TextView description = (TextView) findViewById(R.id.hypothesis_description);
@@ -67,72 +77,93 @@ public class HypothesisProfileActivity extends Activity {
         toAccomplish.setText(hypothesisData.toAccomplish);
         description.setText(hypothesisData.description);
 
+        RelativeLayout headerContainer = (RelativeLayout) findViewById(R.id.header_container);
+        ParseQuery<ParseObject> imageQuery = ParseQuery.getQuery("Image");
+        ParseQuery<ParseObject> innerQuery = new ParseQuery("Hypothesis");
+        innerQuery.whereEqualTo("objectId", hypId);
+        imageQuery.whereEqualTo("hypothesis", innerQuery);
+        imageQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if(list != null && !list.isEmpty()) {
+                    ParseObject imageObject = list.get(0);
+
+                }
+            }
+        });
         join = (Button) findViewById(R.id.hypothesis_join_button);
         unsubscribe = (TextView) findViewById(R.id.unsubscribe_button);
         updateJoinButton();
 
-        WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
+        final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         // enable javascript
-        dataWebView.getSettings().setJavaScriptEnabled(true);
 
-        // disable scroll on touch
-        dataWebView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return (event.getAction() == MotionEvent.ACTION_MOVE);
+        if(instance.getCurrentUser() != null) {
+            dataWebView.getSettings().setJavaScriptEnabled(true);
+
+            // disable scroll on touch
+            dataWebView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return (event.getAction() == MotionEvent.ACTION_MOVE);
+                }
+            });
+
+            //disable scrolling
+            dataWebView.setVerticalScrollBarEnabled(false);
+            dataWebView.setHorizontalScrollBarEnabled(false);
+
+            // Enable html5 features in webview
+            WebSettings ws = dataWebView.getSettings();
+            ws.setAllowFileAccess(true);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
+                try {
+                    Log.d("webview", "Enabling HTML5-Features");
+                    Method m1 = WebSettings.class.getMethod("setDomStorageEnabled", new Class[]{Boolean.TYPE});
+                    m1.invoke(ws, Boolean.TRUE);
+
+                    Method m2 = WebSettings.class.getMethod("setDatabaseEnabled", new Class[]{Boolean.TYPE});
+                    m2.invoke(ws, Boolean.TRUE);
+
+                    Method m3 = WebSettings.class.getMethod("setDatabasePath", new Class[]{String.class});
+                    m3.invoke(ws, "/data/data/" + getPackageName() + "/databases/");
+
+                    Method m4 = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[]{Long.TYPE});
+                    m4.invoke(ws, 1024 * 1024 * 8);
+
+                    Method m5 = WebSettings.class.getMethod("setAppCachePath", new Class[]{String.class});
+                    m5.invoke(ws, "/data/data/" + getPackageName() + "/cache/");
+
+                    Method m6 = WebSettings.class.getMethod("setAppCacheEnabled", new Class[]{Boolean.TYPE});
+                    m6.invoke(ws, Boolean.TRUE);
+
+                    Log.d("webview", "Enabled HTML5-Features");
+                } catch (NoSuchMethodException e) {
+                    Log.e("webview", "Reflection fail", e);
+                } catch (InvocationTargetException e) {
+                    Log.e("webview", "Reflection fail", e);
+                } catch (IllegalAccessException e) {
+                    Log.e("webview", "Reflection fail", e);
+                }
             }
-        });
-
-        //disable scrolling
-        dataWebView.setVerticalScrollBarEnabled(false);
-        dataWebView.setHorizontalScrollBarEnabled(false);
-
-        // Enable html5 features in webview
-        WebSettings ws = dataWebView.getSettings();
-        ws.setAllowFileAccess(true);
 
 
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.ECLAIR) {
-            try {
-                Log.d("webview", "Enabling HTML5-Features");
-                Method m1 = WebSettings.class.getMethod("setDomStorageEnabled", new Class[]{Boolean.TYPE});
-                m1.invoke(ws, Boolean.TRUE);
+            Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
+            // load chart
+            String chartUrl = "http://adapt.parseapp.com/chart?user=" + userId + "&hypothesis=" + hypId;
 
-                Method m2 = WebSettings.class.getMethod("setDatabaseEnabled", new Class[]{Boolean.TYPE});
-                m2.invoke(ws, Boolean.TRUE);
+            // Loading bar display while webview is loading
+            ProgressBar spinner;
+            spinner = (ProgressBar) findViewById(R.id.loading);
+            dataWebView.setWebViewClient(new AppWebViewClients(spinner));
+            dataWebView.setVisibility(View.GONE);
+            dataWebView.loadUrl(chartUrl);
+            dataWebView.reload();
+            dataWebView.setVisibility(View.VISIBLE);
 
-                Method m3 = WebSettings.class.getMethod("setDatabasePath", new Class[]{String.class});
-                m3.invoke(ws, "/data/data/" + getPackageName() + "/databases/");
-
-                Method m4 = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[]{Long.TYPE});
-                m4.invoke(ws, 1024*1024*8);
-
-                Method m5 = WebSettings.class.getMethod("setAppCachePath", new Class[]{String.class});
-                m5.invoke(ws, "/data/data/" + getPackageName() + "/cache/");
-
-                Method m6 = WebSettings.class.getMethod("setAppCacheEnabled", new Class[]{Boolean.TYPE});
-                m6.invoke(ws, Boolean.TRUE);
-
-                Log.d("webview", "Enabled HTML5-Features");
-            }
-            catch (NoSuchMethodException e) {
-                Log.e("webview", "Reflection fail", e);
-            }
-            catch (InvocationTargetException e) {
-                Log.e("webview", "Reflection fail", e);
-            }
-            catch (IllegalAccessException e) {
-                Log.e("webview", "Reflection fail", e);
-            }
         }
-        // get parameters
-        String hypId = hypothesisData.objectID;
-        String userId = instance.getCurrentUser().getObjectId();
-        Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
-        // load chart
-        String chartUrl = "http://adapt.parseapp.com/chart?user=" + userId + "&hypothesis=" + hypId;
-        dataWebView.loadUrl(chartUrl);
-
         // bring focus to top of scrollview not to top of webview
         final ScrollView main = (ScrollView) findViewById(R.id.scrollWrapper);
         main.post(new Runnable() {
@@ -251,6 +282,17 @@ public class HypothesisProfileActivity extends Activity {
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        // log in vs log out
+        if(instance.getCurrentUser() == null) {
+            // not logged in
+            menu.findItem(R.id.action_log_in).setVisible(true);
+            menu.findItem(R.id.action_log_out).setVisible(false);
+        } else {
+            // logged in
+            menu.findItem(R.id.action_log_in).setVisible(false);
+            menu.findItem(R.id.action_log_out).setVisible(true);
+        }
         return true;
     }
 
@@ -272,8 +314,36 @@ public class HypothesisProfileActivity extends Activity {
                 startActivity(new Intent(HypothesisProfileActivity.this, MainActivity.class));
                 Log.d("actionbar", "logout clicked");
                 return true;
+            case R.id.action_log_in:
+                final Intent signInActivity = new Intent(HypothesisProfileActivity.this, SignInActivity.class);
+                startActivity(signInActivity);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private class AppWebViewClients extends WebViewClient {
+        private ProgressBar progressBar;
+
+        public AppWebViewClients(ProgressBar progressBar) {
+            this.progressBar=progressBar;
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            // TODO Auto-generated method stub
+            view.loadUrl(url);
+            return true;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            // TODO Auto-generated method stub
+            super.onPageFinished(view, url);
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 }
+
+

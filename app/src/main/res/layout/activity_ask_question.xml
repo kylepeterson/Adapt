@@ -37,10 +37,23 @@
         android:visibility="gone"
         android:id="@+id/seekBarCaption"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/rate_hypothesis_question"
+        android:visibility="gone"
+        android:textSize="16sp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:id="@+id/hypothesis_rating_question_text"
+        />
+
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/ratingStarBar"
         android:visibility="gone"
         android:layout_gravity="center_horizontal" />

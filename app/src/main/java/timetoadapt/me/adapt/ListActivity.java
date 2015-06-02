@@ -33,6 +33,7 @@ public class ListActivity extends Activity {
     protected static HypothesisRepo hypothesisRepo;
     private static AdaptApp app;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +70,17 @@ public class ListActivity extends Activity {
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        // log in vs log out
+        if(app.getCurrentUser() == null) {
+            // not logged in
+            menu.findItem(R.id.action_log_in).setVisible(true);
+            menu.findItem(R.id.action_log_out).setVisible(false);
+        } else {
+            // logged in
+            menu.findItem(R.id.action_log_in).setVisible(false);
+            menu.findItem(R.id.action_log_out).setVisible(true);
+        }
         return true;
     }
 
@@ -89,6 +101,10 @@ public class ListActivity extends Activity {
                 app.logoutCurrentUser();
                 startActivity(new Intent(ListActivity.this, MainActivity.class));
                 Log.d("actionbar", "logout clicked");
+                return true;
+            case R.id.action_log_in:
+                final Intent signInActivity = new Intent(ListActivity.this, SignInActivity.class);
+                startActivity(signInActivity);
                 return true;
         }
 
@@ -230,9 +246,9 @@ public class ListActivity extends Activity {
                 List<ParseQuery<ParseObject>> compoundQuery = new ArrayList<ParseQuery<ParseObject>>();
                 ParseQuery<ParseObject> ifStartsQuery = ParseQuery.getQuery("Hypothesis");
                 ifStartsQuery.whereStartsWith("ifDescription", searchQuery);
-                ParseQuery<ParseObject> tempQuery2 = ParseQuery.getQuery("Hypothesis");
-                tempQuery2.whereStartsWith("thenDescription", searchQuery);
-                compoundQuery.add(tempQuery2);
+                ParseQuery<ParseObject> thenStartsQuery = ParseQuery.getQuery("Hypothesis");
+                thenStartsQuery.whereStartsWith("thenDescription", searchQuery);
+                compoundQuery.add(thenStartsQuery);
 
                 compoundQuery.add(ifQuery);
                 compoundQuery.add(thenQuery);
@@ -242,7 +258,7 @@ public class ListActivity extends Activity {
 
                 // Sort by users
                 finalQuery.addDescendingOrder("usersJoined");
-                
+
                 finalQuery.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {

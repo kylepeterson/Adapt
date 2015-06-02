@@ -24,6 +24,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.util.Calendar;
 import java.util.List;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -36,6 +37,8 @@ public class AskQuestionActivity extends Activity {
 
     private AdaptApp instance;
     private HypothesisListItem hypothesisData;
+    private boolean shouldRate;
+    private int timesAnswered;
     private int timeToAsk;
     private RatingBar rating;
     private TextView questionText;
@@ -56,14 +59,13 @@ public class AskQuestionActivity extends Activity {
         Intent intent = getIntent();
         hypothesisData = intent.getParcelableExtra("hypothesisData");
         timeToAsk = intent.getIntExtra("timeToAsk", -1);
+        timesAnswered = intent.getIntExtra("timesAnswered", 0);
 
         Log.d("askQuestion", "Asking hypothesis id = " + hypothesisData.objectID + " in category = " + hypothesisData.categoryName + " with timeToAsk = " + timeToAsk);
 
         if (timeToAsk == -1) {
             Crouton.makeText(AskQuestionActivity.this, "We're sorry, there was a problem getting data. Please try again.", Style.ALERT).show();
         } else {
-
-
             questionText = (TextView) findViewById(R.id.question_text);
 
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Question");
@@ -85,7 +87,7 @@ public class AskQuestionActivity extends Activity {
                             newQuestion.put("questionType", 1);
                             String toAskText = getHypothesisQuestion(hypothesisData, timeToAsk);
                             newQuestion.put("questionText", toAskText);
-                            newQuestion.put("timeToAsk", timeToAsk);
+                            newQuestion.put("timeToAsk", Math.min(timeToAsk, 1));
                             newQuestion.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
@@ -103,60 +105,82 @@ public class AskQuestionActivity extends Activity {
                     }
                 }
             });
+
+            shouldRate = false;
+
+            if (timesAnswered >= 5) { // user answered over 5 times
+                ParseQuery<ParseObject> ratingQuery = new ParseQuery<>("HypothesisRating");
+                ratingQuery.whereEqualTo("user", instance.getCurrentUser());
+                ratingQuery.whereEqualTo("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+                ratingQuery.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> list, ParseException e) {
+                        if (e == null) {
+                            shouldRate = list.isEmpty(); // user hasn't rated before
+                        } else {
+                            Crouton.makeText(AskQuestionActivity.this, e.getMessage(), Style.ALERT).show();
+                        }
+                    }
+                });
+            }
         }
     }
 
     private void displayData() {
         questionText.setText(question.getString("questionText"));
 
-        if (question.getInt("questionType") == 1) {
-            SeekBar sb = (SeekBar) findViewById(R.id.ratingSeekBar);
-            sb.setVisibility(View.VISIBLE);
+        SeekBar sb = (SeekBar) findViewById(R.id.ratingSeekBar);
+        sb.setVisibility(View.VISIBLE);
 
-            final TextView ratingCaption = (TextView) findViewById(R.id.seekBarCaption);
-            ratingCaption.setVisibility(View.VISIBLE);
-            sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    ratingCaption.setText(progress + "/10");
-                }
+        final TextView ratingCaption = (TextView) findViewById(R.id.seekBarCaption);
+        ratingCaption.setVisibility(View.VISIBLE);
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                ratingCaption.setText(progress + "/10");
+            }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
-                }
+            }
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
-                }
-            });
-        } else {
+            }
+        });
+
+        if (shouldRate) {
+            findViewById(R.id.hypothesis_rating_question_text).setVisibility(View.VISIBLE);
             findViewById(R.id.ratingStarBar).setVisibility(View.VISIBLE);
         }
 
         Button submit = (Button) findViewById(R.id.submit_data_button);
         submit.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
                 final ProgressDialog dialog = new ProgressDialog(AskQuestionActivity.this);
                 dialog.setMessage("Submitting data...");
                 dialog.show();
 
-                float numStars;
+                int ratingSeek = ((SeekBar) findViewById(R.id.ratingSeekBar)).getProgress();
 
-                if (question.getInt("questionType") == 1) {
-                    numStars = ((SeekBar) findViewById(R.id.ratingSeekBar)).getProgress();
-                } else {
-                    numStars = ((RatingBar) findViewById(R.id.ratingStarBar)).getRating();
+
+                if (shouldRate) {
+                    float ratingStars = ((RatingBar) findViewById(R.id.ratingStarBar)).getRating();
+                    ParseObject rating = new ParseObject("HypothesisRating");
+                    rating.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+                    rating.put("user", instance.getCurrentUser());
+                    rating.put("rating", ratingStars);
+                    rating.saveEventually();
                 }
 
                 ParseObject answer = new ParseObject("Answer");
                 answer.put("question", question);
                 answer.put("user", instance.getCurrentUser());
-                answer.put("answerContent", numStars);
+                answer.put("submittedAt", Calendar.getInstance().getTime());
+                answer.put("answerContent", ratingSeek);
 
                 answer.saveInBackground(new SaveCallback() {
                     @Override
@@ -210,6 +234,17 @@ public class AskQuestionActivity extends Activity {
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        // log in vs log out
+        if (instance.getCurrentUser() == null) {
+            // not logged in
+            menu.findItem(R.id.action_log_in).setVisible(true);
+            menu.findItem(R.id.action_log_out).setVisible(false);
+        } else {
+            // logged in
+            menu.findItem(R.id.action_log_in).setVisible(false);
+            menu.findItem(R.id.action_log_out).setVisible(true);
+        }
         return true;
     }
 
@@ -230,6 +265,10 @@ public class AskQuestionActivity extends Activity {
                 instance.logoutCurrentUser();
                 startActivity(new Intent(AskQuestionActivity.this, MainActivity.class));
                 Log.d("actionbar", "logout clicked");
+                return true;
+            case R.id.action_log_in:
+                final Intent signInActivity = new Intent(AskQuestionActivity.this, SignInActivity.class);
+                startActivity(signInActivity);
                 return true;
         }
 
