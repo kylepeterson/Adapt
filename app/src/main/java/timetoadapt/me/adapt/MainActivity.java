@@ -336,7 +336,6 @@ public class MainActivity extends Activity {
                                 listData.add(new HypothesisListItem(parseObjects.get(i)));
                             }
                             Log.d("mainpage", "listdata: " + listData);
-                            Log.d("mainpage", "first hypothesis" + listData.get(0).tryThis);
                             // Adapter to create listView rows
                             ListView listView = (ListView) rootView.getChildAt(0);
                             final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);

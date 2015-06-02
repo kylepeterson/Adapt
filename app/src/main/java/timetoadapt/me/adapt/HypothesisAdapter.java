@@ -129,8 +129,8 @@ public class HypothesisAdapter extends ArrayAdapter<HypothesisListItem> {
                                     // Add any extras here for data that needs to be passed to the ListActivity
                                     reportDataActivity.putExtra("hypothesisData", listItem);
                                     // if they have reported more than 5 times we can ask them to rate the hypothesis
-                                    int timeToAsk = list.size() < 5 ? 1 : 2;
-                                    reportDataActivity.putExtra("timeToAsk", timeToAsk);
+                                    //int timeToAsk = list.size() < 5 ? 1 : 2;
+                                    reportDataActivity.putExtra("timeToAsk", 1);
                                     reportDataActivity.putExtra("timesAnswered", list.size());
                                     v.getContext().startActivity(reportDataActivity);
                                 }
