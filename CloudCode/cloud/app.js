@@ -69,6 +69,7 @@ function retrieveAnswers(user, labels, questions) {
 // (id).
 function retrieveQuestions(hypothesis) {
    var query = new Parse.Query(Question);
+   query.equalTo('timeToAsk', 1)
    query.equalTo('hypothesis', queryDummy(Hypothesis, hypothesis));
    return query.find();
 }
