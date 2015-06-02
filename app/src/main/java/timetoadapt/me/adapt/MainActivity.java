@@ -51,6 +51,9 @@ public class MainActivity extends Activity {
         analObject.put("action", "app_open");
         analObject.saveInBackground();
 
+        // make action bar home button work
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Set up click handlers on navigation buttons
         Button browseButton = (Button) findViewById(R.id.browse);
         browseButton.setOnClickListener(new View.OnClickListener() {
@@ -224,6 +227,8 @@ public class MainActivity extends Activity {
             case R.id.action_log_in:
                 final Intent signInActivity = new Intent(MainActivity.this, SignInActivity.class);
                 startActivity(signInActivity);
+                return true;
+            case android.R.id.home:
                 return true;
         }
 

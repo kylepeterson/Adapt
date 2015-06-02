@@ -42,6 +42,8 @@ public class ListActivity extends Activity {
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
+        // make action bar home button work
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         app = (AdaptApp) getApplication();
         AdaptApp instance = app.getInstance();
@@ -105,6 +107,10 @@ public class ListActivity extends Activity {
             case R.id.action_log_in:
                 final Intent signInActivity = new Intent(ListActivity.this, SignInActivity.class);
                 startActivity(signInActivity);
+                return true;
+            case android.R.id.home:
+                final Intent mainActivity = new Intent(ListActivity.this, MainActivity.class);
+                startActivity(mainActivity);
                 return true;
         }
 
