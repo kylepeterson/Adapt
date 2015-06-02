@@ -55,7 +55,6 @@ function report(response, labels, answers) {
 function retrieveAnswers(user, labels, questions) {
    // Populate name map.
    questions.forEach(function(question) {
-      alert(question.id + ' -- ' + question.get('questionText'));
       labels[question.id] = question.get('questionText');
    });
 
