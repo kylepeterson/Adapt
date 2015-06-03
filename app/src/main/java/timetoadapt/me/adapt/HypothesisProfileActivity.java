@@ -52,7 +52,6 @@ public class HypothesisProfileActivity extends Activity {
 
     private AdaptApp instance;
     private Button join;
-    private TextView unsubscribe;
     private HypothesisListItem hypothesisData;
 
     @Override
@@ -119,10 +118,8 @@ public class HypothesisProfileActivity extends Activity {
             }
         });
         join = (Button) findViewById(R.id.hypothesis_join_button);
-        unsubscribe = (TextView) findViewById(R.id.unsubscribe_button);
         updateJoinButton();
         join.bringToFront();
-        unsubscribe.bringToFront();
         final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         // enable javascript
 
@@ -220,13 +217,6 @@ public class HypothesisProfileActivity extends Activity {
 
                 }
             });
-            unsubscribe.setVisibility(View.VISIBLE);
-            unsubscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    unsubscribeUser(hypothesisData.objectID);
-                }
-            });
         } else {
             join.setText(getResources().getText(R.string.hypothesis_join_text));
             join.setBackgroundColor(getResources().getColor(R.color.adapt_blue));
@@ -255,7 +245,6 @@ public class HypothesisProfileActivity extends Activity {
                     }
                 }
             });
-            unsubscribe.setVisibility(View.GONE);
         }
     }
 
@@ -329,6 +318,9 @@ public class HypothesisProfileActivity extends Activity {
             menu.findItem(R.id.action_log_in).setVisible(false);
             menu.findItem(R.id.action_log_out).setVisible(true);
         }
+        if(instance.hasUserJoinedHypothesis(hypothesisData.objectID)) {
+            menu.findItem(R.id.action_unsubscribe).setVisible(true);
+        }
         return true;
     }
 
@@ -357,6 +349,10 @@ public class HypothesisProfileActivity extends Activity {
             case android.R.id.home:
                 final Intent mainActivity = new Intent(HypothesisProfileActivity.this, MainActivity.class);
                 startActivity(mainActivity);
+                return true;
+            case R.id.action_unsubscribe:
+                unsubscribeUser(hypothesisData.objectID);
+                item.setVisible(false);
                 return true;
         }
 
