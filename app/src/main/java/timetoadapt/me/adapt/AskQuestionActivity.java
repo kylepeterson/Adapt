@@ -272,7 +272,7 @@ public class AskQuestionActivity extends Activity {
                 startActivity(signInActivity);
                 return true;
             case android.R.id.home:
-                final Intent mainActivity = new Intent(CreateHypothesisActivity.this, MainActivity.class);
+                final Intent mainActivity = new Intent(AskQuestionActivity.this, MainActivity.class);
                 startActivity(mainActivity);
                 return true;
         }

@@ -30,10 +30,10 @@ Parse.Cloud.job("countUsersJoined", function(request, status) {
     if (joined) { // user joined some hypotheses
       for (var i = 0; i < joined.length; i++) {
         var ID = joined[i];
-        if (!(counts.hasOwnProperty(ID))) {
+        if (!counts.hasOwnProperty(ID)) {
           counts[ID] = 0;
         }
-        counts[ID]++;
+        counts[ID] = counts[ID] + 1;
       }
     }
     userCount++;
@@ -42,14 +42,6 @@ Parse.Cloud.job("countUsersJoined", function(request, status) {
     }
   }).then(function() {
     status.message("Saving counts...");
-
-    var uniqueIDs = [];
-
-    for (var ID in counts) {
-      if (counts.hasOwnProperty(ID)) {
-        uniqueIDs.push(ID);
-      }
-    }
 
     var HypothesisObject = Parse.Object.extend("Hypothesis");
     var hypoQuery = new Parse.Query(HypothesisObject);

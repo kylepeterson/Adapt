@@ -25,7 +25,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -228,14 +227,16 @@ public class ListActivity extends Activity {
                     }
                 });
             } else {
-                Log.d("search", "entered search case in OnCreateView");
                 // Display search results
                 String searchQuery = arguments.getString("query");
                 // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+                Log.d("search", "entered search case in OnCreateView on query = " + searchQuery);
 
                 // split keywords on spaces
                 String[] queryTerms = searchQuery.split(" ");
-                List<String> queryList = Arrays.asList(queryTerms);
+//                List<String> queryList = Arrays.asList(queryTerms);
+
+                //Log.d("search", "queryList: " + queryList);
 
                 // Here is where we need the complex query. We have n search terms in the above array.
                 // We need all hypotheses whose ifDescription (or thenDescription) contain at least one of these keywords
@@ -244,23 +245,29 @@ public class ListActivity extends Activity {
                 // I gave it a shot but this is a more garvage version which is not very useful
                 // if a keyword matches a title exactly
                 ParseQuery<ParseObject> ifQuery = ParseQuery.getQuery("Hypothesis");
-                ifQuery.whereContainedIn("ifDescription", queryList);
                 ParseQuery<ParseObject> thenQuery = ParseQuery.getQuery("Hypothesis");
-                thenQuery.whereContainedIn("thenDescription", queryList);
+
+                for (String term : queryTerms) {
+                    thenQuery.whereContains("thenDescription", term);
+                    ifQuery.whereContains("ifDescription", term);
+                }
+
+                //thenQuery.whereContainedIn("thenDescription", queryList);
+                //ifQuery.whereContainedIn("ifDescription", queryList);
+
 
                 // If a full query is the beginning of a title
                 List<ParseQuery<ParseObject>> compoundQuery = new ArrayList<ParseQuery<ParseObject>>();
-                ParseQuery<ParseObject> ifStartsQuery = ParseQuery.getQuery("Hypothesis");
-                ifStartsQuery.whereStartsWith("ifDescription", searchQuery);
-                ParseQuery<ParseObject> thenStartsQuery = ParseQuery.getQuery("Hypothesis");
-                thenStartsQuery.whereStartsWith("thenDescription", searchQuery);
-                compoundQuery.add(thenStartsQuery);
+//                ParseQuery<ParseObject> ifStartsQuery = ParseQuery.getQuery("Hypothesis");
+//                ifStartsQuery.whereStartsWith("ifDescription", searchQuery);
+//                ParseQuery<ParseObject> thenStartsQuery = ParseQuery.getQuery("Hypothesis");
+//                thenStartsQuery.whereStartsWith("thenDescription", searchQuery);
+//                compoundQuery.add(thenStartsQuery);
 
                 compoundQuery.add(ifQuery);
                 compoundQuery.add(thenQuery);
                 ParseQuery<ParseObject> finalQuery = ParseQuery.or(compoundQuery);
 
-                Log.d("search", "termsList: " + queryTerms);
 
                 // Sort by users
                 finalQuery.addDescendingOrder("usersJoined");
