@@ -16,4 +16,7 @@
         android:orderInCategory="100" android:showAsAction="never" />
     <item android:id="@+id/action_log_in" android:title="@string/action_log_in"
         android:orderInCategory="100" android:showAsAction="never" />
+    <item android:id="@+id/action_unsubscribe" android:title="Unsubscribe"
+        android:orderInCategory="200" android:showAsAction="never"
+        android:visible="false"/>
 </menu>
