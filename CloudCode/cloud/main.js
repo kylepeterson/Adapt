@@ -1,6 +1,7 @@
 require('cloud/app.js');
 
-Parse.initialize("clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d", "bDHXDi080LHjrVmCSpXKM8TUjyZPhClzobXoUiXG");
+Parse.initialize("clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d",
+                 "bDHXDi080LHjrVmCSpXKM8TUjyZPhClzobXoUiXG");
 
 // Default Answer submit timestamp to the Parse.Object creation time.
 Parse.Cloud.beforeSave("Answer", function(request, response) {
@@ -61,5 +62,48 @@ Parse.Cloud.job("countUsersJoined", function(request, status) {
       });
   }, function(error) {
     status.error("ERROR IN USER EACH: " + error);
+  });
+});
+
+Parse.Cloud.job("createSearchString", function(request, status) {
+  // find all users
+  status.message("Getting all Hypotheses...");
+
+  var HypothesisObject = Parse.Object.extend("Hypothesis");
+  var hypoQuery = new Parse.Query(HypothesisObject);
+
+  hypoQuery.each(function(hypothesis) {
+    var descriptionText = hypothesis.get("description").toLowerCase();
+    var ifText = hypothesis.get("ifDescription").toLowerCase();
+    var thenText = hypothesis.get("thenDescription").toLowerCase();
+
+    var searchText = descriptionText + " " + ifText + " " + thenText;
+
+    var words = searchText.split(/[ \t,.?]+/);
+
+    var stopWords = ["the", "in", "and", "a", "an"];
+
+    var isNotStopWord = function(term) {
+      if (!term) {
+        return false;
+      }
+      for (var stopWord in stopWords) {
+        if (term.localeCompare(stopWord) == 0) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    words = words.filter(isNotStopWord);
+
+    hypothesis.set("searchTerms", words);
+    return hypothesis.save();
+  }).then(function() {
+    // Set the job's success status
+    status.success("Migration to lower case completed successfully.");
+  }, function(error) {
+    // Set the job's error status
+    status.error("Uh oh, something went wrong.");
   });
 });

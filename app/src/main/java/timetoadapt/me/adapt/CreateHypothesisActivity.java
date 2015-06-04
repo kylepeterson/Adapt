@@ -139,7 +139,9 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         final ParseObject hypothesis = new ParseObject("Hypothesis");
         hypothesis.put("author", instance.getCurrentUser());
         hypothesis.put("ifDescription", this.tryThis);
+        hypothesis.put("ifLowerCase", this.tryThis.toLowerCase());
         hypothesis.put("thenDescription", this.toAccomplish);
+        hypothesis.put("thenLowerCase", this.toAccomplish.toLowerCase());
         hypothesis.put("description", this.description);
         hypothesis.put("parentCategory", this.category);
         hypothesis.put("usersJoined", 0);
