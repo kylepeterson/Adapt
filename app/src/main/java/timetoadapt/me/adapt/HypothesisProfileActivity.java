@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -76,7 +77,7 @@ public class HypothesisProfileActivity extends Activity {
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         hypothesisData = intent.getParcelableExtra("hypothesisData");
 
         // get parameters
@@ -144,6 +145,7 @@ public class HypothesisProfileActivity extends Activity {
                     ParseObject comment = new ParseObject("Comment");
                     comment.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
                     comment.put("user", instance.getCurrentUser());
+                    comment.put("userName", instance.getCurrentUser().getUsername());
                     comment.put("votes", 1);
                     comment.put("content", text);
                     comment.saveInBackground();
@@ -151,7 +153,7 @@ public class HypothesisProfileActivity extends Activity {
                     experience.getText().clear();
                     Toast.makeText(getApplicationContext(), "Experience submitted!", Toast.LENGTH_SHORT).show();
 
-                    addCommentToExperiences(comment);
+                    addCommentToExperiences(comment, -1);
 
                     focusOnView();
                 }
@@ -368,54 +370,69 @@ public class HypothesisProfileActivity extends Activity {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
-                for (ParseObject comment : list) {
-                    addCommentToExperiences(comment);
+                for (int i = 0; i < list.size(); i++) {
+                    ParseObject comment = list.get(i);
+                    addCommentToExperiences(comment, i);
                 }
             }
         });
     }
 
-    public void addCommentToExperiences(ParseObject comment) {
-        final String id = comment.getObjectId();
-        String content = comment.getString("content");
-        int votes = comment.getInt("votes");
-        String author = comment.getParseUser("user").getUsername();
-
-        View commentRow = getLayoutInflater().inflate(R.layout.comment_row, null);
-
-        final TextView votesTextView = (TextView) commentRow.findViewById(R.id.votes);
-        votesTextView.setText(Integer.toString(votes));
-
-        TextView commentTextView = (TextView) commentRow.findViewById(R.id.comment_text);
-        commentTextView.setText(content);
-
-        commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
+    public void addCommentToExperiences(ParseObject toFetch, final int index) {
+        toFetch.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
-            public void onClick(View v) {
-                votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) + 1));
-                ParseObject comm = ParseObject.createWithoutData("Comment", id);
-                comm.increment("votes", 1);
-                comm.saveInBackground();
+            public void done(ParseObject comment, ParseException e) {
+                final String id = comment.getObjectId();
+                String content = comment.getString("content");
+                int votes = comment.getInt("votes");
+                String author = comment.getString("userName");
+
+                View commentRow = getLayoutInflater().inflate(R.layout.comment_row, null);
+
+                final TextView votesTextView = (TextView) commentRow.findViewById(R.id.votes);
+                votesTextView.setText(Integer.toString(votes));
+
+                TextView commentTextView = (TextView) commentRow.findViewById(R.id.comment_text);
+                commentTextView.setText(content);
+
+                TextView authorTextView = (TextView) commentRow.findViewById(R.id.comment_author);
+                authorTextView.setText(author);
+
+                commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) + 1));
+                        ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                        comm.increment("votes", 1);
+                        comm.saveInBackground();
+                    }
+                });
+
+                commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) - 1));
+                        ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                        comm.increment("votes", -1);
+                        comm.saveInBackground();
+                    }
+                });
+
+                if (index % 2 == 0) {
+                    commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_white));
+                } else {
+                    commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_zebra_list_grey));
+                }
+
+                if (index == -1 || author.equals(instance.getCurrentUser().getUsername())) {
+                    commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_green));
+                    commentTextView.setTextColor(getResources().getColor(R.color.adapt_white));
+                    votesTextView.setTextColor(getResources().getColor(R.color.adapt_white));
+                    authorTextView.setTextColor(getResources().getColor(R.color.adapt_white));
+                }
+                experiences.addView(commentRow);
             }
         });
-
-        commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) - 1));
-                ParseObject comm = ParseObject.createWithoutData("Comment", id);
-                comm.increment("votes", -1);
-                comm.saveInBackground();
-            }
-        });
-
-        if (author.equals(instance.getCurrentUser().getUsername())) {
-            commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_green));
-            commentTextView.setTextColor(getResources().getColor(R.color.adapt_white));
-            votesTextView.setTextColor(getResources().getColor(R.color.adapt_white));
-        }
-
-        experiences.addView(commentRow);
     }
 
     @Override
