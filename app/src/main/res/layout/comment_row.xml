@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="boys wlll be boys and will go to the store boys will be boys and will go to the store my boys are old now boys wlll be boys boys wlll be boys"
-        android:id="@+id/hypothesis_text"
+        android:id="@+id/comment_text"
         android:textSize="16sp"
         android:layout_marginLeft="50dp"
         android:padding="10dp"/>
