@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
@@ -55,6 +57,7 @@ public class HypothesisProfileActivity extends Activity {
     private Button join;
     private HypothesisListItem hypothesisData;
     private LinearLayout experiences;
+    private ScrollView mainScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +141,11 @@ public class HypothesisProfileActivity extends Activity {
                     comment.saveInBackground();
 
                     experience.getText().clear();
+                    Toast.makeText(getApplicationContext(), "Experience submitted!", Toast.LENGTH_SHORT).show();
+
+                    addCommentToExperiences(comment);
+
+                    focusOnView();
                 }
             }
         });
@@ -224,10 +232,19 @@ public class HypothesisProfileActivity extends Activity {
         getExperiences();
 
         // bring focus to top of scrollview not to top of webview
-        final ScrollView main = (ScrollView) findViewById(R.id.scrollWrapper);
-        main.post(new Runnable() {
+        mainScrollView = (ScrollView) findViewById(R.id.scrollWrapper);
+        mainScrollView.post(new Runnable() {
             public void run() {
-                main.scrollTo(0, 0);
+                mainScrollView.smoothScrollTo(0, 0);
+            }
+        });
+    }
+
+    private final void focusOnView(){
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                mainScrollView.smoothScrollTo(0, experiences.getBottom());
             }
         });
     }
@@ -333,45 +350,64 @@ public class HypothesisProfileActivity extends Activity {
     }
 
     public void getExperiences() {
+        experiences.removeAllViews();
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
         query.whereEqualTo("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
         query.addDescendingOrder("votes");
+        query.addDescendingOrder("createdAt");
 
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
                 for (ParseObject comment : list) {
-                    final String id = comment.getObjectId();
-                    String content = comment.getString("content");
-                    int votes = comment.getInt("votes");
-                    String author = comment.getParseUser("user").getUsername();
-
-                    View commentRow = getLayoutInflater().inflate(R.layout.comment_row, null);
-                    ((TextView) commentRow.findViewById(R.id.votes)).setText(Integer.toString(votes));
-                    ((TextView) commentRow.findViewById(R.id.comment_text)).setText(content);
-
-                    commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
-                            comm.increment("votes", 1);
-                            comm.saveInBackground();
-                        }
-                    });
-
-                    commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
-                            comm.increment("votes", -1);
-                            comm.saveInBackground();
-                        }
-                    });
-
-                    experiences.addView(commentRow);
+                    addCommentToExperiences(comment);
                 }
             }
         });
+    }
+
+    public void addCommentToExperiences(ParseObject comment) {
+        final String id = comment.getObjectId();
+        String content = comment.getString("content");
+        int votes = comment.getInt("votes");
+        String author = comment.getParseUser("user").getUsername();
+
+        View commentRow = getLayoutInflater().inflate(R.layout.comment_row, null);
+
+        final TextView votesTextView = (TextView) commentRow.findViewById(R.id.votes);
+        votesTextView.setText(Integer.toString(votes));
+
+        TextView commentTextView = (TextView) commentRow.findViewById(R.id.comment_text);
+        commentTextView.setText(content);
+
+        commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) + 1));
+                ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                comm.increment("votes", 1);
+                comm.saveInBackground();
+            }
+        });
+
+        commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) - 1));
+                ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                comm.increment("votes", -1);
+                comm.saveInBackground();
+            }
+        });
+
+        if (author.equals(instance.getCurrentUser().getUsername())) {
+            commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_green));
+            commentTextView.setTextColor(getResources().getColor(R.color.adapt_white));
+            votesTextView.setTextColor(getResources().getColor(R.color.adapt_white));
+        }
+
+        experiences.addView(commentRow);
     }
 
     @Override
