@@ -257,11 +257,6 @@ public class AskQuestionActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                final Intent nextActivity = new Intent(AskQuestionActivity.this, UserSettingActivity.class);
-                Log.d("actionbar", "settings clicked");
-                startActivity(nextActivity);
-                return true;
             case R.id.action_log_out:
                 instance.logoutCurrentUser();
                 startActivity(new Intent(AskQuestionActivity.this, MainActivity.class));

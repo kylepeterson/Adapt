@@ -90,13 +90,6 @@
                 android:background="@color/adapt_blue"
                 android:textColor="@color/adapt_white"
                 android:padding="15dp" />
-
-            <LinearLayout
-                android:id="@+id/crouton_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
         </LinearLayout>
     </ScrollView>
 </merge>

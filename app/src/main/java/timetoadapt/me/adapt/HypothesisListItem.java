@@ -43,16 +43,9 @@ public class HypothesisListItem implements Parcelable {
                 description = object.getString("description");
                 categoryID = object.getParseObject("parentCategory").getObjectId();
                 categoryName = object.getParseObject("parentCategory").getString("categoryName");
-                objectID = object.getObjectId();            }
+                objectID = object.getObjectId();
+            }
         });
-//        this.tryThis = parseObject.getString("ifDescription");
-//        this.toAccomplish = parseObject.getString("thenDescription");
-//        this.usersJoined = parseObject.getInt("usersJoined");
-//        this.rating = parseObject.getDouble("rating");
-//        this.description = parseObject.getString("description");
-//        this.categoryID = parseObject.getParseObject("parentCategory").getObjectId();
-//        this.categoryName = parseObject.getParseObject("parentCategory").getString("categoryName");
-//        this.objectID = parseObject.getObjectId();
     }
 
     public HypothesisListItem(Parcel in) {
