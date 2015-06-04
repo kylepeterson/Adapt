@@ -13,10 +13,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -29,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
@@ -61,6 +64,7 @@ public class HypothesisProfileActivity extends Activity {
     private HypothesisListItem hypothesisData;
     private LinearLayout experiences;
     private ScrollView mainScrollView;
+    private int zebraCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,8 @@ public class HypothesisProfileActivity extends Activity {
         // Bring things to the front of the view
         RelativeLayout titleBox = (RelativeLayout) findViewById(R.id.title_box);
         titleBox.bringToFront();
+
+        zebraCount = 0;
 
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
@@ -99,11 +105,7 @@ public class HypothesisProfileActivity extends Activity {
         findViewById(R.id.info_box).bringToFront();
 
 
-
         ParseQuery<ParseObject> imageQuery = ParseQuery.getQuery("Image");
-
-        //ParseQuery<ParseObject> hypQuery = ParseQuery.getQuery("Hypothesis");
-        //hypQuery.whereEqualTo("objectId", hypId);
 
         imageQuery.whereEqualTo("hypId", hypId);
         imageQuery.findInBackground(new FindCallback<ParseObject>() {
@@ -137,38 +139,51 @@ public class HypothesisProfileActivity extends Activity {
         join.bringToFront();
 
         final EditText experience = (EditText) findViewById(R.id.experience_edit_text);
-        Button submitExperience = (Button) findViewById(R.id.experience_submit);
-        submitExperience.setOnClickListener(new View.OnClickListener() {
+        // I dont understand how this is working but it makes android think we have a single line
+        // input so it can submit on enter. But it is actually a multi line input...
+        experience.setSingleLine();
+        experience.setHorizontallyScrolling(false);
+        experience.setMaxLines(Integer.MAX_VALUE);
+        experience.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                String text = experience.getText().toString();
-                if (!text.isEmpty()) {
-                    ParseObject comment = new ParseObject("Comment");
-                    comment.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
-                    comment.put("user", instance.getCurrentUser());
-                    comment.put("userName", instance.getCurrentUser().getUsername());
-                    comment.put("votes", 1);
-                    comment.put("content", text);
-                    comment.saveInBackground();
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Log.d("comments", "done entering");
+                    String text = experience.getText().toString();
+                    if (!text.isEmpty()) {
 
-                    experience.getText().clear();
-                    Toast.makeText(getApplicationContext(), "Experience submitted!", Toast.LENGTH_SHORT).show();
+                        // remove keyboard from view
+                        InputMethodManager imm =
+                                (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(experience.getWindowToken(), 0);
 
-                    addCommentToExperiences(comment, -1);
+                        ParseObject comment = new ParseObject("Comment");
+                        comment.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+                        comment.put("user", instance.getCurrentUser());
+                        comment.put("userName", instance.getCurrentUser().getUsername());
+                        comment.put("votes", 1);
+                        comment.put("content", text);
+                        comment.saveInBackground();
 
-                    InputMethodManager imm = (InputMethodManager)getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(experience.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        experience.getText().clear();
+                        Toast.makeText(getApplicationContext(), "Experience submitted!", Toast.LENGTH_SHORT).show();
 
-                    focusOnView();
+                        addCommentToExperiences(comment);
+
+                        focusOnView();
+                        return true;
+                    }
                 }
+                return false;
             }
         });
 
         final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
+
         // enable javascript
 
         if (instance.getCurrentUser() != null) {
+            dataWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
             dataWebView.getSettings().setJavaScriptEnabled(true);
 
             // disable scroll on touch
@@ -255,7 +270,7 @@ public class HypothesisProfileActivity extends Activity {
         });
     }
 
-    private final void focusOnView(){
+    private final void focusOnView() {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -377,13 +392,13 @@ public class HypothesisProfileActivity extends Activity {
             public void done(List<ParseObject> list, ParseException e) {
                 for (int i = 0; i < list.size(); i++) {
                     ParseObject comment = list.get(i);
-                    addCommentToExperiences(comment, i);
+                    addCommentToExperiences(comment);
                 }
             }
         });
     }
 
-    public void addCommentToExperiences(ParseObject toFetch, final int index) {
+    public void addCommentToExperiences(ParseObject toFetch) {
         toFetch.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject comment, ParseException e) {
@@ -411,7 +426,9 @@ public class HypothesisProfileActivity extends Activity {
                 downvote.setText("" + Iconify.IconValue.fa_angle_down.formattedName());
                 Iconify.addIcons(downvote);
 
-                commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
+                TextView upVote = (TextView) commentRow.findViewById(R.id.upvote);
+                formatUpVote(upVote);
+                upVote.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) + 1));
@@ -421,7 +438,9 @@ public class HypothesisProfileActivity extends Activity {
                     }
                 });
 
-                commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
+                TextView downVote = (TextView) commentRow.findViewById(R.id.downvote);
+                formatDownVote(downVote);
+                downVote.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) - 1));
@@ -431,18 +450,18 @@ public class HypothesisProfileActivity extends Activity {
                     }
                 });
 
-                if (index % 2 == 0) {
+                if (zebraCount % 2 == 0) {
                     commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_white));
                 } else {
                     commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_zebra_list_grey));
                 }
 
-                if (instance.getCurrentUser() != null && (index == -1 || author.equals(instance.getCurrentUser().getUsername()))) {
-                    commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_green));
-                    commentTextView.setTextColor(getResources().getColor(R.color.adapt_white));
-                    votesTextView.setTextColor(getResources().getColor(R.color.adapt_white));
-                    authorTextView.setTextColor(getResources().getColor(R.color.adapt_white));
+                zebraCount++;
+
+                if (instance.getCurrentUser() != null && author.equals(instance.getCurrentUser().getUsername())) {
+                    authorTextView.setTextColor(getResources().getColor(R.color.adapt_green));
                 }
+
                 experiences.addView(commentRow);
             }
         });
@@ -482,11 +501,6 @@ public class HypothesisProfileActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                final Intent nextActivity = new Intent(HypothesisProfileActivity.this, UserSettingActivity.class);
-                Log.d("actionbar", "settings clicked");
-                startActivity(nextActivity);
-                return true;
             case R.id.action_log_out:
                 instance.logoutCurrentUser();
                 startActivity(new Intent(HypothesisProfileActivity.this, MainActivity.class));
@@ -537,6 +551,17 @@ public class HypothesisProfileActivity extends Activity {
         view.setText(rating + " " + Iconify.IconValue.fa_star.formattedName());
         Iconify.addIcons(view);
     }
+
+    public static void formatUpVote(TextView view) {
+        view.setText(Iconify.IconValue.fa_angle_up.formattedName());
+        Iconify.addIcons(view);
+    }
+
+    public static void formatDownVote(TextView view) {
+        view.setText(Iconify.IconValue.fa_angle_down.formattedName());
+        Iconify.addIcons(view);
+    }
+
 }
 
 
