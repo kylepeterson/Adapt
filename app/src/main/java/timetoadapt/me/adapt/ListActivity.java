@@ -94,11 +94,6 @@ public class ListActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                final Intent nextActivity = new Intent(ListActivity.this, UserSettingActivity.class);
-                Log.d("actionbar", "settings clicked");
-                startActivity(nextActivity);
-                return true;
             case R.id.action_log_out:
                 app.logoutCurrentUser();
                 startActivity(new Intent(ListActivity.this, MainActivity.class));
