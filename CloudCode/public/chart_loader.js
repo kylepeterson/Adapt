@@ -96,6 +96,9 @@ ChartLoader.chartData = function(individualAnswers, aggregateAnswers, dates) {
    };
 };
 
+// Returns a list of complete 'dates' (for all available data points including
+// aggregates) and a 'pivot' representing the last date with an entry in 
+// 'individualAnswers'.
 ChartLoader.xAxisInfo = function(individualAnswers, aggregateAnswers) {
    var individual = Util.extract(individualAnswers, 'submitted');
    var aggregate = Util.extract(aggregateAnswers, 'submitted');
@@ -108,6 +111,10 @@ ChartLoader.xAxisInfo = function(individualAnswers, aggregateAnswers) {
    };
 }
 
+// Adjusts the submitted fields in 'aggregate' to be consistent with the day
+// deltas for 'baselineUser'. In essence, adjust all other user answer times
+// so that they appear to have begun being reported on the same day that
+// 'baselineUser' began reporting.
 ChartLoader.adjustSubmittedToBaseline = function(baselineUser, aggregate) {
    // TODO(alfinoc): This assumes that all users answer all questions for a
    // hypothesis the first time they submit an answers. To get around this
@@ -124,11 +131,7 @@ ChartLoader.adjustSubmittedToBaseline = function(baselineUser, aggregate) {
          });
       }
    }
-   return aggregate
-};
-
-Util.min = function(array) {
-   return Math.min.apply(null, array);
+   return aggregate;
 };
 
 ProjectionSlider = PS = {};
@@ -138,11 +141,12 @@ ProjectionSlider.DISPLAY_SELECTOR = '#projectiondisplay';
 ProjectionSlider.INPUT_SELECTOR = '#projection';
 ProjectionSlider.dates = [];
 
+// Sets the range to cover the full sequence of given dates (must be sorted),
+// less the values that come before pivot. Initializes PS event listeners.
 ProjectionSlider.init = function(dates, pivot) {
    PS.dates = dates;
    var maxDate = dates[dates.length - 1];
    if (!maxDate || pivot >= max) {
-      // TODO(alfinoc): Hide the projection slider.
       $(PS.WRAPPER_SELECTOR).classList.add('hide');
       return;
    }
@@ -152,10 +156,13 @@ ProjectionSlider.init = function(dates, pivot) {
    PS.input().addEventListener('change', PS.refreshChart);
 };
 
+// Returns the range input value.
 ProjectionSlider.getValue = function() {
    return PS.input().value;
 };
 
+// Sets the min, max, and step fields of the input range to those provided, then
+// sets the value to the min.
 ProjectionSlider.setRange = function(min, max, step) {
    PS.input().setAttribute('min', min);
    PS.input().setAttribute('max', max);
@@ -163,11 +170,13 @@ ProjectionSlider.setRange = function(min, max, step) {
    PS.setValue(min);
 };
 
+// Sets the slider value to the given value.
 ProjectionSlider.setValue = function(value) {
    PS.input().setAttribute('value', value);
    PS.refreshChart();
 };
 
+// Reloads the chart module with the upper bound from the slider.
 ProjectionSlider.refreshChart = function() {
    var maxDate = PS.getValue();
    var limited = PS.dates.filter(function(d) { return d <= maxDate; });
@@ -175,11 +184,14 @@ ProjectionSlider.refreshChart = function() {
    CL.loadChart(data.individual, data.aggregate, limited);
 };
 
+// Updates the display element to contain a date formatted copy of the value in
+// the slider input.
 ProjectionSlider.updateDisplay = function() {
    $(PS.DISPLAY_SELECTOR).innerHTML =
       Util.formattedDate(parseInt(PS.input().value));
 };
 
+// Returns the input range element for the slider, or null if it hasn't loaded.
 ProjectionSlider.input = function() {
    var elt = null;
    return function() {

@@ -102,6 +102,11 @@ Util.formattedDate = function(d) {
    return [(d.getMonth() + 1), (d.getDate() + 1), d.getFullYear()].join('/');
 };
 
+// Returns the minimum value in the array.
+Util.min = function(array) {
+   return Math.min.apply(null, array);
+};
+
 // Document selector aliases.
 $ = function(selector) {
    return document.querySelector(selector);
