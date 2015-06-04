@@ -107,6 +107,12 @@ Util.min = function(array) {
    return Math.min.apply(null, array);
 };
 
+// Sets obj1[k] = obj2[k] for all keys k of obj1.
+Util.mixin = function(obj1, obj2) {
+   for (var k in obj2)
+      obj1[k] = obj2[k];
+};
+
 // Document selector aliases.
 $ = function(selector) {
    return document.querySelector(selector);

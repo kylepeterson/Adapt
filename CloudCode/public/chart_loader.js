@@ -20,6 +20,7 @@ ChartLoader.loadChart = function(individualAnswers, aggregateAnswers, dates) {
       $('.missing').classList.remove('hide');
       return;
    }
+   Colors.resetColorCycle();
 
    var chart = $(CL.CANVAS_SELECTOR);
    var ctx = chart.getContext('2d');
@@ -56,12 +57,11 @@ ChartLoader.toDataset = function(xAxis, answers) {
       var points = answersByDate[date];
       return points ? Util.mean(Util.extract(points, 'value')) : null;
    });
-   var foregroundColor = Colors.nextChartColor();
+
    var questionText = window.LABELS[answers[0]['question']];
    return {
       label: questionText,
       data: data,
-      strokeColor: foregroundColor,
       pointColor: 'white'
   }
 };
@@ -74,15 +74,15 @@ ChartLoader.chartData = function(individualAnswers, aggregateAnswers, dates) {
    var aggregateDatasets = [];
    var individualDatasets = individualAnswers.map(function(answers) {
       var set = CL.toDataset(dates, answers);
+      var color = set.strokeColor = Colors.nextChartColor();
 
       // Each data set may have a corresponding aggregate line. Attempt to
-      // find the aggregate line, then 
+      // find the aggregate line, then match the color as hackily as possible.
       if (answers.length > 0) {
          var corresponding = aggregateByQuestion[answers[0].question];
          if (corresponding) {
             var correspondingSet = CL.toDataset(dates, corresponding);
-            correspondingSet.strokeColor
-               = Colors.attachAlpha(set.strokeColor, 0.5);
+            correspondingSet.strokeColor = Colors.attachAlpha(color, 0.5);
             aggregateDatasets.push(correspondingSet);
          }
       }
@@ -153,7 +153,7 @@ ProjectionSlider.init = function(dates, pivot) {
    PS.setRange(pivot, maxDate, dates[1] - dates[0]);
    PS.updateDisplay();
    PS.input().addEventListener('input', PS.updateDisplay);
-   PS.input().addEventListener('change', PS.refreshChart);
+   PS.input().addEventListener('input', PS.refreshChart);
 };
 
 // Returns the range input value.
@@ -178,11 +178,19 @@ ProjectionSlider.setValue = function(value) {
 
 // Reloads the chart module with the upper bound from the slider.
 ProjectionSlider.refreshChart = function() {
-   var maxDate = PS.getValue();
-   var limited = PS.dates.filter(function(d) { return d <= maxDate; });
    var data = CL.getExternalData();
-   CL.loadChart(data.individual, data.aggregate, limited);
+   CL.loadChart(data.individual, data.aggregate, PS.leftOf(PS.getValue()));
 };
+
+// Returns a list of dates that are all less or equal to maxDate.
+ProjectionSlider.leftOf = Util.partial(function(cache, maxDate) {
+   if (cache[maxDate])
+      return cache[maxDate];
+   else
+      return cache[maxDate] = PS.dates.filter(function(d) {
+         return d <= maxDate;
+      });
+}, {});
 
 // Updates the display element to contain a date formatted copy of the value in
 // the slider input.

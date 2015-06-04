@@ -12,6 +12,7 @@ ChartConfiguration.options = {
    showTooltips: false,
    scaleShowVerticalLines: false,
    scaleFontFamily: "Roboto, sans-serif",
+   animation: false,
 
    // Maintain original CSS fixed height but let width be browser dependent.
    responsive: true,

@@ -20,6 +20,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -53,6 +55,7 @@ public class HypothesisProfileActivity extends Activity {
     private AdaptApp instance;
     private Button join;
     private HypothesisListItem hypothesisData;
+    private LinearLayout experiences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +130,30 @@ public class HypothesisProfileActivity extends Activity {
         join = (Button) findViewById(R.id.hypothesis_join_button);
         updateJoinButton();
         join.bringToFront();
+
+        final EditText experience = (EditText) findViewById(R.id.experience_edit_text);
+        Button submitExperience = (Button) findViewById(R.id.experience_submit);
+        submitExperience.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = experience.getText().toString();
+                if (!text.isEmpty()) {
+                    ParseObject comment = new ParseObject("Comment");
+                    comment.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+                    comment.put("user", instance.getCurrentUser());
+                    comment.put("votes", 1);
+                    comment.put("content", text);
+                    comment.saveInBackground();
+
+                    experience.getText().clear();
+                }
+            }
+        });
+
         final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         // enable javascript
 
-        if(instance.getCurrentUser() != null) {
+        if (instance.getCurrentUser() != null) {
             dataWebView.getSettings().setJavaScriptEnabled(true);
 
             // disable scroll on touch
@@ -183,13 +206,13 @@ public class HypothesisProfileActivity extends Activity {
 
             ParseUser currentUser = instance.getCurrentUser();
             String chartUrl = "";
-            if(currentUser != null) {
+            if (currentUser != null) {
                 // get chart with personal and aggregate
                 String userId = instance.getCurrentUser().getObjectId();
                 Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
                 // load chart
                 chartUrl = "http://adapt.parseapp.com/chart?user=" + userId + "&hypothesis=" + hypId;
-            }else {
+            } else {
                 // get chart with just aggregate
                 chartUrl = "http://adapt.parseapp.com/chart?hypothesis=" + hypId;
             }
@@ -204,6 +227,10 @@ public class HypothesisProfileActivity extends Activity {
             dataWebView.setVisibility(View.VISIBLE);
 
         }
+
+        experiences = (LinearLayout) findViewById(R.id.experience_layout);
+        getExperiences();
+
         // bring focus to top of scrollview not to top of webview
         final ScrollView main = (ScrollView) findViewById(R.id.scrollWrapper);
         main.post(new Runnable() {
@@ -255,11 +282,15 @@ public class HypothesisProfileActivity extends Activity {
         }
     }
 
-
     public void subscribeUser() {
         final ProgressDialog dialog = new ProgressDialog(HypothesisProfileActivity.this);
         dialog.setMessage("Joining you...");
         dialog.show();
+
+        ParseObject hypo = ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID);
+        hypo.increment("usersJoined");
+        hypo.increment("totalUsers");
+        hypo.saveEventually();
 
         instance.getCurrentUser().addUnique("joined", hypothesisData.objectID);
         instance.getCurrentUser().saveInBackground(new SaveCallback() {
@@ -268,7 +299,7 @@ public class HypothesisProfileActivity extends Activity {
                 dialog.dismiss();
                 if (e == null) {
                     instance.updateCurrentUser();
-                //    updateJoinButton();
+                    //    updateJoinButton();
                 } else {
                     Crouton.makeText(HypothesisProfileActivity.this, e.getMessage(), Style.ALERT).show();
                 }
@@ -286,6 +317,10 @@ public class HypothesisProfileActivity extends Activity {
         final ProgressDialog dialog = new ProgressDialog(HypothesisProfileActivity.this);
         dialog.setMessage("Unsubscribing you...");
         dialog.show();
+
+        ParseObject hypo = ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID);
+        hypo.increment("usersJoined", -1);
+        hypo.saveEventually();
 
         List<String> toRemove = new ArrayList<>();
         toRemove.add(hypothesisID);
@@ -305,6 +340,48 @@ public class HypothesisProfileActivity extends Activity {
         });
     }
 
+    public void getExperiences() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
+        query.whereEqualTo("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+        query.addDescendingOrder("votes");
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                for (ParseObject comment : list) {
+                    final String id = comment.getObjectId();
+                    String content = comment.getString("content");
+                    int votes = comment.getInt("votes");
+                    String author = comment.getParseUser("user").getUsername();
+
+                    View commentRow = getLayoutInflater().inflate(R.layout.comment_row, null);
+                    ((TextView) commentRow.findViewById(R.id.votes)).setText(Integer.toString(votes));
+                    ((TextView) commentRow.findViewById(R.id.comment_text)).setText(content);
+
+                    commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                            comm.increment("votes", 1);
+                            comm.saveInBackground();
+                        }
+                    });
+
+                    commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                            comm.increment("votes", -1);
+                            comm.saveInBackground();
+                        }
+                    });
+
+                    experiences.addView(commentRow);
+                }
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -316,7 +393,7 @@ public class HypothesisProfileActivity extends Activity {
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         // log in vs log out
-        if(instance.getCurrentUser() == null) {
+        if (instance.getCurrentUser() == null) {
             // not logged in
             menu.findItem(R.id.action_log_in).setVisible(true);
             menu.findItem(R.id.action_log_out).setVisible(false);
@@ -325,7 +402,7 @@ public class HypothesisProfileActivity extends Activity {
             menu.findItem(R.id.action_log_in).setVisible(false);
             menu.findItem(R.id.action_log_out).setVisible(true);
         }
-        if(instance.hasUserJoinedHypothesis(hypothesisData.objectID)) {
+        if (instance.hasUserJoinedHypothesis(hypothesisData.objectID)) {
             menu.findItem(R.id.action_unsubscribe).setVisible(true);
         }
         return true;
@@ -370,9 +447,10 @@ public class HypothesisProfileActivity extends Activity {
         private ProgressBar progressBar;
 
         public AppWebViewClients(ProgressBar progressBar) {
-            this.progressBar=progressBar;
+            this.progressBar = progressBar;
             progressBar.setVisibility(View.VISIBLE);
         }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // TODO Auto-generated method stub

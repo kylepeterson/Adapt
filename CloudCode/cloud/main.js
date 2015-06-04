@@ -17,51 +17,60 @@ Parse.Cloud.define("hello", function(request, response) {
   response.success("Hello world!");
 });
 
-Parse.Cloud.job("countUsersJoined", function(request, status) {
-  // find all users
-  status.message("Getting all users...");
+Parse.Cloud.job("aggregateRatings", function(request, status) {
+  // find all ratings
+  status.message("Getting all ratings...");
 
   var counts = {};
+  var processedCount = 0;
 
-  var userCount = 0;
+  var HypothesisRatingObject = Parse.Object.extend("HypothesisRating");
+  var query = new Parse.Query(HypothesisRatingObject);
 
-  var query = new Parse.Query(Parse.User);
-  query.each(function(user) {
-    var joined = user.get("joined");
-    if (joined) { // user joined some hypotheses
-      for (var i = 0; i < joined.length; i++) {
-        var ID = joined[i];
-        if (!counts.hasOwnProperty(ID)) {
-          counts[ID] = 0;
-        }
-        counts[ID] = counts[ID] + 1;
-      }
+  query.each(function(rating) {
+    var id = rating.get("hypothesis").id;
+    var rating = parseInt(rating.get("rating"));
+
+    if (!counts.hasOwnProperty(id)) {
+      counts[id] = new Array();
     }
-    userCount++;
-    if (userCount % 10 === 0) {
-      status.message("Processed " + userCount + " users.");
+    counts[id].push(rating);
+
+    processedCount++;
+    if (processedCount % 10 === 0) {
+      status.message("Processed " + processedCount + " ratings.");
     }
+    //return;
   }).then(function() {
     status.message("Saving counts...");
 
     var HypothesisObject = Parse.Object.extend("Hypothesis");
-    var hypoQuery = new Parse.Query(HypothesisObject);
+    var hypo = new Parse.Query(HypothesisObject);
 
-    hypoQuery.each(function(hypothesis) {
-      var hypothesisID = hypothesis.id;
-      var userCount = 0;
-      if (hypothesisID in counts) {
-        userCount = counts[hypothesisID];
+    hypo.each(function(hypothesis) {
+      var id = hypothesis.id;
+
+      var finalRating = 4.2;
+      if (counts.hasOwnProperty(id)) {
+        var ratings = counts[id];
+
+        var total = 0;
+        for (var rating in ratings) {
+          total += parseInt(rating);
+        }
+
+        finalRating = total / ratings.length;
       }
-      hypothesis.set("usersJoined", userCount);
-      hypothesis.save();
+
+      hypothesis.set("rating", finalRating);
+      return hypothesis.save();
     }).then(function() {
-        status.success("All hypotheses saved.");
-      }, function(error) {
-        status.error("ERROR IN HYPOTHESIS EACH: " + error);
-      });
+      status.success("rating aggregation successful");
+    }, function(error) {
+      status.error("ERROR IN HYPOTHESIS EACH: " + error);
+    });
   }, function(error) {
-    status.error("ERROR IN USER EACH: " + error);
+    status.error("ERROR IN RATING EACH: " + error);
   });
 });
 

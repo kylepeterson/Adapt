@@ -162,9 +162,25 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/comments_title_box"
                 android:layout_margin="20dp"
+                android:id="@+id/experience_edit_text"
                 android:hint="Write your experience or a question..."
                 android:inputType="textMultiLine"
                 android:imeActionLabel="Submit"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit Experience"
+                android:layout_below="@+id/experience_edit_text"
+                android:id="@+id/experience_submit"
+                android:gravity="right"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/experience_layout"
+                android:layout_below="@id/experience_submit"
+                android:orientation="vertical"/>
 
         </RelativeLayout>
     </ScrollView>
