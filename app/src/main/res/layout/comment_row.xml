@@ -4,32 +4,33 @@
     android:id="@+id/comment_row" android:padding="5dp"
     android:descendantFocusability="blocksDescendants">
     <LinearLayout
-        android:layout_width="50dp"
+        android:layout_width="40dp"
         android:layout_height="match_parent"
         android:id="@+id/votesWrapper"
         android:orientation="vertical"
         android:paddingBottom="5dp"
-        android:paddingTop="5dp">
-        <Button
+        android:paddingTop="5dp"
+        android:gravity="center">
+        <IconTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/upvote"
-            android:background="@color/adapt_blue"/>
+            android:gravity="center_horizontal"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="739"
+            android:text="42"
             android:id="@+id/votes"
             android:gravity="center"
             android:textColor="@color/adapt_dark_grey"/>
-        <Button
+        <IconTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/downvote"
-            android:background="@color/adapt_blue"/>
+            android:gravity="center_horizontal"/>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
@@ -37,7 +38,7 @@
         android:text="boys wlll be boys and will go to the store boys will be boys and will go to the store my boys are old now boys wlll be boys boys wlll be boys"
         android:id="@+id/comment_text"
         android:textSize="14sp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="40dp"
         android:padding="10dp"
         android:paddingBottom="20dp"/>
     <TextView

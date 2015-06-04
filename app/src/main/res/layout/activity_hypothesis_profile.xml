@@ -50,7 +50,6 @@
                         android:paddingLeft="25dp"/>
                 </RelativeLayout>
 
-
                 <Button
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
@@ -75,17 +74,17 @@
                 android:layout_alignBottom="@+id/imageView"
                 android:orientation="horizontal">
 
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="7,249 Joined"
                     android:id="@+id/hypothesis_number_subscribed"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:textColor="@color/adapt_white"
-                    android:paddingLeft="10dp"/>
+                    android:paddingLeft="10dp" />
 
-                <android.widget.IconTextView
+                <IconTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5"
@@ -161,25 +160,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/comments_title_box"
-                android:layout_margin="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/experience_edit_text"
                 android:hint="Write your experience or a question..."
                 android:inputType="textMultiLine"
-                android:imeActionLabel="Submit"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Submit Experience"
-                android:layout_below="@+id/experience_edit_text"
-                android:id="@+id/experience_submit"
-                android:gravity="right"/>
-
+                android:imeActionLabel="Submit"
+                android:imeOptions="actionDone"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/experience_layout"
-                android:layout_below="@id/experience_submit"
+                android:layout_below="@id/experience_edit_text"
                 android:orientation="vertical"/>
 
         </RelativeLayout>

@@ -13,10 +13,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -29,6 +31,7 @@ import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.joanzapata.android.iconify.Iconify;
 import com.parse.FindCallback;
@@ -136,34 +139,45 @@ public class HypothesisProfileActivity extends Activity {
         join.bringToFront();
 
         final EditText experience = (EditText) findViewById(R.id.experience_edit_text);
-        Button submitExperience = (Button) findViewById(R.id.experience_submit);
-        submitExperience.setOnClickListener(new View.OnClickListener() {
+        // I dont understand how this is working but it makes android think we have a single line
+        // input so it can submit on enter. But it is actually a multi line input...
+        experience.setSingleLine();
+        experience.setHorizontallyScrolling(false);
+        experience.setMaxLines(Integer.MAX_VALUE);
+        experience.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                String text = experience.getText().toString();
-                if (!text.isEmpty()) {
-                    ParseObject comment = new ParseObject("Comment");
-                    comment.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
-                    comment.put("user", instance.getCurrentUser());
-                    comment.put("userName", instance.getCurrentUser().getUsername());
-                    comment.put("votes", 1);
-                    comment.put("content", text);
-                    comment.saveInBackground();
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Log.d("comments", "done entering");
+                    String text = experience.getText().toString();
+                    if (!text.isEmpty()) {
+                        ParseObject comment = new ParseObject("Comment");
+                        comment.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+                        comment.put("user", instance.getCurrentUser());
+                        comment.put("userName", instance.getCurrentUser().getUsername());
+                        comment.put("votes", 1);
+                        comment.put("content", text);
+                        comment.saveInBackground();
 
-                    experience.getText().clear();
-                    Toast.makeText(getApplicationContext(), "Experience submitted!", Toast.LENGTH_SHORT).show();
+                        experience.getText().clear();
+                        Toast.makeText(getApplicationContext(), "Experience submitted!", Toast.LENGTH_SHORT).show();
 
-                    addCommentToExperiences(comment, -1);
+                        addCommentToExperiences(comment, -1);
 
-                    focusOnView();
+                        focusOnView();
+                        return true;
+                    }
                 }
+                return false;
             }
         });
 
         final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
+
         // enable javascript
 
         if (instance.getCurrentUser() != null) {
+            dataWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
             dataWebView.getSettings().setJavaScriptEnabled(true);
 
             // disable scroll on touch
@@ -397,8 +411,9 @@ public class HypothesisProfileActivity extends Activity {
 
                 TextView authorTextView = (TextView) commentRow.findViewById(R.id.comment_author);
                 authorTextView.setText(author);
-
-                commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
+                TextView upVote = (TextView) commentRow.findViewById(R.id.upvote);
+                formatUpVote(upVote);
+                upVote.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) + 1));
@@ -407,8 +422,9 @@ public class HypothesisProfileActivity extends Activity {
                         comm.saveInBackground();
                     }
                 });
-
-                commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
+                TextView downVote = (TextView) commentRow.findViewById(R.id.downvote);
+                formatDownVote(downVote);
+                downVote.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) - 1));
@@ -424,12 +440,9 @@ public class HypothesisProfileActivity extends Activity {
                     commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_zebra_list_grey));
                 }
 
-                if (index == -1 || author.equals(instance.getCurrentUser().getUsername())) {
-                    commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_green));
-                    commentTextView.setTextColor(getResources().getColor(R.color.adapt_white));
-                    votesTextView.setTextColor(getResources().getColor(R.color.adapt_white));
-                    authorTextView.setTextColor(getResources().getColor(R.color.adapt_white));
-                }
+                /*if (index == -1 || author.equals(instance.getCurrentUser().getUsername())) {
+                    authorTextView.setTextColor(getResources().getColor(R.color.adapt_green));
+                }*/
                 experiences.addView(commentRow);
             }
         });
@@ -524,6 +537,17 @@ public class HypothesisProfileActivity extends Activity {
         view.setText(rating + " " + Iconify.IconValue.fa_star.formattedName());
         Iconify.addIcons(view);
     }
+
+    public static void formatUpVote(TextView view) {
+        view.setText(Iconify.IconValue.fa_angle_up.formattedName());
+        Iconify.addIcons(view);
+    }
+
+    public static void formatDownVote(TextView view) {
+        view.setText(Iconify.IconValue.fa_angle_down.formattedName());
+        Iconify.addIcons(view);
+    }
+
 }
 
 
