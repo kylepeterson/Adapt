@@ -44,7 +44,7 @@ def answer(date, value, questionPtr, userPtr):
       'question': parsePointer('Question', questionPtr),
       'user': parsePointer('_User', userPtr),
       'submittedAt': parseDate(date),
-      'answerContent': value
+      'answerContent': int(round(value))
    }
 
 """
