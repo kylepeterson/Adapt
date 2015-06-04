@@ -39,7 +39,6 @@ import com.parse.SaveCallback;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -104,7 +103,7 @@ public class HypothesisProfileActivity extends Activity {
                     imageView.loadInBackground(new GetDataCallback() {
                         public void done(byte[] data, ParseException e) {
                             if (e == null) {
-                                Log.d("images", "loaded image as: " + Arrays.toString(data));
+                                Log.d("images", "loaded image");
                             } else {
                                 Log.d("images", "error with image: " + e.getMessage());
                             }
