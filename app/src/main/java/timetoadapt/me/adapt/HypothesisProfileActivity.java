@@ -49,7 +49,9 @@ import com.parse.SaveCallback;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -65,6 +67,7 @@ public class HypothesisProfileActivity extends Activity {
     private LinearLayout experiences;
     private ScrollView mainScrollView;
     private int zebraCount;
+    private Map<String, Boolean> hasVoted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class HypothesisProfileActivity extends Activity {
         titleBox.bringToFront();
 
         zebraCount = 0;
+        hasVoted = new HashMap<>();
 
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
@@ -154,7 +158,7 @@ public class HypothesisProfileActivity extends Activity {
 
                         // remove keyboard from view
                         InputMethodManager imm =
-                                (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(experience.getWindowToken(), 0);
 
                         ParseObject comment = new ParseObject("Comment");
@@ -407,6 +411,8 @@ public class HypothesisProfileActivity extends Activity {
                 int votes = comment.getInt("votes");
                 String author = comment.getString("userName");
 
+                hasVoted.put(id, false);
+
                 View commentRow = getLayoutInflater().inflate(R.layout.comment_row, null);
 
                 final TextView votesTextView = (TextView) commentRow.findViewById(R.id.votes);
@@ -431,10 +437,14 @@ public class HypothesisProfileActivity extends Activity {
                 upVote.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) + 1));
-                        ParseObject comm = ParseObject.createWithoutData("Comment", id);
-                        comm.increment("votes", 1);
-                        comm.saveInBackground();
+                        if (!hasVoted.get(id)) {
+                            hasVoted.put(id, true);
+                            votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) + 1));
+                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                            comm.increment("votes", 1);
+                            comm.saveInBackground();
+
+                        }
                     }
                 });
 
@@ -443,10 +453,13 @@ public class HypothesisProfileActivity extends Activity {
                 downVote.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) - 1));
-                        ParseObject comm = ParseObject.createWithoutData("Comment", id);
-                        comm.increment("votes", -1);
-                        comm.saveInBackground();
+                        if (!hasVoted.get(id)) {
+                            hasVoted.put(id, true);
+                            votesTextView.setText(Integer.toString(Integer.parseInt(votesTextView.getText().toString()) - 1));
+                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                            comm.increment("votes", -1);
+                            comm.saveInBackground();
+                        }
                     }
                 });
 
