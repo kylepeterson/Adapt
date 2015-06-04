@@ -18,7 +18,16 @@ ChartConfiguration.options = {
    maintainAspectRatio: false,
 
    // The worst...
-   legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><span class=label><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>"
+   legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\">" +
+         "<% for (var i=0; i < datasets.length; i++){%>" +
+            // TODO(alfinoc): Huge hack. This hides all labels that have an alpha.
+            // Good luck making an intentionally alpha line...
+            "<% if (datasets[i].strokeColor.indexOf('a') == -1) { %><li>" +
+            "<span style=\"background-color:<%=datasets[i].strokeColor%>\"></span>" +
+            "<span class=label><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span>" +
+            "</li><%}%>" +
+         "<%}%>" + 
+      "</ul>"
 };
 
 ChartConfiguration.labelsPerXAxis = 5;

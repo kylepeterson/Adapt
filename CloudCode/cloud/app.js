@@ -24,13 +24,13 @@ function partial(fn, var_args) {
 
 // Returns a dictionary containing on the necessary fields from answer (question
 // id, answer content value, submitted timestamp).
-function toDict(answer) {
-   var res = {
+function serial(answer) {
+   return {
       question: answer.get('question').id,
       value: answer.get('answerContent'),
-      submitted: answer.get('submittedAt')
+      submitted: answer.get('submittedAt'),
+      user: answer.get('user').id
    };
-   return res;
 }
 
 // Returns a object constructed by given 'constructor' prepopulated with given id.
@@ -42,9 +42,13 @@ function queryDummy(constructor, id) {
 
 // Renders the chart html template with the given list of 'answers' for data and
 // given 'labels' map (from id to human-readable name).
-function report(response, labels, answers) {
+function report(response, user, labels, answers) {
+   var individual = answers.filter(function (a) {
+      return a.get('user').id == user;
+   });
    return response.render('chart', {
-      data: JSON.stringify(answers.map(toDict)),
+      individual: JSON.stringify(individual.map(serial)),
+      all: JSON.stringify(answers.map(serial)),
       labels: JSON.stringify(labels)
    });
 }
@@ -52,7 +56,7 @@ function report(response, labels, answers) {
 // Returns a query find Promise matching all Answers by the given 'user' (id) to
 // any question in 'questions' (Parse.object list). Populates 'labels' with an
 // id->human-readable name mapping for every question.
-function retrieveAnswers(user, labels, questions) {
+function retrieveAnswers(labels, questions) {
    // Populate name map.
    questions.forEach(function(question) {
       labels[question.id] = question.get('questionText');
@@ -60,7 +64,6 @@ function retrieveAnswers(user, labels, questions) {
 
    // Generate answer list query.
    var query = new Parse.Query(Answer);
-   query.equalTo('user', queryDummy(User, user));
    query.containedIn('question', questions);
    return query.find();
 }
@@ -91,8 +94,8 @@ app.get('/chart', function(req, response) {
    };
    var labels = {};
    retrieveQuestions(hypothesis)
-      .then(partial(retrieveAnswers, user, labels), error)
-      .then(partial(report, response, labels), error);
+      .then(partial(retrieveAnswers, labels), error)
+      .then(partial(report, response, user, labels), error);
 });
 
 app.listen();

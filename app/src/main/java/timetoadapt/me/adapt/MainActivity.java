@@ -38,6 +38,8 @@ import java.util.List;
 
 public class MainActivity extends Activity {
     protected static AdaptApp instance;
+    private Button createdViewButton;
+    private Button joinedButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +97,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button joinedButton = (Button) findViewById(R.id.joinedButton);
-        final Button createdViewButton = (Button) findViewById(R.id.createdButton);
+        joinedButton = (Button) findViewById(R.id.joinedButton);
+        createdViewButton = (Button) findViewById(R.id.createdButton);
         joinedButton.setClickable(false);
         createdViewButton.setClickable(true);
         joinedButton.setOnClickListener(new View.OnClickListener() {
@@ -189,7 +191,7 @@ public class MainActivity extends Activity {
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, ListActivity.class)));
-        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        searchView.setIconifiedByDefault(true); // Do not iconify the widget; expand it by default
 
         // log in vs log out
         if(instance.getCurrentUser() == null) {
@@ -258,8 +260,11 @@ public class MainActivity extends Activity {
                 // we find all objectIDs contained in the list stored in the user table
                 ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
                 mainQuery.whereContainedIn("objectId", joinedIds);
-                
+                joinedButton.setClickable(false);
+                createdViewButton.setClickable(false);
+                mainQuery.addDescendingOrder("usersJoined");
                 mainQuery.findInBackground(new FindCallback<ParseObject>() {
+
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {
                         if (e != null) {
@@ -291,6 +296,7 @@ public class MainActivity extends Activity {
                             listView.setAdapter(adapter);
 
                         }
+                        createdViewButton.setClickable(true);
                     }
                 });
 
@@ -328,6 +334,9 @@ public class MainActivity extends Activity {
                 Log.d("mainpage", "rootView: " + rootView);
                 ParseQuery<ParseObject> mainQuery = ParseQuery.getQuery("Hypothesis");
                 mainQuery.whereContainedIn("objectId", createdIds);
+                createdViewButton.setClickable(false);
+                joinedButton.setClickable(false);
+                mainQuery.addDescendingOrder("usersJoined");
                 mainQuery.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {
@@ -359,7 +368,9 @@ public class MainActivity extends Activity {
 
                             // set adapter to the list view
                             listView.setAdapter(adapter);
+
                         }
+                        joinedButton.setClickable(true);
                     }
                 });
                 return rootView;
