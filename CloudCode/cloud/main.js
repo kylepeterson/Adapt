@@ -78,7 +78,7 @@ Parse.Cloud.job("createSearchString", function(request, status) {
 
     var searchText = descriptionText + " " + ifText + " " + thenText;
 
-    var words = searchText.split(/[ \t,.]+/);
+    var words = searchText.split(/[ \t,.?]+/);
 
     var stopWords = ["the", "in", "and", "a", "an"];
 
