@@ -44,7 +44,7 @@ function queryDummy(constructor, id) {
 // given 'labels' map (from id to human-readable name).
 function report(response, user, labels, answers) {
    var individual = answers.filter(function (a) {
-      return a.get('user').id == user;
+      return user && a.get('user').id == user;
    });
    return response.render('chart', {
       individual: JSON.stringify(individual.map(serial)),
