@@ -123,7 +123,7 @@ public class HypothesisProfileActivity extends Activity {
         final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         // enable javascript
 
-        if(instance.getCurrentUser() != null) {
+        if (instance.getCurrentUser() != null) {
             dataWebView.getSettings().setJavaScriptEnabled(true);
 
             // disable scroll on touch
@@ -176,13 +176,13 @@ public class HypothesisProfileActivity extends Activity {
 
             ParseUser currentUser = instance.getCurrentUser();
             String chartUrl = "";
-            if(currentUser != null) {
+            if (currentUser != null) {
                 // get chart with personal and aggregate
                 String userId = instance.getCurrentUser().getObjectId();
                 Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
                 // load chart
                 chartUrl = "http://adapt.parseapp.com/chart?user=" + userId + "&hypothesis=" + hypId;
-            }else {
+            } else {
                 // get chart with just aggregate
                 chartUrl = "http://adapt.parseapp.com/chart?hypothesis=" + hypId;
             }
@@ -254,6 +254,11 @@ public class HypothesisProfileActivity extends Activity {
         dialog.setMessage("Joining you...");
         dialog.show();
 
+        ParseObject hypo = ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID);
+        hypo.increment("usersJoined");
+        hypo.increment("totalUsers");
+        hypo.saveEventually();
+
         instance.getCurrentUser().addUnique("joined", hypothesisData.objectID);
         instance.getCurrentUser().saveInBackground(new SaveCallback() {
             @Override
@@ -261,7 +266,7 @@ public class HypothesisProfileActivity extends Activity {
                 dialog.dismiss();
                 if (e == null) {
                     instance.updateCurrentUser();
-                //    updateJoinButton();
+                    //    updateJoinButton();
                 } else {
                     Crouton.makeText(HypothesisProfileActivity.this, e.getMessage(), Style.ALERT).show();
                 }
@@ -279,6 +284,10 @@ public class HypothesisProfileActivity extends Activity {
         final ProgressDialog dialog = new ProgressDialog(HypothesisProfileActivity.this);
         dialog.setMessage("Unsubscribing you...");
         dialog.show();
+
+        ParseObject hypo = ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID);
+        hypo.increment("usersJoined", -1);
+        hypo.saveEventually();
 
         List<String> toRemove = new ArrayList<>();
         toRemove.add(hypothesisID);
@@ -309,7 +318,7 @@ public class HypothesisProfileActivity extends Activity {
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         // log in vs log out
-        if(instance.getCurrentUser() == null) {
+        if (instance.getCurrentUser() == null) {
             // not logged in
             menu.findItem(R.id.action_log_in).setVisible(true);
             menu.findItem(R.id.action_log_out).setVisible(false);
@@ -318,7 +327,7 @@ public class HypothesisProfileActivity extends Activity {
             menu.findItem(R.id.action_log_in).setVisible(false);
             menu.findItem(R.id.action_log_out).setVisible(true);
         }
-        if(instance.hasUserJoinedHypothesis(hypothesisData.objectID)) {
+        if (instance.hasUserJoinedHypothesis(hypothesisData.objectID)) {
             menu.findItem(R.id.action_unsubscribe).setVisible(true);
         }
         return true;
@@ -363,9 +372,10 @@ public class HypothesisProfileActivity extends Activity {
         private ProgressBar progressBar;
 
         public AppWebViewClients(ProgressBar progressBar) {
-            this.progressBar=progressBar;
+            this.progressBar = progressBar;
             progressBar.setVisibility(View.VISIBLE);
         }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // TODO Auto-generated method stub
