@@ -101,10 +101,10 @@ ChartLoader.chartData = function(individualAnswers, aggregateAnswers, dates) {
 // 'individualAnswers'.
 ChartLoader.xAxisInfo = function(individualAnswers, aggregateAnswers) {
    var individual = Util.extract(individualAnswers, 'submitted');
-   var aggregate = Util.extract(aggregateAnswers, 'submitted');
-   var all = Util.extract(aggregateAnswers.concat(individualAnswers),
-                          'submitted');
-   var emphasis = Util.fullDateRange(individual);
+   var all = Util.extract(aggregateAnswers, 'submitted');
+   //var all = Util.extract(aggregateAnswers.concat(individualAnswers),
+   //                       'submitted');
+   var emphasis = Util.fullDateRange(individual.sort());
    return {
       dates: Util.fullDateRange(all.sort()),
       pivot: emphasis[emphasis.length - 1]

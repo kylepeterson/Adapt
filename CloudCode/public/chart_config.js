@@ -13,6 +13,7 @@ ChartConfiguration.options = {
    scaleShowVerticalLines: false,
    scaleFontFamily: "Roboto, sans-serif",
    animation: false,
+   pointDot: false,
 
    // Maintain original CSS fixed height but let width be browser dependent.
    responsive: true,
@@ -20,14 +21,13 @@ ChartConfiguration.options = {
 
    // The worst...
    legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\">" +
-         "<% for (var i=0; i < datasets.length; i++){%>" +
-            // TODO(alfinoc): Huge hack. This hides all labels that have an alpha.
-            // Good luck making an intentionally alpha line...
-            "<% if (datasets[i].strokeColor.indexOf('a') == -1) { %><li>" +
-            "<span style=\"background-color:<%=datasets[i].strokeColor%>\"></span>" +
-            "<span class=label><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span>" +
-            "</li><%}%>" +
-         "<%}%>" + 
+         "<% for (var i = 0; i < datasets.length; i++) {%>" +
+            // TODO(alfinoc): Huge hack. The way to check if a dataset is aggregate
+            // is to (wait for it...) check if the strokeColor as an 'a' for alpha!
+            "<li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span>" +
+            "<span class=label>" +
+            "<%if (datasets[i].label && datasets[i].strokeColor.indexOf('a') == -1) {%>" +
+            "<%=datasets[i].label%><%} else {%> Aggregate <%}%></span></li><%}%>" +
       "</ul>"
 };
 

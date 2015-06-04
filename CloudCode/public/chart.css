@@ -22,9 +22,9 @@ body {
 
 .legend li > *:first-child {
    border-radius: 50%;
-   width: 0.8em;
-   height: 0.8em;
-   border: 0.2em solid rgba(255,255,255, 0.5)
+   width: 1em;
+   height: 1em;
+   /* border: 0.2em solid rgba(255,255,255, 0.5); */
 }
 
 .legend li > *:last-child {
@@ -67,4 +67,11 @@ body {
 
 #projectionvalue {
    font-weight: bold;
+}
+
+.sub {
+   font-style: italic;
+   color: grey;
+   font-size: smaller;
+   text-align: right;
 }
