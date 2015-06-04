@@ -153,7 +153,7 @@ ProjectionSlider.init = function(dates, pivot) {
    PS.setRange(pivot, maxDate, dates[1] - dates[0]);
    PS.updateDisplay();
    PS.input().addEventListener('input', PS.updateDisplay);
-   PS.input().addEventListener('change', PS.refreshChart);
+   PS.input().addEventListener('input', PS.refreshChart);
 };
 
 // Returns the range input value.
@@ -178,11 +178,19 @@ ProjectionSlider.setValue = function(value) {
 
 // Reloads the chart module with the upper bound from the slider.
 ProjectionSlider.refreshChart = function() {
-   var maxDate = PS.getValue();
-   var limited = PS.dates.filter(function(d) { return d <= maxDate; });
    var data = CL.getExternalData();
-   CL.loadChart(data.individual, data.aggregate, limited);
+   CL.loadChart(data.individual, data.aggregate, PS.leftOf(PS.getValue()));
 };
+
+// Returns a list of dates that are all less or equal to maxDate.
+ProjectionSlider.leftOf = Util.partial(function(cache, maxDate) {
+   if (cache[maxDate])
+      return cache[maxDate];
+   else
+      return cache[maxDate] = PS.dates.filter(function(d) {
+         return d <= maxDate;
+      });
+}, {});
 
 // Updates the display element to contain a date formatted copy of the value in
 // the slider input.
