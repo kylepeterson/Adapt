@@ -10,18 +10,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/adapt_white">
+            <com.parse.ParseImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                />
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/adapt_dark_grey"
+                android:layout_height="280dp"
+                android:background="#00FFFFFF"
                 android:id="@+id/header_container"
-                android:paddingBottom="20dp">
+                android:paddingBottom="35dp"
+                android:layout_alignTop="@+id/imageView">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/black"
+                    android:background="#95000000"
                     android:padding="10dp"
-                    android:id="@+id/title_box">
+                    android:id="@+id/title_box"
+                    android:layout_alignParentTop="true">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -64,20 +73,11 @@
                     android:layout_marginTop="39dp"
                     android:background="@color/adapt_blue"
                     android:textColor="@android:color/white"
-                    android:layout_below="@+id/title_box"
                     android:layout_centerHorizontal="true"
-                    android:textSize="20dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="unsubscribe"
-                    android:textSize="15dp"
-                    android:textColor="@color/adapt_red"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_below="@+id/hypothesis_join_button"
-                    android:paddingTop="10dp"
-                    android:id="@+id/unsubscribe_button"/>
+                    android:textSize="20dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="20dp"/>
+
             </RelativeLayout>
 
             <TextView

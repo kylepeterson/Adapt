@@ -66,6 +66,7 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
@@ -138,7 +139,9 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
         final ParseObject hypothesis = new ParseObject("Hypothesis");
         hypothesis.put("author", instance.getCurrentUser());
         hypothesis.put("ifDescription", this.tryThis);
+        hypothesis.put("ifLowerCase", this.tryThis.toLowerCase());
         hypothesis.put("thenDescription", this.toAccomplish);
+        hypothesis.put("thenLowerCase", this.toAccomplish.toLowerCase());
         hypothesis.put("description", this.description);
         hypothesis.put("parentCategory", this.category);
         hypothesis.put("usersJoined", 0);
@@ -244,6 +247,10 @@ public class CreateHypothesisActivity extends Activity implements OnAddQuestionL
             case R.id.action_log_in:
                 final Intent signInActivity = new Intent(CreateHypothesisActivity.this, SignInActivity.class);
                 startActivity(signInActivity);
+                return true;
+            case android.R.id.home:
+                final Intent mainActivity = new Intent(CreateHypothesisActivity.this, MainActivity.class);
+                startActivity(mainActivity);
                 return true;
         }
 

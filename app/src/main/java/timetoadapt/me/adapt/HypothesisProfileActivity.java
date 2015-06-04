@@ -27,14 +27,19 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -47,18 +52,21 @@ public class HypothesisProfileActivity extends Activity {
 
     private AdaptApp instance;
     private Button join;
-    private TextView unsubscribe;
     private HypothesisListItem hypothesisData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hypothesis_profile);
+        // Bring things to the front of the view
+        RelativeLayout titleBox = (RelativeLayout) findViewById(R.id.title_box);
+        titleBox.bringToFront();
 
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
-
+        // make action bar home button work
+        actionBar.setDisplayHomeAsUpEnabled(true);
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
 
@@ -66,8 +74,7 @@ public class HypothesisProfileActivity extends Activity {
         hypothesisData = intent.getParcelableExtra("hypothesisData");
 
         // get parameters
-        String hypId = hypothesisData.objectID;
-        String userId = instance.getCurrentUser().getObjectId();
+        final String hypId = hypothesisData.objectID;
 
         TextView tryThis = (TextView) findViewById(R.id.hypothesis_try_this);
         TextView toAccomplish = (TextView) findViewById(R.id.hypothesis_to_accomplish);
@@ -77,24 +84,42 @@ public class HypothesisProfileActivity extends Activity {
         toAccomplish.setText(hypothesisData.toAccomplish);
         description.setText(hypothesisData.description);
 
-        RelativeLayout headerContainer = (RelativeLayout) findViewById(R.id.header_container);
+
         ParseQuery<ParseObject> imageQuery = ParseQuery.getQuery("Image");
-        ParseQuery<ParseObject> innerQuery = new ParseQuery("Hypothesis");
-        innerQuery.whereEqualTo("objectId", hypId);
-        imageQuery.whereEqualTo("hypothesis", innerQuery);
+
+        //ParseQuery<ParseObject> hypQuery = ParseQuery.getQuery("Hypothesis");
+        //hypQuery.whereEqualTo("objectId", hypId);
+
+        imageQuery.whereEqualTo("hypId", hypId);
         imageQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
-                if(list != null && !list.isEmpty()) {
+                if (list != null && !list.isEmpty()) {
                     ParseObject imageObject = list.get(0);
+                    ParseFile file = imageObject.getParseFile("image");
+                    final ParseImageView imageView = (ParseImageView) findViewById(R.id.imageView);
+                    imageView.setPlaceholder(getResources().getDrawable(R.color.adapt_dark_grey));
+                    imageView.setParseFile(file);
+                    Log.d("images", "about to set loadIB on " + imageView);
+                    imageView.loadInBackground(new GetDataCallback() {
+                        public void done(byte[] data, ParseException e) {
+                            if (e == null) {
+                                Log.d("images", "loaded image as: " + Arrays.toString(data));
+                            } else {
+                                Log.d("images", "error with image: " + e.getMessage());
+                            }
+                            // The image is loaded and displayed!
 
+                        }
+                    });
+                } else {
+                    Log.d("images", "no image found for " + hypId + ". List of POs: " + list);
                 }
             }
         });
         join = (Button) findViewById(R.id.hypothesis_join_button);
-        unsubscribe = (TextView) findViewById(R.id.unsubscribe_button);
         updateJoinButton();
-
+        join.bringToFront();
         final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         // enable javascript
 
@@ -149,10 +174,18 @@ public class HypothesisProfileActivity extends Activity {
                 }
             }
 
-
-            Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
-            // load chart
-            String chartUrl = "http://adapt.parseapp.com/chart?user=" + userId + "&hypothesis=" + hypId;
+            ParseUser currentUser = instance.getCurrentUser();
+            String chartUrl = "";
+            if(currentUser != null) {
+                // get chart with personal and aggregate
+                String userId = instance.getCurrentUser().getObjectId();
+                Log.d("params", "current hyp: " + hypId + ". current user: " + userId);
+                // load chart
+                chartUrl = "http://adapt.parseapp.com/chart?user=" + userId + "&hypothesis=" + hypId;
+            }else {
+                // get chart with just aggregate
+                chartUrl = "http://adapt.parseapp.com/chart?hypothesis=" + hypId;
+            }
 
             // Loading bar display while webview is loading
             ProgressBar spinner;
@@ -184,13 +217,6 @@ public class HypothesisProfileActivity extends Activity {
 
                 }
             });
-            unsubscribe.setVisibility(View.VISIBLE);
-            unsubscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    unsubscribeUser(hypothesisData.objectID);
-                }
-            });
         } else {
             join.setText(getResources().getText(R.string.hypothesis_join_text));
             join.setBackgroundColor(getResources().getColor(R.color.adapt_blue));
@@ -219,7 +245,6 @@ public class HypothesisProfileActivity extends Activity {
                     }
                 }
             });
-            unsubscribe.setVisibility(View.GONE);
         }
     }
 
@@ -293,6 +318,9 @@ public class HypothesisProfileActivity extends Activity {
             menu.findItem(R.id.action_log_in).setVisible(false);
             menu.findItem(R.id.action_log_out).setVisible(true);
         }
+        if(instance.hasUserJoinedHypothesis(hypothesisData.objectID)) {
+            menu.findItem(R.id.action_unsubscribe).setVisible(true);
+        }
         return true;
     }
 
@@ -317,6 +345,14 @@ public class HypothesisProfileActivity extends Activity {
             case R.id.action_log_in:
                 final Intent signInActivity = new Intent(HypothesisProfileActivity.this, SignInActivity.class);
                 startActivity(signInActivity);
+                return true;
+            case android.R.id.home:
+                final Intent mainActivity = new Intent(HypothesisProfileActivity.this, MainActivity.class);
+                startActivity(mainActivity);
+                return true;
+            case R.id.action_unsubscribe:
+                unsubscribeUser(hypothesisData.objectID);
+                item.setVisible(false);
                 return true;
         }
 

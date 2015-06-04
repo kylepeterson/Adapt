@@ -51,6 +51,9 @@ public class MainActivity extends Activity {
         analObject.put("action", "app_open");
         analObject.saveInBackground();
 
+        // make action bar home button work
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Set up click handlers on navigation buttons
         Button browseButton = (Button) findViewById(R.id.browse);
         browseButton.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +228,8 @@ public class MainActivity extends Activity {
                 final Intent signInActivity = new Intent(MainActivity.this, SignInActivity.class);
                 startActivity(signInActivity);
                 return true;
+            case android.R.id.home:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -270,19 +275,20 @@ public class MainActivity extends Activity {
                             // Adapter to create listView rows
                             final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.report_row, listData);
                             ListView listView = (ListView) rootView.findViewById(R.id.hypList);
-                            // set adapter to the list view
-                            listView.setAdapter(adapter);
 
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    Log.d("mainpage", "redirect fired from onClick");
+                                    Log.d("mainpage", "joined redirect onItemClick fired");
                                     Intent profilePage = new Intent(MainActivity.this, HypothesisProfileActivity.class);
                                     // Add any extras here for data that needs to be passed to the ListActivity
                                     profilePage.putExtra("hypothesisData", adapter.getItemAtPosition(position));
                                     startActivity(profilePage);
                                 }
                             });
+
+                            // set adapter to the list view
+                            listView.setAdapter(adapter);
 
                         }
                     }
@@ -339,9 +345,7 @@ public class MainActivity extends Activity {
                             // Adapter to create listView rows
                             ListView listView = (ListView) rootView.getChildAt(0);
                             final HypothesisAdapter adapter = new HypothesisAdapter(getActivity(), R.layout.hypothesis_row, listData);
-                            // set adapter to the list view
-                            listView.setAdapter(adapter);
-                            Log.d("mainpage", "listview: " + listView);
+
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -352,6 +356,9 @@ public class MainActivity extends Activity {
                                     startActivity(profilePage);
                                 }
                             });
+
+                            // set adapter to the list view
+                            listView.setAdapter(adapter);
                         }
                     }
                 });

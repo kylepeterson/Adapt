@@ -42,6 +42,8 @@ public class ListActivity extends Activity {
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
+        // make action bar home button work
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         app = (AdaptApp) getApplication();
         AdaptApp instance = app.getInstance();
@@ -105,6 +107,10 @@ public class ListActivity extends Activity {
             case R.id.action_log_in:
                 final Intent signInActivity = new Intent(ListActivity.this, SignInActivity.class);
                 startActivity(signInActivity);
+                return true;
+            case android.R.id.home:
+                final Intent mainActivity = new Intent(ListActivity.this, MainActivity.class);
+                startActivity(mainActivity);
                 return true;
         }
 
@@ -222,39 +228,17 @@ public class ListActivity extends Activity {
                     }
                 });
             } else {
-                Log.d("search", "entered search case in OnCreateView");
                 // Display search results
-                String searchQuery = arguments.getString("query");
+                String searchQuery = arguments.getString("query").toLowerCase();
                 // needs to use ArrayAdapter and a custom layout for each row, found in hypothesis_row.xml
+                Log.d("search", "entered search case in OnCreateView on query = " + searchQuery);
 
                 // split keywords on spaces
                 String[] queryTerms = searchQuery.split(" ");
-                List<String> queryList = Arrays.asList(queryTerms);
+                List<String> searchTerms = Arrays.asList(queryTerms);
 
-                // Here is where we need the complex query. We have n search terms in the above array.
-                // We need all hypotheses whose ifDescription (or thenDescription) contain at least one of these keywords
-                // Can use another search strategy, but this seems like a valid and basic strategy.
-
-                // I gave it a shot but this is a more garvage version which is not very useful
-                // if a keyword matches a title exactly
-                ParseQuery<ParseObject> ifQuery = ParseQuery.getQuery("Hypothesis");
-                ifQuery.whereContainedIn("ifDescription", queryList);
-                ParseQuery<ParseObject> thenQuery = ParseQuery.getQuery("Hypothesis");
-                thenQuery.whereContainedIn("thenDescription", queryList);
-
-                // If a full query is the beginning of a title
-                List<ParseQuery<ParseObject>> compoundQuery = new ArrayList<ParseQuery<ParseObject>>();
-                ParseQuery<ParseObject> ifStartsQuery = ParseQuery.getQuery("Hypothesis");
-                ifStartsQuery.whereStartsWith("ifDescription", searchQuery);
-                ParseQuery<ParseObject> thenStartsQuery = ParseQuery.getQuery("Hypothesis");
-                thenStartsQuery.whereStartsWith("thenDescription", searchQuery);
-                compoundQuery.add(thenStartsQuery);
-
-                compoundQuery.add(ifQuery);
-                compoundQuery.add(thenQuery);
-                ParseQuery<ParseObject> finalQuery = ParseQuery.or(compoundQuery);
-
-                Log.d("search", "termsList: " + queryTerms);
+                ParseQuery<ParseObject> finalQuery = ParseQuery.getQuery("Hypothesis");
+                finalQuery.whereContainsAll("searchTerms", searchTerms);
 
                 // Sort by users
                 finalQuery.addDescendingOrder("usersJoined");

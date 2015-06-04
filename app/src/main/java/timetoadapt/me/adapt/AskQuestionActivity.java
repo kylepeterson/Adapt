@@ -52,6 +52,7 @@ public class AskQuestionActivity extends Activity {
         // Hide name of activity in actionbar
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         AdaptApp app = (AdaptApp) getApplication();
         instance = app.getInstance();
@@ -269,6 +270,10 @@ public class AskQuestionActivity extends Activity {
             case R.id.action_log_in:
                 final Intent signInActivity = new Intent(AskQuestionActivity.this, SignInActivity.class);
                 startActivity(signInActivity);
+                return true;
+            case android.R.id.home:
+                final Intent mainActivity = new Intent(AskQuestionActivity.this, MainActivity.class);
+                startActivity(mainActivity);
                 return true;
         }
 

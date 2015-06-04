@@ -31,10 +31,10 @@ Parse.Cloud.job("countUsersJoined", function(request, status) {
     if (joined) { // user joined some hypotheses
       for (var i = 0; i < joined.length; i++) {
         var ID = joined[i];
-        if (!(counts.hasOwnProperty(ID))) {
+        if (!counts.hasOwnProperty(ID)) {
           counts[ID] = 0;
         }
-        counts[ID]++;
+        counts[ID] = counts[ID] + 1;
       }
     }
     userCount++;
@@ -43,14 +43,6 @@ Parse.Cloud.job("countUsersJoined", function(request, status) {
     }
   }).then(function() {
     status.message("Saving counts...");
-
-    var uniqueIDs = [];
-
-    for (var ID in counts) {
-      if (counts.hasOwnProperty(ID)) {
-        uniqueIDs.push(ID);
-      }
-    }
 
     var HypothesisObject = Parse.Object.extend("Hypothesis");
     var hypoQuery = new Parse.Query(HypothesisObject);
@@ -70,5 +62,48 @@ Parse.Cloud.job("countUsersJoined", function(request, status) {
       });
   }, function(error) {
     status.error("ERROR IN USER EACH: " + error);
+  });
+});
+
+Parse.Cloud.job("createSearchString", function(request, status) {
+  // find all users
+  status.message("Getting all Hypotheses...");
+
+  var HypothesisObject = Parse.Object.extend("Hypothesis");
+  var hypoQuery = new Parse.Query(HypothesisObject);
+
+  hypoQuery.each(function(hypothesis) {
+    var descriptionText = hypothesis.get("description").toLowerCase();
+    var ifText = hypothesis.get("ifDescription").toLowerCase();
+    var thenText = hypothesis.get("thenDescription").toLowerCase();
+
+    var searchText = descriptionText + " " + ifText + " " + thenText;
+
+    var words = searchText.split(/[ \t,.?]+/);
+
+    var stopWords = ["the", "in", "and", "a", "an"];
+
+    var isNotStopWord = function(term) {
+      if (!term) {
+        return false;
+      }
+      for (var stopWord in stopWords) {
+        if (term.localeCompare(stopWord) == 0) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    words = words.filter(isNotStopWord);
+
+    hypothesis.set("searchTerms", words);
+    return hypothesis.save();
+  }).then(function() {
+    // Set the job's success status
+    status.success("Migration to lower case completed successfully.");
+  }, function(error) {
+    // Set the job's error status
+    status.error("Uh oh, something went wrong.");
   });
 });

@@ -3,6 +3,8 @@ package timetoadapt.me.adapt;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 /**
@@ -32,14 +34,25 @@ public class HypothesisListItem implements Parcelable {
 
     // Creates a listItem out of a parseObject
     public HypothesisListItem(ParseObject parseObject) {
-        this.tryThis = parseObject.getString("ifDescription");
-        this.toAccomplish = parseObject.getString("thenDescription");
-        this.usersJoined = parseObject.getInt("usersJoined");
-        this.rating = parseObject.getDouble("rating");
-        this.description = parseObject.getString("description");
-        this.categoryID = parseObject.getParseObject("parentCategory").getObjectId();
-        this.categoryName = parseObject.getParseObject("parentCategory").getString("categoryName");
-        this.objectID = parseObject.getObjectId();
+        parseObject.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                tryThis = object.getString("ifDescription");
+                toAccomplish = object.getString("thenDescription");
+                usersJoined = object.getInt("usersJoined");
+                rating = object.getDouble("rating");
+                description = object.getString("description");
+                categoryID = object.getParseObject("parentCategory").getObjectId();
+                categoryName = object.getParseObject("parentCategory").getString("categoryName");
+                objectID = object.getObjectId();            }
+        });
+//        this.tryThis = parseObject.getString("ifDescription");
+//        this.toAccomplish = parseObject.getString("thenDescription");
+//        this.usersJoined = parseObject.getInt("usersJoined");
+//        this.rating = parseObject.getDouble("rating");
+//        this.description = parseObject.getString("description");
+//        this.categoryID = parseObject.getParseObject("parentCategory").getObjectId();
+//        this.categoryName = parseObject.getParseObject("parentCategory").getString("categoryName");
+//        this.objectID = parseObject.getObjectId();
     }
 
     public HypothesisListItem(Parcel in) {
