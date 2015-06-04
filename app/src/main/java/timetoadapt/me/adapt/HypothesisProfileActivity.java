@@ -30,6 +30,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joanzapata.android.iconify.Iconify;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -84,10 +85,17 @@ public class HypothesisProfileActivity extends Activity {
         TextView tryThis = (TextView) findViewById(R.id.hypothesis_try_this);
         TextView toAccomplish = (TextView) findViewById(R.id.hypothesis_to_accomplish);
         TextView description = (TextView) findViewById(R.id.hypothesis_description);
+        TextView rating = (TextView) findViewById(R.id.hypothesis_rating);
+        TextView numberJoined = (TextView) findViewById(R.id.hypothesis_number_subscribed);
 
         tryThis.setText(hypothesisData.tryThis);
         toAccomplish.setText(hypothesisData.toAccomplish);
         description.setText(hypothesisData.description);
+        numberJoined.setText(hypothesisData.usersJoined + " joined");
+        formatRatingNumber(rating, hypothesisData.rating);
+        // bring info box to front
+        findViewById(R.id.info_box).bringToFront();
+
 
 
         ParseQuery<ParseObject> imageQuery = ParseQuery.getQuery("Image");
@@ -492,6 +500,12 @@ public class HypothesisProfileActivity extends Activity {
             super.onPageFinished(view, url);
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    // formats the rating number to add a star icon to its right in the given TextView
+    public static void formatRatingNumber(TextView view, double rating) {
+        view.setText(rating + " " + Iconify.IconValue.fa_star.formattedName());
+        Iconify.addIcons(view);
     }
 }
 
