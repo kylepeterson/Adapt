@@ -91,7 +91,7 @@ public class SignInActivity extends Activity {
 
         // If there is a validation error, display the error
         if (validationError) {
-            Crouton.makeText(SignInActivity.this, validationErrorMessage.toString(), Style.ALERT, (ViewGroup) findViewById(R.id.crouton_error)).show();
+            Crouton.makeText(SignInActivity.this, validationErrorMessage.toString(), Style.ALERT).show();
             return;
         }
 

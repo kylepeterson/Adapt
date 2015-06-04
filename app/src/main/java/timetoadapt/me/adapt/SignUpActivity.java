@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -93,7 +92,7 @@ public class SignUpActivity extends Activity {
 
         // If there is a validation error, display the error
         if (validationError) {
-            Crouton.makeText(SignUpActivity.this, validationErrorMessage.toString(), Style.ALERT, (ViewGroup) findViewById(R.id.crouton_error)).show();
+            Crouton.makeText(SignUpActivity.this, validationErrorMessage.toString(), Style.ALERT).show();
             return;
         }
 
@@ -114,7 +113,7 @@ public class SignUpActivity extends Activity {
                 dialog.dismiss();
                 if (e != null) {
                     // Show the error message
-                    Crouton.makeText(SignUpActivity.this, e.getMessage(), Style.ALERT, (ViewGroup) findViewById(R.id.crouton_error)).show();
+                    Crouton.makeText(SignUpActivity.this, e.getMessage(), Style.ALERT).show();
                 } else {
                     // Start an intent for the dispatch activity
                     instance.updateCurrentUser();

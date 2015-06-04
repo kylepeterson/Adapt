@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -154,6 +155,10 @@ public class HypothesisProfileActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Experience submitted!", Toast.LENGTH_SHORT).show();
 
                     addCommentToExperiences(comment, -1);
+
+                    InputMethodManager imm = (InputMethodManager)getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(experience.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
 
                     focusOnView();
                 }
@@ -398,6 +403,14 @@ public class HypothesisProfileActivity extends Activity {
                 TextView authorTextView = (TextView) commentRow.findViewById(R.id.comment_author);
                 authorTextView.setText(author);
 
+                TextView upvote = (TextView) commentRow.findViewById(R.id.upvote);
+                TextView downvote = (TextView) commentRow.findViewById(R.id.downvote);
+
+                upvote.setText("" + Iconify.IconValue.fa_angle_up.formattedName());
+                Iconify.addIcons(upvote);
+                downvote.setText("" + Iconify.IconValue.fa_angle_down.formattedName());
+                Iconify.addIcons(downvote);
+
                 commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -424,7 +437,7 @@ public class HypothesisProfileActivity extends Activity {
                     commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_zebra_list_grey));
                 }
 
-                if (index == -1 || author.equals(instance.getCurrentUser().getUsername())) {
+                if (instance.getCurrentUser() != null && (index == -1 || author.equals(instance.getCurrentUser().getUsername()))) {
                     commentRow.setBackgroundColor(getResources().getColor(R.color.adapt_green));
                     commentTextView.setTextColor(getResources().getColor(R.color.adapt_white));
                     votesTextView.setTextColor(getResources().getColor(R.color.adapt_white));

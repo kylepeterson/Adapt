@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:paddingBottom="5dp"
         android:paddingTop="5dp">
-        <Button
+        <android.widget.IconTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -24,7 +24,7 @@
             android:id="@+id/votes"
             android:gravity="center"
             android:textColor="@color/adapt_dark_grey"/>
-        <Button
+        <android.widget.IconTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
