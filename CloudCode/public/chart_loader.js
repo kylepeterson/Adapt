@@ -20,6 +20,7 @@ ChartLoader.loadChart = function(individualAnswers, aggregateAnswers, dates) {
       $('.missing').classList.remove('hide');
       return;
    }
+   Colors.resetColorCycle();
 
    var chart = $(CL.CANVAS_SELECTOR);
    var ctx = chart.getContext('2d');
@@ -56,12 +57,11 @@ ChartLoader.toDataset = function(xAxis, answers) {
       var points = answersByDate[date];
       return points ? Util.mean(Util.extract(points, 'value')) : null;
    });
-   var foregroundColor = Colors.nextChartColor();
+
    var questionText = window.LABELS[answers[0]['question']];
    return {
       label: questionText,
       data: data,
-      strokeColor: foregroundColor,
       pointColor: 'white'
   }
 };
@@ -74,15 +74,15 @@ ChartLoader.chartData = function(individualAnswers, aggregateAnswers, dates) {
    var aggregateDatasets = [];
    var individualDatasets = individualAnswers.map(function(answers) {
       var set = CL.toDataset(dates, answers);
+      var color = set.strokeColor = Colors.nextChartColor();
 
       // Each data set may have a corresponding aggregate line. Attempt to
-      // find the aggregate line, then 
+      // find the aggregate line, then match the color as hackily as possible.
       if (answers.length > 0) {
          var corresponding = aggregateByQuestion[answers[0].question];
          if (corresponding) {
             var correspondingSet = CL.toDataset(dates, corresponding);
-            correspondingSet.strokeColor
-               = Colors.attachAlpha(set.strokeColor, 0.5);
+            correspondingSet.strokeColor = Colors.attachAlpha(color, 0.5);
             aggregateDatasets.push(correspondingSet);
          }
       }
