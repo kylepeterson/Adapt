@@ -20,6 +20,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -52,6 +54,7 @@ public class HypothesisProfileActivity extends Activity {
     private AdaptApp instance;
     private Button join;
     private HypothesisListItem hypothesisData;
+    private LinearLayout experiences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +122,26 @@ public class HypothesisProfileActivity extends Activity {
         join = (Button) findViewById(R.id.hypothesis_join_button);
         updateJoinButton();
         join.bringToFront();
+
+        final EditText experience = (EditText) findViewById(R.id.experience_edit_text);
+        Button submitExperience = (Button) findViewById(R.id.experience_submit);
+        submitExperience.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = experience.getText().toString();
+                if (!text.isEmpty()) {
+                    ParseObject comment = new ParseObject("Comment");
+                    comment.put("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+                    comment.put("user", instance.getCurrentUser());
+                    comment.put("votes", 1);
+                    comment.put("content", text);
+                    comment.saveInBackground();
+
+                    experience.getText().clear();
+                }
+            }
+        });
+
         final WebView dataWebView = (WebView) findViewById(R.id.data_web_view);
         // enable javascript
 
@@ -196,6 +219,10 @@ public class HypothesisProfileActivity extends Activity {
             dataWebView.setVisibility(View.VISIBLE);
 
         }
+
+        experiences = (LinearLayout) findViewById(R.id.experience_layout);
+        getExperiences();
+
         // bring focus to top of scrollview not to top of webview
         final ScrollView main = (ScrollView) findViewById(R.id.scrollWrapper);
         main.post(new Runnable() {
@@ -246,7 +273,6 @@ public class HypothesisProfileActivity extends Activity {
             });
         }
     }
-
 
     public void subscribeUser() {
         final ProgressDialog dialog = new ProgressDialog(HypothesisProfileActivity.this);
@@ -301,6 +327,48 @@ public class HypothesisProfileActivity extends Activity {
                     updateJoinButton();
                 } else {
                     Crouton.makeText(HypothesisProfileActivity.this, e.getMessage(), Style.ALERT).show();
+                }
+            }
+        });
+    }
+
+    public void getExperiences() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
+        query.whereEqualTo("hypothesis", ParseObject.createWithoutData("Hypothesis", hypothesisData.objectID));
+        query.addDescendingOrder("votes");
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                for (ParseObject comment : list) {
+                    final String id = comment.getObjectId();
+                    String content = comment.getString("content");
+                    int votes = comment.getInt("votes");
+                    String author = comment.getParseUser("user").getUsername();
+
+                    View commentRow = getLayoutInflater().inflate(R.layout.comment_row, null);
+                    ((TextView) commentRow.findViewById(R.id.votes)).setText(Integer.toString(votes));
+                    ((TextView) commentRow.findViewById(R.id.comment_text)).setText(content);
+
+                    commentRow.findViewById(R.id.upvote).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                            comm.increment("votes", 1);
+                            comm.saveInBackground();
+                        }
+                    });
+
+                    commentRow.findViewById(R.id.downvote).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ParseObject comm = ParseObject.createWithoutData("Comment", id);
+                            comm.increment("votes", -1);
+                            comm.saveInBackground();
+                        }
+                    });
+
+                    experiences.addView(commentRow);
                 }
             }
         });
