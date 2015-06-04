@@ -15,8 +15,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                />
+                android:scaleType="centerCrop" />
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
@@ -51,19 +50,7 @@
                         android:paddingLeft="25dp"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:id="@+id/hypothesis_rating"
-                    android:layout_gravity="center_horizontal" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:id="@+id/hypothesis_number_subscribed"
-                    android:layout_gravity="center_horizontal" />
                 <Button
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
@@ -76,10 +63,37 @@
                     android:layout_centerHorizontal="true"
                     android:textSize="20dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="50dp"/>
 
             </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#95000000"
+                android:padding="5dp"
+                android:id="@+id/info_box"
+                android:layout_alignBottom="@+id/imageView"
+                android:orientation="horizontal">
 
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7,249 Joined"
+                    android:id="@+id/hypothesis_number_subscribed"
+                    android:layout_alignParentLeft="true"
+                    android:textColor="@color/adapt_white"
+                    android:paddingLeft="10dp"/>
+
+                <android.widget.IconTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:id="@+id/hypothesis_rating"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/adapt_white"
+                    android:paddingRight="10dp"/>
+            </RelativeLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,6 +114,7 @@
                 android:id="@+id/hypothesis_description"
                 android:layout_gravity="center_horizontal"
                 android:layout_below="@+id/description_title_box"
+                android:autoLink="web"
                 android:padding="10dp"/>
             <TextView
                 android:layout_width="match_parent"
