@@ -26,7 +26,7 @@ Util.groupBy = function(dicts, key) {
       res[value].push(dict);
    });
    return res;
-}
+};
 
 // Returns a new array identical to 'list' but with all values set to 'value'
 // except for 'leave' number of evenly spaced entries.
@@ -36,28 +36,28 @@ Util.makeSparse = function(list, leave, value) {
    return list.map(function(elt) {
       return i++ % step == 0 ? elt : value;
    });
-}
+};
 
 // Returns a list of values dict[k] for all keys k, with possible duplicates.
 Util.values = function(dict) {
    return Object.keys(dict).map(function(k) {
       return dict[k];
    });
-}
+};
 
 // Returns a list of all obj[i][key] for valid i.
 Util.extract = function(objs, key) {
    return objs.map(function(o) {
       return o[key];
    });
-}
+};
 
 // Returns the mean of all values in the list.
 Util.mean = function(list) {
    if (list.length == 0)
       return 0;
    return list.reduce(function(a, b) { return a + b; }) / list.length;
-}
+};
 
 // Returns a list of all millisecond times between 'from' to 'to', inclusive,
 // with a step size of one day in milliseconds.
@@ -68,7 +68,7 @@ Util.dayRange = function(from, to) {
    for (var i = min; i <= max; i += Util.MS_PER_DAY)
       res.push(i);
    return res;
-}
+};
 
 // Returns a sorted list of millisecond times starting with the minimal value
 // in 'dates' and ending with the maximal, with a step size of one day in
@@ -82,7 +82,7 @@ Util.fullDateRange = function(dates) {
       max = Math.max(d, min);
    });
    return Util.dayRange(min, max);
-}
+};
 
 // Returns a reference to 'obj'. obj[key] must be a Parse timestamp, and is
 // replaced by the millisecond time corresponding the last whole day for
@@ -93,11 +93,19 @@ Util.convertDate = function(key, obj) {
    parseTimestamp = parseTimestamp.split('T')[0];
    obj[key] = new Date(parseTimestamp).getTime();
    return obj;
-}
+};
 
 // Given a millisecond time 'd', returns a formatted date string mm/dd/yyyy.
 Util.formattedDate = function(d) {
    d = new Date(d);
    // Month and day are zero indexed.
    return [(d.getMonth() + 1), (d.getDate() + 1), d.getFullYear()].join('/');
-}
+};
+
+// Document selector aliases.
+$ = function(selector) {
+   return document.querySelector(selector);
+};
+$$ = function(selector) {
+   return document.querySelectorAll(selector);
+};

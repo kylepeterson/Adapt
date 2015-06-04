@@ -1,6 +1,7 @@
 require('cloud/app.js');
 
-Parse.initialize("clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d", "bDHXDi080LHjrVmCSpXKM8TUjyZPhClzobXoUiXG");
+Parse.initialize("clUhGCWWLq3hJTAF80lNZuzCuB6FLnnRy0eN2W0d",
+                 "bDHXDi080LHjrVmCSpXKM8TUjyZPhClzobXoUiXG");
 
 // Default Answer submit timestamp to the Parse.Object creation time.
 Parse.Cloud.beforeSave("Answer", function(request, response) {

@@ -2,13 +2,14 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="/chart.css">
-   <script> window.ANSWERS = <%- data %>; </script>
+   <script> window.INDIVIDUAL = <%- individual %>; </script>
+   <script> window.AGGREGATE = <%- all %>; </script>
    <script> window.LABELS = <%- labels %>; </script>
    <script type="text/javascript" src="/chart.min.js"></script>
    <script type="text/javascript" src="/util.js"></script>
    <script type="text/javascript" src="/chart_config.js"></script>
    <script type="text/javascript" src="/colors.js"></script>
-   <script type="text/javascript" src="/individual_charts.js"></script>
+   <script type="text/javascript" src="/chart_loader.js"></script>
 </head>
 <body>
    <div class="missing hide">Nobody has reported feedback yet!</div>
@@ -16,5 +17,9 @@
       <canvas></canvas>
    </div>
    <div class="legend"></div>
+   <div id="rangewrapper">
+      <div>Show projection until <span id="projectiondisplay"></span></div>
+      <input id="projection" type="range">
+   </div>
 </body>
 </html>
